@@ -1,0 +1,25 @@
+{% set secondaryMenu = 'Anagrafica' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+
+{% block central_block %}
+<div id="formnav">
+    {% include 'CraueFormFlowBundle:FormFlow:stepList.html.twig' %}
+</div>
+
+<form id="form_newpersonn" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+    {% include 'CraueFormFlowBundle:FormFlow:stepField.html.twig' %}
+
+    {% include 'BoilrBundle:Person:new_step' ~ flow.getCurrentStep() ~ '.html.twig' with {'form': form } %}
+
+    <div>{{ form_rest(form) }}</div>
+    {{ form_errors(form) }}
+
+    {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' %}
+</form>
+{% endblock %}
+
+
+{% block javascripts %}
+{% include 'BoilrBundle:Person:new_step' ~ flow.getCurrentStep() ~ '.js.twig'  %}
+{% endblock %}

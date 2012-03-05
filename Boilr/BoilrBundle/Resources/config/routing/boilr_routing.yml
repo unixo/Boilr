@@ -1,0 +1,30 @@
+_security_check:
+    pattern:  /login_check
+
+_security_logout:
+    pattern:  /logout
+
+homepage:
+    prefix:   /
+    resource: "@BoilrBundle/Controller/DefaultController.php"
+    type:     annotation
+
+address:
+    prefix:   /address
+    resource: "@BoilrBundle/Controller/AddressController.php"
+    type:     annotation
+
+person:
+    prefix:   /person
+    resource: "@BoilrBundle/Controller/PersonController.php"
+    type:     annotation
+
+contract_type:
+    prefix:   /contract-type
+    resource: "@BoilrBundle/Controller/ContractTypeController.php"
+    type:     annotation
+
+system:
+    prefix:   /system
+    resource: "@BoilrBundle/Controller/SystemController.php"
+    type:     annotation

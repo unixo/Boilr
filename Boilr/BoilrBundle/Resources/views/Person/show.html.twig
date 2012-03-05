@@ -1,0 +1,63 @@
+{% set secondaryMenu = 'Anagrafica' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+{% block extra_header %}
+    {% if person.addresses | length > 0 %}
+        {{ vichgeo_include_js() }}
+        {{ vichgeo_include_css() }}
+    {% endif %}
+{% endblock %}
+
+{% block central_block %}
+    <h2>Scheda anagrafica</h2>
+
+    <div id="tabs">
+        <ul>
+            <li><a href="#fragment-1"><span>Anagrafica</span></a></li>
+            <li><a href="#tabAddresses"><span>Indirizzi</span></a></li>
+            <li><a href="#fragment-3"><span>Impianti</span></a></li>
+            <li><a href="#tabContracts"><span>Assistenza</span></a></li>
+        </ul>
+        <div id="fragment-1">
+            {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': person, 'allFields': true } %}
+        </div>
+        <div id="tabAddresses">
+            {% include 'BoilrBundle:Person:_addresses.html.twig' with { 'person': person, 'toolbar': true } %}
+
+            {% if person.addresses | length > 0 %}
+                <div>{{ vichgeo_map_for('location', person.addresses) }}</div>
+            {% endif %}
+        </div>
+        <div id="fragment-3">
+            {% include 'BoilrBundle:Person:_systems.html.twig' with { 'person': person, 'toolbar': true } %}
+        </div>
+        <div id="tabContracts">
+            {% include 'BoilrBundle:Person:_contracts.html.twig' with { 'person': person } %}
+        </div>
+    </div>
+    <br/>
+{% endblock %}
+
+
+{% block javascripts %}
+<script type="text/javascript">
+    /* <![CDATA[ */
+
+    $(function() {
+         $("#tabs").tabs({
+                show: function(e, ui)
+                      {
+                        {# @todo: quando seleziono il tab degli indirizzi, la URL cambia #}
+                        if (ui.panel.id == 'tabAddresses') {
+                            $('#addressMapContainer').css('width', '100%');
+                            google.maps.event.trigger(addressesMap, "resize");
+                            addressesMap.fitBounds(addressesMapBounds);
+                         }
+                      }
+         });
+    });
+
+    /* ]]> */
+</script>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'BoilrBundle:Default:template_three_cols.html.twig' %}
+
+{% block central_block %}
+<h2>Tipologie di contratto disponibili</h2>
+
+<table>
+    <thead>
+        <tr><th>#</th><th>Nome</th><th>Periodicità</th></tr>
+    </thead>
+    <tbody>
+    {% for ct in records %}
+        <tr><td>{{ ct.id }}</td><td>{{ ct.name }}</td><td>{{ ct.periodicity }}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    
+</script>
+{% endblock %}

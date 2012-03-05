@@ -1,0 +1,43 @@
+{% set secondaryMenu = 'Anagrafica' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+
+{% block central_block %}
+
+<form id="form_system" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+
+    {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': person, 'allFields': false} %}
+
+    <fieldset>
+        <legend>Dettagli indirizzo</legend>
+
+        <div><label>Tipo:</label>{{ form_widget(form.systemType) }}</div>
+        <div><label>Modello:</label>{{ form_widget(form.product) }}</div>
+        <div><label>Data installazione:</label>{{ form_widget(form.installDate, {'attr': {'class': 'jdate'}}) }}</div>
+        <div><label>Ultima manutenz.:</label>{{ form_widget(form.lastManteinance, {'attr': {'class': 'jdate'}}) }}</div>
+        <div><label>Seriale:</label>{{ form_widget(form.code) }}</div>
+        <div><label>Descrizione:</label>{{ form_widget(form.descr) }}</div>
+    </fieldset>
+
+    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
+        <a href="{{ url('show_person', {'id': person.id}) }}">Torna al dettaglio</a>
+        <input type="submit" value="Salva" />
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+</form>
+{% endblock %}
+
+
+{% block javascripts %}
+<script type="text/javascript">
+    /* <![CDATA[ */
+
+    $(function() {
+        $(".jdate").datepicker();
+    });
+
+    /* ]]> */
+</script>
+{% endblock %}

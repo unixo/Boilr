@@ -1,0 +1,36 @@
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+<fieldset>
+    <legend>Contratti d'assistenza</legend>
+
+    {% if person.contracts | length > 0 %}
+        <table id="userContracts" class="views-table">
+            <thead>
+                <tr>
+                    <th>Nazione</th>
+                    <th>Operaz.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key,value in person.contracts %}
+                    <tr class="{{ cycle(['odd', 'even'], key) }}">
+                        <td>{{ value.startDate | date('d-m-Y') }}</td>
+                        <td>{{ value.endDate | date('d-m-Y')  }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nessun contratto d'assistenza.</p>
+    {% endif %}
+
+        {#
+    <div style="margin-top: 10px;">
+        <ul id="icons" class="ui-widget ui-helper-clearfix">
+            <li class="ui-state-default ui-corner-all">
+                <a href="{{ url('address_add', {'pid': person.id}) }}"><span class="ui-icon ui-icon-plusthick" title="Aggiungi indirizzo..."></span></a>
+            </li>
+        </ul>
+    </div>
+        #}
+</fieldset>

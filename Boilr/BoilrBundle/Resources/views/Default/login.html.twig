@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Boilr &rsaquo; Log In</title>
+    <link rel='stylesheet' id='login-css' href="{{ asset('css/login.css') }}" type='text/css' media='all' />
+</head>
+
+<body>
+    <div id="main_container">
+        <div id="header">
+            <div class="top_logo">
+                <center><img src="{{ asset('../img/security.png') }}" /></center>
+            </div>
+        </div>
+
+        <div id="main_content">
+            <div class="admin_login">
+                <div class="left_box">
+                    {% if error %}
+                        <div class="login_error"><strong>ERRORE</strong>: utente/password non valido</div>
+                    {% endif %}
+
+                    <div class="top_left_box"></div>
+
+                    <div class="center_left_box">
+                        <div class="box_title"><span>Autenticazione</span> utente</div>
+
+                        <form action="{{ path('_security_check') }}" method="post">
+                            <div class="form">
+                                <div class="form_row">
+                                    <label class="left">Utente: </label>
+                                    <input type="text" class="form_input" id="username" name="_username" value="{{ last_username }}"/>
+                                </div>
+                                <div class="form_row">
+                                    <label class="left">Password: </label>
+                                    <input type="password" class="form_input" name="_password"/>
+                                </div>
+                                <div style="float:right; padding:10px 25px 0 0;">
+                                    <input type="submit" value="accedi"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bottom_left_box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    function login_attempt_focus(){
+        setTimeout( function(){
+            try{
+                d = document.getElementById('username');
+                d.focus();
+                d.select();
+            } catch(e){}
+            }, 200);
+
+        login_attempt_focus();
+    }
+    </script>
+        
+</body>
+</html>

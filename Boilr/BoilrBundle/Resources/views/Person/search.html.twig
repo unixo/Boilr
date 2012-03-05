@@ -1,0 +1,110 @@
+{% set secondaryMenu = 'Anagrafica' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+
+{% block central_block %}
+<h2>Ricerca anagrafica</h2>
+
+<form>
+    <fieldset>
+        <legend>Anagrafica</legend>
+
+        <div><label>Cliente?</label>
+             <input id="is_customer" type="checkbox" class="jcheck" checked name="is_customer" />
+             <span class="comment">Marcare la casella di spunta per visualizzare i clienti</span>
+        </div>
+        <div><label>Installatore?</label>
+             <input id="is_installer" type="checkbox" class="jcheck" checked name="is_installer" />
+             <span class="comment">Marcare la casella di spunta per visualizzare gli installatori</span>
+         </div>
+        <div><label>Amministratore?</label>
+             <input id="is_admin" type="checkbox" class="jcheck" checked name="is_admin" />
+             <span class="comment">Marcare la casella di spunta per visualizzare gli amministratori di condominio</span>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Risultati</legend>
+
+        <table id="people" class="views-table">
+            <thead>
+                <tr>
+                    <th width="5%">C</th>
+                    <th width="5%">A</th>
+                    <th width="5%">S</th>
+                    <th>Nominativo</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </fieldset>
+</form>
+{% endblock %}
+
+
+{% block javascripts %}
+<script type="text/javascript">
+/* <![CDATA[ */
+
+var oTable;
+
+function renderBoolean( oObj )
+{
+    var prop = oObj.oSettings.aoColumns[ oObj.iDataColumn ].mDataProp;
+    if (oObj.aData[ prop ] == true) {
+        return '<span class="ui-icon ui-icon-check"></span>';
+    }
+
+    return '';
+}
+
+function renderFullname( oObj )
+{
+    var _url = "{{ url('show_person', { 'id': '_ID_' } ) }}";
+    var _id = oObj.aData['id'];
+    var _name = oObj.aData['fullname'];
+
+    _url = _url.replace(/_ID_$/, _id);
+
+    return '<a href="'+_url+'">'+_name+'</a>';
+}
+
+$(function() {
+    oTable = $('#people').dataTable({
+            "sDom": "frtiS", "sScrollY": "300px", "bServerSide": true,
+            "sAjaxSource": "{{ path('json_search_person') }}",
+            "aoColumns": [
+                    { "mDataProp": "is_customer", "fnRender": renderBoolean, "bSortable": false },
+                    { "mDataProp": "is_admin",    "fnRender": renderBoolean, "bSortable": false },
+                    { "mDataProp": "is_supplier", "fnRender": renderBoolean, "bSortable": false },
+                    { "mDataProp": "fullname",    "fnRender": renderFullname },
+                ],
+            "fnServerData": function ( sSource, aoData, fnCallback )
+                            {
+                                if ( $('#is_customer').attr('checked') != 'checked' )
+                                    aoData.push( { "name": "is_customer", "value": 0 } );
+
+                                if ( $('#is_installer').attr('checked') == 'checked' )
+                                    aoData.push( { "name": "is_installer", "value": 0 } );
+
+                                if ( $('#is_admin').attr('checked') == 'checked' )
+                                    aoData.push( { "name": "is_admin", "value": 0 } );
+
+                                $.ajax( { "dataType": 'json',
+                                            "url": sSource,
+                                            "data": aoData,
+                                            "success": fnCallback
+                                            } );
+                            },
+                  });
+
+    $('.jcheck').bind('click', function(event)
+                               {
+                                   oTable.fnReloadAjax();
+                               });
+
+});
+
+/* ]]> */
+</script>
+{% endblock %}

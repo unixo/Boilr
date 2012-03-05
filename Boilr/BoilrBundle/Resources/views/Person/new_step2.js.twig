@@ -1,0 +1,15 @@
+<script type="text/javascript">
+    /* <![CDATA[ */
+
+    $(function() {
+        var oTable = $('#addresses').dynamicTable({
+                            bAddIfEmpty    : false,
+                            bAllowNoRecords: true,
+                            sProto         : $('script[type="text/html"]')
+                        });
+
+        $('#addAddress').bind('click', function() { oTable.fnAddRow(); });
+    });
+
+    /* ]]> */
+</script>

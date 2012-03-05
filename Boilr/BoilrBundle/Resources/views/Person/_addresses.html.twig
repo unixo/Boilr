@@ -1,0 +1,55 @@
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+<fieldset>
+    <legend>Indirizzi</legend>
+
+    {% if person.addresses | length > 0 %}
+        <table id="addresses" class="views-table">
+            <thead>
+                <tr>
+                    <th width="3%">Tipo</th>
+                    <th>Indirizzo</th>
+                    <th width="8%">CAP</th>
+                    <th width="15%">Città</th>
+                    <th width="5%">Provincia</th>
+                    <th>Nazione</th>
+                    <th>Operaz.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key,value in person.addresses %}
+                    <tr class="{{ cycle(['odd', 'even'], key) }}">
+                        <td>{{ mymacro.address_icon(value) }}</td>
+                        <td>{{ value.street}}</td>
+                        <td>{{ value.postalCode }}</td>
+                        <td>{{ value.city }}</td>
+                        <td class="center">{{ value.province }}</td>
+                        <td>{{ value.state }}</td>
+                        <td>
+                            <a href="{{ url('address_edit', {'aid': value.id} ) }}">
+                                <span class="ui-icon ui-icon-pencil" title="Modifica"></span>
+                            </a>
+                            <a href="{{ url('address_delete', {'id': value.id} ) }}">
+                                <span class="ui-icon ui-icon-trash" title="Elimina"></span>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nessun indirizzo.</p>
+    {% endif %}
+
+    {% if toolbar is defined and toolbar == true %}
+        <div style="margin-top: 10px;">
+            <ul id="icons" class="ui-widget ui-helper-clearfix">
+                <li class="ui-state-default ui-corner-all">
+                    <a href="{{ url('address_add', {'pid': person.id}) }}">
+                        <span class="ui-icon ui-icon-plusthick" title="Aggiungi indirizzo..."></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+</fieldset>

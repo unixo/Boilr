@@ -1,0 +1,54 @@
+{% macro prototype(item) %}
+{% spaceless %}
+    <tr>
+        <td>{{ form_widget(item.systemType) }}</td>
+        <td>{{ form_widget(item.product) }}</td>
+        <td>{{ form_widget(item.installDate, {'attr': {'class': 'jdate'}} ) }}</td>
+        <td>{{ form_widget(item.lastManteinance, {'attr': {'class': 'jdate'}} ) }}</td>
+        <td>{{ form_widget(item.code) }}</td>
+        <td>{{ form_widget(item.descr) }}</td>
+        <td class="icons">
+            <a class="addrow" href="#"><span class="ui-icon ui-icon-circle-plus"></span></a>
+            <a class="removerow" href="#"><span class="ui-icon ui-icon-circle-minus"></span></a>
+        </td>
+    </tr>
+{% endspaceless %}
+{% endmacro %}
+
+<script type="text/html">
+    {{ _self.prototype(form.systems.get('prototype')) }}
+</script>
+
+<fieldset>
+    <legend>Impianti</legend>
+
+    <table id="systems" class="views-table">
+        <thead>
+            <tr>
+                <th>Tipo <span class="reqsymb">*</span></th>
+                <th>Prodotto <span class="reqsymb">*</span></th>
+                <th>Install. <span class="reqsymb">*</span></th>
+                <th>Ultima manut.</th>
+                <th>Seriale <span class="reqsymb">*</span></th>
+                <th colspan="2">Descr. <span class="reqsymb">*</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, item in form.systems %}
+                {{ _self.prototype(item) }}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top: 10px;">
+        <ul id="icons" class="ui-widget ui-helper-clearfix">
+            <li class="ui-state-default ui-corner-all">
+                <a href="#">
+                    <span id="addSystem" class="ui-icon ui-icon-plusthick" title="Aggiungi impianto"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</fieldset>
+
+{{ form_widget(form.systems) }}

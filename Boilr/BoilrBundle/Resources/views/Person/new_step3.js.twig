@@ -1,0 +1,18 @@
+<script type="text/javascript">
+    /* <![CDATA[ */
+
+    $(function() {
+        $(".jdate").datepicker();
+
+        var oTable = $('#systems').dynamicTable({
+                    bAddIfEmpty    : false,
+                    bAllowNoRecords: true,
+                    sProto         : $('script[type="text/html"]'),
+                    fnAddCallback  : function() { $(".jdate").datepicker(); }
+                    });
+
+        $('#addSystem').bind('click', function() { oTable.fnAddRow(); });
+    });
+
+    /* ]]> */
+</script>

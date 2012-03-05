@@ -1,0 +1,65 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{% block field_row %}
+{% spaceless %}
+<div>
+    {{ form_label(form) }}
+    {{ form_widget(form) }}
+    {% if help is defined %}
+        <p class="field_help">{{ help }}</p>
+    {% endif %}
+</div>
+{% endspaceless %}
+{% endblock field_row %}
+
+
+{% block field_label %}
+{% spaceless %}
+    <label id="{{ id ~ '_label'}}" for="{{ id }}"{% for attrname,attrvalue in attr %} {{attrname}}="{{attrvalue}}"{% endfor %} {% if errors|length > 0 %}class="wrong_label" {% endif %}>
+        {{ required?'*':'' }}{{ label|trans }}:
+    </label>
+{% endspaceless %}
+{% endblock field_label %}
+
+
+{% block field_widget %}
+    {% set type = type|default('text') %}
+
+    {% spaceless %}
+        <input type="{{ type }}"
+            {% if errors|length > 0 %} class="wrong_input" data-tips="{{ errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }}" {% endif %}
+            {{ block('widget_attributes') }}
+            value="{{ value }}"
+        />
+        {% if suffix is defined %}{{ suffix|raw }} {% endif %}
+    {% endspaceless %}
+{% endblock %}
+
+
+{% block choice_widget %}
+{% spaceless %}
+    {% if expanded %}
+        <div {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            {{ form_widget(child) }}
+            {{ form_label(child) }}
+        {% endfor %}
+        </div>
+    {% else %}
+    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}{% if errors|length > 0 %} class="wrong_input" data-tips="{{ errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }}"{% endif %}>
+        {% if empty_value is not none %}
+            <option value="">{{ empty_value|trans }}</option>
+        {% endif %}
+        {% if preferred_choices|length > 0 %}
+            {% set options = preferred_choices %}
+            {{ block('widget_choice_options') }}
+            {% if choices|length > 0 and separator is not none %}
+                <option disabled="disabled">{{ separator }}</option>
+            {% endif %}
+        {% endif %}
+        {% set options = choices %}
+        {{ block('widget_choice_options') }}
+    </select>
+    {% endif %}
+{% endspaceless %}
+{% endblock choice_widget %}

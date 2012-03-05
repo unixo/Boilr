@@ -1,0 +1,54 @@
+{% macro prototype(item) %}
+{% spaceless %}
+    <tr>
+        <td>{{ form_widget(item.type) }}</td>
+        <td>{{ form_widget(item.street) }}</td>
+        <td>{{ form_widget(item.postalCode, {'attr': {'class': 'cap'}} ) }}</td>
+        <td>{{ form_widget(item.city) }}</td>
+        <td>{{ form_widget(item.province) }}</td>
+        <td>{{ form_widget(item.state) }}</td>
+        <td class="icons">
+            <a class="addrow" href="#"><span class="ui-icon ui-icon-circle-plus"></span></a>
+            <a class="removerow" href="#"><span class="ui-icon ui-icon-circle-minus"></span></a>
+        </td>
+    </tr>
+{% endspaceless %}
+{% endmacro %}
+
+<script type="text/html">
+    {{ _self.prototype(form.addresses.get('prototype')) }}
+</script>
+
+<fieldset>
+    <legend>Indirizzi</legend>
+
+    <table id="addresses" class="views-table">
+        <thead>
+            <tr>
+                <th>Tipo <span class="reqsymb">*</span></th>
+                <th>Via <span class="reqsymb">*</span></th>
+                <th>CAP <span class="reqsymb">*</span></th>
+                <th>Città <span class="reqsymb">*</span></th>
+                <th>Prov. <span class="reqsymb">*</span></th>
+                <th colspan="2">Stato. <span class="reqsymb">*</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, item in form.addresses %}
+                {{ _self.prototype(item) }}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top: 10px;">
+        <ul id="icons" class="ui-widget ui-helper-clearfix">
+            <li class="ui-state-default ui-corner-all">
+                <a href="#">
+                    <span id="addAddress" class="ui-icon ui-icon-plusthick" title="Aggiungi indirizzo"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</fieldset>
+
+{{ form_widget(form.addresses) }}
