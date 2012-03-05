@@ -1,0 +1,31 @@
+{% set secondaryMenu = 'Amministrazione' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+{% block central_block %}
+<fieldset>
+    <legend>Elenco schemi di manutenzione</legend>
+<table>
+    <thead>
+        <tr>
+            <th>Tipologia impianto</th>
+            <th>Gruppo Operaz.</th>
+            <th>Periodico?</th>
+            <th>Frequenza</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set lastId = 0 %}
+        {% for schema in schemas %}
+            <tr>
+                <td>{{ (lastId == schema.systemType.id) ? '' : schema.systemType.name }}</td>
+                <td>{{ schema.operationGroup.name }}</td>
+                <td>{{ mymacro.imgcheck_if_true(schema.isPeriodic) }}</td>
+                <td>{{ schema.freq }}</td>
+            </tr>
+            {% set lastId = schema.systemType.id %}
+        {% endfor %}
+    </tbody>
+</table>
+        </fieldset>
+{% endblock %}

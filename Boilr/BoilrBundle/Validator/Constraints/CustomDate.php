@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class CustomDate extends Constraint
 {
-    public $message = 'ABBO This value is not a valid date';
+    public $message = 'This value is not a valid date';
 
-    public $pattern = '/^(\d{4})-(\d{2})-(\d{2})$/';
+    public $pattern = "/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/";
 }

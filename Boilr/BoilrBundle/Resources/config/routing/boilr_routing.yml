@@ -28,3 +28,8 @@ system:
     prefix:   /system
     resource: "@BoilrBundle/Controller/SystemController.php"
     type:     annotation
+
+manteinance:
+    prefix:   /manteinance
+    resource: "@BoilrBundle/Controller/ManteinanceSchemaController.php"
+    type:     annotation

@@ -47,10 +47,9 @@ class ManteinanceSchema
     protected $isPeriodic;
 
     /**
-     * @var $freq
+     * @var string $freq
      *
-     * @ORM\Column(name="freq", type="integer")
-     * @Assert\Type(type="integer")
+     * @ORM\Column(name="freq", type="string", length=15, nullable=false)
      */
     protected $freq;
 
@@ -95,7 +94,7 @@ class ManteinanceSchema
     /**
      * Set freq
      *
-     * @param integer $freq
+     * @param string $freq
      */
     public function setFreq($freq)
     {
@@ -105,7 +104,7 @@ class ManteinanceSchema
     /**
      * Get freq
      *
-     * @return integer
+     * @return string
      */
     public function getFreq()
     {

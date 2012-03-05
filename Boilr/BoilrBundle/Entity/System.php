@@ -12,7 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Boilr\BoilrBundle\Entity\System
  *
  * @ORM\Table(name="systems")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\SystemRepository")
  * @Gedmo\Timestampable
  */
 class System
@@ -48,7 +48,7 @@ class System
      * @var date $installDate
      *
      * @ORM\Column(name="install_date", type="date", nullable=true)
-     * @MyAssert\CustomDate(pattern="/^(\d{2})-(\d{2})-(\d{4})$/", groups={"system", "flow_newPerson_step3"})
+     * @MyAssert\CustomDate(groups={"system", "flow_newPerson_step3"})
      */
     protected $installDate;
 
@@ -56,7 +56,7 @@ class System
      * @var date $lastManteinance
      *
      * @ORM\Column(name="last_manteinance", type="date", nullable=true)
-     * @MyAssert\CustomDate(pattern="/^(\d{2})-(\d{2})-(\d{4})$/", groups={"system", "flow_newPerson_step3"})
+     * @MyAssert\CustomDate(groups={"system", "flow_newPerson_step3"})
      */
     protected $lastManteinance;
 

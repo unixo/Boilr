@@ -21,10 +21,10 @@ class SystemForm extends AbstractType
                                      'empty_value' => ''))
                 ->add('installDate', 'date', array(
                                      'required' => true,
-                                     'format' => 'dd-MM-yyyy',
+                                     'format' => 'dd/MM/yyyy',
                                      'widget' => 'single_text'))
                 ->add('lastManteinance', 'date', array(
-                                     'format' => 'dd-MM-yyyy',
+                                     'format' => 'dd/MM/yyyy',
                                      'widget' => 'single_text'))
                 ->add('code',  'text', array('required' => true))
                 ->add('descr', 'text', array('required' => true));
@@ -38,6 +38,6 @@ class SystemForm extends AbstractType
 
     public function getName()
     {
-        return 'boilr_boilrbundle_systemform';
+        return 'systemForm';
     }
 }

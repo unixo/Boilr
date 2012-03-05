@@ -13,34 +13,46 @@ class LoadSystemTypeData extends AbstractFixture implements OrderedFixtureInterf
     public function load(ObjectManager $manager)
     {
         $s = new SystemType();
-        $s->setName('Impianto riscaldamento autonomo');
+        $s->setName('Impianti termici con combustibile liquido');
         $manager->persist($s);
         $manager->flush();
-        $this->addReference('systemtype-riscald-autonomo', $s);
+        $this->addReference('systemtype-termico-comb-liquido', $s);
 
         $s = new SystemType();
-        $s->setName('Centrale termina');
+        $s->setName('Impianti termici con combustibile solido');
         $manager->persist($s);
         $manager->flush();
-        $this->addReference('systemtype-centrale', $s);
+        $this->addReference('systemtype-termico-comb-solido', $s);
 
         $s = new SystemType();
-        $s->setName('Altro riscaldamento');
+        $s->setName('Impianti termici con combustibile liquido/solido > 116kw');
         $manager->persist($s);
         $manager->flush();
-        $this->addReference('systemtype-altro-riscald', $s);
+        $this->addReference('systemtype-termico-comb-gt-116', $s);
 
         $s = new SystemType();
-        $s->setName('Climatizzatore monoblocco');
+        $s->setName('Impianti a gas');
         $manager->persist($s);
         $manager->flush();
-        $this->addReference('systemtype-clima-mono', $s);
+        $this->addReference('systemtype-gas', $s);
 
         $s = new SystemType();
-        $s->setName('Impianto climatizzazione');
+        $s->setName('Impianti a gas > 350kw');
         $manager->persist($s);
         $manager->flush();
-        $this->addReference('systemtype-clima', $s);
+        $this->addReference('systemtype-gas-gt-350', $s);
+
+        $s = new SystemType();
+        $s->setName('Impianti a gas <= 35kw (tipo B)');
+        $manager->persist($s);
+        $manager->flush();
+        $this->addReference('systemtype-gas-lt-35-B', $s);
+
+        $s = new SystemType();
+        $s->setName('Impianti a gas <= 35kw');
+        $manager->persist($s);
+        $manager->flush();
+        $this->addReference('systemtype-gas-lt-35', $s);
     }
 
     public function getOrder()

@@ -25,7 +25,7 @@ class SystemType
     /**
      * @var string $name
      *
-     * @ORM\Column(type="string", length=50, nullable=false, unique=true)
+     * @ORM\Column(type="string", length=100, nullable=false, unique=true)
      * @Assert\NotBlank
      */
     protected $name;

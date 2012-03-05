@@ -3,9 +3,10 @@
 namespace Boilr\BoilrBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
-    Symfony\Component\Security\Core\SecurityContext;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+    Symfony\Component\Security\Core\SecurityContext,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
+    JMS\SecurityExtraBundle\Annotation\Secure;
 
 class DefaultController extends Controller
 {
@@ -17,7 +18,7 @@ class DefaultController extends Controller
     {
         return array();
     }
-    
+
     /**
      * @Route("/login", name="login")
      * @Template()
@@ -33,5 +34,15 @@ class DefaultController extends Controller
         return array(
             'last_username' => $this->get('request')->getSession()->get(SecurityContext::LAST_USERNAME),
             'error'         => $error);
+    }
+
+    /**
+     * @Route("/admin", name="admin_homepage")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
+     * @Template()
+     */
+    public function adminHomeAction()
+    {
+        return array();
     }
 }

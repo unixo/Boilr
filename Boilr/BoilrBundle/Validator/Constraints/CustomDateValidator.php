@@ -31,8 +31,6 @@ class CustomDateValidator extends ConstraintValidator
             return true;
         }
 
-        var_dump($value);
-
         if (!is_scalar($value) && !(is_object($value) && method_exists($value, '__toString'))) {
             throw new UnexpectedTypeException($value, 'string');
         }
@@ -45,6 +43,6 @@ class CustomDateValidator extends ConstraintValidator
             return false;
         }
 
-        return checkdate($matches[2], $matches[3], $matches[1]);
+        return checkdate($matches[2], $matches[1], $matches[3]);
     }
 }
