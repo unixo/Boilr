@@ -24,6 +24,7 @@
         '@BoilrBundle/Resources/private/js/jquery.tipsy.js'
         '@BoilrBundle/Resources/private/js/jquery.dataTables.js'
         '@BoilrBundle/Resources/private/js/jquery.dataTables.reloadAjax.js'
+        '@BoilrBundle/Resources/private/js/jquery.dynamicTable.js'
         '@BoilrBundle/Resources/private/js/Scroller.js'
         output="js/boilr.js" filter='yui_js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
@@ -98,6 +99,7 @@
         /* <![CDATA[ */
         $(function() {
             $.datepicker.setDefaults($.datepicker.regional['it']);
+            $(".jdate").datepicker();
 
             $('.wrong_input').tipsy( {
                 trigger: 'focus',
