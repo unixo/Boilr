@@ -25,12 +25,13 @@
 {% block field_widget %}
     {% set type = type|default('text') %}
 
+    {% if errors|length > 0 %}
+        {% set attr = attr|merge({'class':'wrong_input',
+      'data-tips':errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }) %}
+    {% endif %}
+
     {% spaceless %}
-        <input type="{{ type }}"
-            {% if errors|length > 0 %} class="wrong_input" data-tips="{{ errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }}" {% endif %}
-            {{ block('widget_attributes') }}
-            value="{{ value }}"
-        />
+        <input type="{{ type }}" {{ block('widget_attributes') }} value="{{ value }}"  />
         {% if suffix is defined %}{{ suffix|raw }} {% endif %}
     {% endspaceless %}
 {% endblock %}
@@ -63,3 +64,25 @@
     {% endif %}
 {% endspaceless %}
 {% endblock choice_widget %}
+
+
+{% block date_widget %}
+{% spaceless %}
+    {% if widget == 'single_text' %}
+        {% if errors|length > 0 %}
+            {% set attr = attr|merge({'class': 'jdate wrong_input', 'data-tips': errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }) %}
+        {% else %}
+            {% set attr = attr|merge({'class': 'jdate' }) %}
+        {% endif %}
+        <input type="text" {{ block('widget_attributes') }} value="{{ value }}" />
+    {% else %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ date_pattern|replace({
+                '{{ year }}':  form_widget(form.year),
+                '{{ month }}': form_widget(form.month),
+                '{{ day }}':   form_widget(form.day),
+            })|raw }}
+        </div>
+    {% endif %}
+{% endspaceless %}
+{% endblock date_widget %}
