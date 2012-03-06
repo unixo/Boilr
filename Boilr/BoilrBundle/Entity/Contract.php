@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Boilr\BoilrBundle\Entity\Contract
  *
  * @ORM\Table(name="contracts")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\ContractRepository")
  */
 class Contract
 {
@@ -44,15 +44,15 @@ class Contract
      * @var date $startDate
      *
      * @ORM\Column(name="start_date", type="date", nullable=false)
-     * @MyAssert\CustomDate(pattern="/^(\d{2})-(\d{2})-(\d{4})$/")
+     * @MyAssert\CustomDate()
      */
     protected $startDate;
 
     /**
-     * @var datetime $endDate
+     * @var date $endDate
      *
-     * @ORM\Column(name="end_date", type="datetime", nullable=false)
-     * @Assert\DateTime()
+     * @ORM\Column(name="end_date", type="date", nullable=false)
+     * @MyAssert\CustomDate()
      */
     protected $endDate;
 
@@ -109,7 +109,7 @@ class Contract
     /**
      * Set startDate
      *
-     * @param datetime $startDate
+     * @param date $startDate
      */
     public function setStartDate($startDate)
     {
@@ -119,7 +119,7 @@ class Contract
     /**
      * Get startDate
      *
-     * @return datetime
+     * @return date
      */
     public function getStartDate()
     {

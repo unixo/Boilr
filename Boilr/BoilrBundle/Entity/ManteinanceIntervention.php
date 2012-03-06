@@ -4,7 +4,7 @@ namespace Boilr\BoilrBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
+//use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Boilr\BoilrBundle\Entity\ManteinanceIntervention
@@ -46,12 +46,12 @@ class ManteinanceIntervention
     protected $status;
 
     /**
-     * @var datetime $createDate
+     * @var date $originalDate
      *
-     * @ORM\Column(name="create_date", type="datetime", nullable=false)
-     * @Assert\DateTime()
+     * @ORM\Column(name="original_date", type="date", nullable=false)
+     * @Assert\Date()
      */
-    protected $createDate;
+    protected $originalDate;
 
     /**
      * @var datetime $closeDate
@@ -78,12 +78,28 @@ class ManteinanceIntervention
     protected $customer;
 
     /**
+     * @var System
+     *
+     * @ORM\ManyToOne(targetEntity="System")
+     * @ORM\JoinColumn(name="system_id", referencedColumnName="id", nullable=false)
+     */
+    protected $system;
+
+    /**
      * @var Installer
      *
      * @ORM\ManyToOne(targetEntity="Person")
-     * @ORM\JoinColumn(name="installer_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="installer_id", referencedColumnName="id", nullable=true)
      */
     protected $installer;
+
+    /**
+     * @var OperationGroup
+     *
+     * @ORM\ManyToOne(targetEntity="OperationGroup")
+     * @ORM\JoinColumn(name="oper_group_id", referencedColumnName="id", nullable=false)
+     */
+    protected $defaultOperationGroup;
 
     /**
      * @var InterventionDetail
@@ -127,26 +143,6 @@ class ManteinanceIntervention
     public function getIsPlanned()
     {
         return $this->isPlanned;
-    }
-
-    /**
-     * Set createDate
-     *
-     * @param datetime $createDate
-     */
-    public function setCreateDate($createDate)
-    {
-        $this->createDate = $createDate;
-    }
-
-    /**
-     * Get createDate
-     *
-     * @return datetime
-     */
-    public function getCreateDate()
-    {
-        return $this->createDate;
     }
 
     /**
@@ -267,5 +263,65 @@ class ManteinanceIntervention
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set system
+     *
+     * @param Boilr\BoilrBundle\Entity\System $system
+     */
+    public function setSystem(\Boilr\BoilrBundle\Entity\System $system)
+    {
+        $this->system = $system;
+    }
+
+    /**
+     * Get system
+     *
+     * @return Boilr\BoilrBundle\Entity\System
+     */
+    public function getSystem()
+    {
+        return $this->system;
+    }
+
+    /**
+     * Set defaultOperationGroup
+     *
+     * @param Boilr\BoilrBundle\Entity\OperationGroup $defaultOperationGroup
+     */
+    public function setDefaultOperationGroup(\Boilr\BoilrBundle\Entity\OperationGroup $defaultOperationGroup)
+    {
+        $this->defaultOperationGroup = $defaultOperationGroup;
+    }
+
+    /**
+     * Get defaultOperationGroup
+     *
+     * @return Boilr\BoilrBundle\Entity\OperationGroup
+     */
+    public function getDefaultOperationGroup()
+    {
+        return $this->defaultOperationGroup;
+    }
+
+    /**
+     * Set originalDate
+     *
+     * @param date $originalDate
+     */
+    public function setOriginalDate($originalDate)
+    {
+        $this->originalDate = $originalDate;
+    }
+
+    /**
+     * Get originalDate
+     *
+     * @return date 
+     */
+    public function getOriginalDate()
+    {
+        return $this->originalDate;
     }
 }

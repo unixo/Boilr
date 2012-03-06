@@ -151,10 +151,19 @@ class PersonController extends BaseController
     /**
      * @Route("/show/{id}", name="show_person")
      * @ParamConverter("person", class="BoilrBundle:Person")
-     * @Template("BoilrBundle:Person:show.html.twig", vars={"person"})
+     * @Template
      */
     public function showAction(MyPerson $person)
     {
+        $interventions = $this->getEntityManager()->createQueryBuilder()
+                              ->select('mi')
+                              ->from('BoilrBundle:ManteinanceIntervention', 'mi')
+                              ->where('mi.customer = :owner')
+                              ->orderBy('mi.originalDate')
+                              ->setParameter('owner', $person)
+                              ->getQuery()->getResult();
+
+        return array('person' => $person, 'interventions' => $interventions);
     }
 
     /**
@@ -164,20 +173,20 @@ class PersonController extends BaseController
     public function jsonPersonDetailAction(MyPerson $person)
     {
         $data = array(
-                'type' => $person->getType(),
-                'name' => $person->getName(),
-                'surname' => $person->getSurname(),
-                'fiscalCode' => $person->getFiscalCode(),
-                'vatCode' => $person->getVatCode(),
-                'isInstaller' => $person->getIsInstaller(),
-                'isCustomer' => $person->getIsCustomer(),
+                'type'            => $person->getType(),
+                'name'            => $person->getName(),
+                'surname'         => $person->getSurname(),
+                'fiscalCode'      => $person->getFiscalCode(),
+                'vatCode'         => $person->getVatCode(),
+                'isInstaller'     => $person->getIsInstaller(),
+                'isCustomer'      => $person->getIsCustomer(),
                 'isAdministrator' => $person->getIsAdministrator(),
-                'homePhone' => $person->getHomePhone(),
-                'officePhone' => $person->getOfficePhone(),
-                'cellularPhone' => $person->getCellularPhone(),
-                'faxNumber' => $person->getFaxNumber(),
-                'email1' => $person->getPrimaryMail(),
-                'email2' => $person->getSecondaryMail()
+                'homePhone'       => $person->getHomePhone(),
+                'officePhone'     => $person->getOfficePhone(),
+                'cellularPhone'   => $person->getCellularPhone(),
+                'faxNumber'       => $person->getFaxNumber(),
+                'email1'          => $person->getPrimaryMail(),
+                'email2'          => $person->getSecondaryMail()
         );
 
         foreach ($person->getAddresses() as $address) {

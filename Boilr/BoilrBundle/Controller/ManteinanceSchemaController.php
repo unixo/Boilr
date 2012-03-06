@@ -8,6 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
     JMS\SecurityExtraBundle\Annotation\Secure;
 
+/**
+ * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
+ */
 class ManteinanceSchemaController extends BaseController
 {
     /**

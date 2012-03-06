@@ -16,7 +16,7 @@
     </thead>
     <tbody>
         {% set lastId = 0 %}
-        {% for schema in schemas %}
+        {% for key,schema in schemas %}
             <tr>
                 <td>{{ (lastId == schema.systemType.id) ? '' : schema.systemType.name }}</td>
                 <td>{{ schema.operationGroup.name }}</td>

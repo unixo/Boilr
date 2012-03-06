@@ -34,6 +34,32 @@
         </div>
         <div id="tabContracts">
             {% include 'BoilrBundle:Person:_contracts.html.twig' with { 'person': person } %}
+
+            {% if interventions | length > 0 %}
+                <fieldset>
+                    <legend>Calendario prossimi interventi</legend>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo impianto</th>
+                                <th>Impianto</th>
+                                <th>Tipo controllo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key,mi in interventions %}
+                                <tr class="{{ cycle(['odd', 'even'], key) }}">
+                                    <td>{{ mi.originalDate | date('d-m-Y') }}</td>
+                                    <td>{{ mi.system.systemType.name }}</td>
+                                    <td>{{ mi.system.descr }}</td>
+                                    <td>{{ mi.defaultOperationGroup.name }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            {% endif %}
         </div>
     </div>
     <br/>

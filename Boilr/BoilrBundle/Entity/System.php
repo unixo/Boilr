@@ -241,8 +241,17 @@ class System
      */
     public function isUnderAssistance()
     {
+        $success   = false;
         $contracts = $this->getOwner()->getContracts();
 
-        return $contracts->contains($this);
+        foreach ($contracts as $contract) {
+            /* @var $contract Boilr\BoilrBundle\Entity\Contract */
+            if ($contract->getSystem()->getId() == $this->getId()) {
+                $success = true;
+                break;
+            }
+        }
+
+        return $success;
     }
 }

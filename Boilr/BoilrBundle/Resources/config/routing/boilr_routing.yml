@@ -19,9 +19,9 @@ person:
     resource: "@BoilrBundle/Controller/PersonController.php"
     type:     annotation
 
-contract_type:
-    prefix:   /contract-type
-    resource: "@BoilrBundle/Controller/ContractTypeController.php"
+contract:
+    prefix:   /contract
+    resource: "@BoilrBundle/Controller/ContractController.php"
     type:     annotation
 
 system:
