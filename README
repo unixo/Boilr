@@ -1,0 +1,10 @@
+Degree thesis
+Applied Computer Science
+Urbino Universiy "Carlo Bo" - A.A. 2011-2012
+
+Requirements:
+- PHP 5.4.x
+- mySQL 5.x
+- Symfony2 2.0.11 or later
+- wkhtmltopdf
+- Java JRE (used by YUI compressor)
