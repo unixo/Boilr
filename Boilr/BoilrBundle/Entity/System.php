@@ -48,6 +48,7 @@ class System
      * @var date $installDate
      *
      * @ORM\Column(name="install_date", type="date", nullable=true)
+     * @Assert\NotBlank(groups={"system", "flow_newPerson_step3"})
      * @MyAssert\CustomDate(groups={"system", "flow_newPerson_step3"})
      */
     protected $installDate;
@@ -242,13 +243,17 @@ class System
     public function isUnderAssistance()
     {
         $success   = false;
-        $contracts = $this->getOwner()->getContracts();
+        $owner     = $this->getOwner();
 
-        foreach ($contracts as $contract) {
-            /* @var $contract Boilr\BoilrBundle\Entity\Contract */
-            if ($contract->getSystem()->getId() == $this->getId()) {
-                $success = true;
-                break;
+        if ($owner) {
+            $contracts = $owner->getContracts();
+
+            foreach ($contracts as $contract) {
+                /* @var $contract Boilr\BoilrBundle\Entity\Contract */
+                if ($contract->getSystem()->getId() == $this->getId()) {
+                    $success = true;
+                    break;
+                }
             }
         }
 
