@@ -1,0 +1,7 @@
+{% spaceless %}
+    <div class="vich_info_window">
+        <span class="addrType">{{ obj.typeAsString() }}</span><br/>
+        <span>{{ obj.street }}</span><br/>
+        <span>{{ obj.postalCode|default('-') }} - {{ obj.city }} ({{ obj.province }})</span>
+    </div>
+{% endspaceless %}
