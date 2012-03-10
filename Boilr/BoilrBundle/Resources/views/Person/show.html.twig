@@ -32,7 +32,7 @@
             {% if person.addresses | length > 0 %}
                 <div>{{ vichgeo_map_for('location', person.addresses) }}</div>
                 <div style="margin-top: 10px;">
-                    <button id="btnCenterMap" title="Centra" onClick="addressesMap.fitBounds(addressesMapBounds);">centra</button>
+                    <button id="btnCenterMap" title="Centra" onClick="console.log(addressesMap.getZoom());addressesMap.fitBounds(addressesMapBounds);">centra</button>
                 </div>
             {% endif %}
         </div>
@@ -86,6 +86,9 @@
                             $('#addressMapContainer').css('width', '100%');
                             google.maps.event.trigger(addressesMap, "resize");
                             addressesMap.fitBounds(addressesMapBounds);
+                            {% if person.addresses | length == 1 %}
+                            addressesMap.setZoom( addressesMap.getZoom()-6 );
+                            {% endif %}
                          }
                       }
          });
@@ -95,7 +98,6 @@
                                     window.location.href = '{{ url('person_registry_edit', {id: person.id}) }}';
                                 });
          $('#btnCenterMap').button({ icons: { primary: "ui-icon-arrow-4-diag" }, text: false });
-
     });
 
     /* ]]> */
