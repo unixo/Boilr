@@ -23,6 +23,8 @@
         <service id="boilr.map.location" class="Boilr\BoilrBundle\Map\LocationMap">
             <tag name="vichgeo.map" alias="location" />
         </service>
+
+        <service id="boilr.geographical.icon_generator" class="Boilr\BoilrBundle\Map\IconGenerator" public="false" />
         <!-- End of Geo-map -->
 
         <!-- Custom menu renderer -->
