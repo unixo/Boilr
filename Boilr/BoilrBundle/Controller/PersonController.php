@@ -3,7 +3,8 @@
 namespace Boilr\BoilrBundle\Controller;
 
 use Boilr\BoilrBundle\Entity\Person as MyPerson,
-    Boilr\BoilrBundle\Entity\Address as MyAddress;
+    Boilr\BoilrBundle\Entity\Address as MyAddress,
+    Boilr\BoilrBundle\Form\PersonRegistryForm;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
@@ -172,6 +173,7 @@ class PersonController extends BaseController
      */
     public function jsonPersonDetailAction(MyPerson $person)
     {
+        // @todo: al momento il metodo è inutile: valutare se possa servire in ottica RESTful
         $data = array(
                 'type'            => $person->getType(),
                 'name'            => $person->getName(),
@@ -202,5 +204,39 @@ class PersonController extends BaseController
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
+    }
+
+    /**
+     * @Route("/update-registry/{id}", name="person_registry_edit")
+     * @ParamConverter("person", class="BoilrBundle:Person")
+     * @Template()
+     */
+    public function updateRegistryAction(MyPerson $person)
+    {
+        if (! $person) {
+            throw new NotFoundHttpException("Invalid person");
+        }
+
+        // Create the form, fill with data and select proper validation group
+        $form = $this->createForm(new PersonRegistryForm(), $person,
+                             array( 'validation_groups' => array('registry') ));
+
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest( $this->getRequest() );
+
+            if ($form->isValid()) {
+                try {
+                    $em = $this->getEntityManager();
+                    $em->flush();
+                    $this->setFlashMessage(self::FLASH_NOTICE, 'Operazione completata con successo');
+
+                    return $this->redirect( $this->generateUrl('show_person', array('id' => $person->getId() )));
+                } catch (Exception $exc) {
+                    $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un errore durante il salvataggio");
+                }
+            }
+        }
+
+        return array('form' => $form->createView(), 'person' => $person);
     }
 }

@@ -1,0 +1,52 @@
+{% set secondaryMenu = 'Anagrafica' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+
+{% block central_block %}
+
+<form id="form_registry" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+
+    <fieldset>
+        <legend>Dati anagrafici</legend>
+
+        {{ form_row(form.type) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.surname) }}
+        {{ form_row(form.fiscalCode) }}
+        {{ form_row(form.vatCode) }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Recapiti</legend>
+
+        {{ form_row(form.homePhone) }}
+        {{ form_row(form.officePhone) }}
+        {{ form_row(form.cellularPhone) }}
+        {{ form_row(form.faxNumber) }}
+        {{ form_row(form.primaryMail) }}
+        {{ form_row(form.secondaryMail) }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Tipologia contatto</legend>
+
+        {{ form_row(form.isCustomer) }}
+        {{ form_row(form.isInstaller) }}
+        {{ form_row(form.isAdministrator) }}
+    </fieldset>
+
+    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
+        <a href="{{ url('show_person', {'id': person.id}) }}">Torna al dettaglio</a>
+        <input type="submit" value="Aggiorna" />
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+</form>
+{% endblock %}
+
+
+{% block javascripts %}
+
+{% endblock %}

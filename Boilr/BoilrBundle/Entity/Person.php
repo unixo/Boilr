@@ -13,7 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="people")
  * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\PersonRepository")
  * @Gedmo\Loggable
- * @Assert\Callback(methods={"isStep1Valid"}, groups={"flow_newPerson_step1"})
+ * @Assert\Callback(methods={"isStep1Valid"}, groups={"registry", "flow_newPerson_step1"})
  */
 class Person
 {
@@ -40,7 +40,7 @@ class Person
      * @var string $type
      *
      * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank(groups={"flow_newPerson_step1"})
+     * @Assert\NotBlank(groups={"registry", "flow_newPerson_step1"})
      */
     protected $type;
 
@@ -71,7 +71,7 @@ class Person
      * @var string $name
      *
      * @ORM\Column(type="string", length=100, nullable=false)
-     * @Assert\NotBlank(groups={"flow_newPerson_step1"})
+     * @Assert\NotBlank(groups={"registry", "flow_newPerson_step1"})
      */
     protected $name;
 
@@ -79,7 +79,7 @@ class Person
      * @var string $surname
      *
      * @ORM\Column(type="string", length=100, nullable=false)
-     * @Assert\NotBlank(groups={"flow_newPerson_step1"})
+     * @Assert\NotBlank(groups={"registry", "flow_newPerson_step1"})
      */
     protected $surname;
 
