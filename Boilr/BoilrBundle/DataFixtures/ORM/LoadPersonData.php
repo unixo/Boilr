@@ -61,23 +61,6 @@ class LoadPersonData extends AbstractFixture implements OrderedFixtureInterface
         }
         fclose($fhandle);
 
-
-        $p = new MyPerson();
-        $p->setType( MyPerson::TYPE_PHYSICAL );
-        $p->setName('Ferruccio');
-        $p->setSurname('Vitale');
-        $p->setCellularPhone('3351412199');
-
-        $a = new MyAddress();
-        $a->setType( MyAddress::TYPE_HOME );
-        $a->setCity('Palermo');
-        $a->setPostalCode('90146');
-        $a->setStreet('Piazza San Marino, 2');
-        $a->setProvince('PA');
-        $a->setPerson($p);
-
-        $p->addAddress($a);
-
         $manager->persist($p);
         $manager->flush();
     }
