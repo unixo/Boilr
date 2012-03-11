@@ -12,17 +12,17 @@ class SystemForm extends AbstractType
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->add('systemType', 'entity', array(
-                                    'class'       => 'BoilrBundle:SystemType',
-                                    'property'    => 'name',
-                                    'empty_value' => ''))
+                                     'class'       => 'BoilrBundle:SystemType',
+                                     'property'    => 'name',
+                                     'empty_value' => ''))
                 ->add('product', 'entity', array(
                                      'class'       => 'BoilrBundle:Product',
                                      'property'    => 'name',
                                      'empty_value' => ''))
                 ->add('installDate', 'date', array(
                                      'required' => true,
-                                     'format' => 'dd/MM/yyyy',
-                                     'widget' => 'single_text'))
+                                     'format'   => 'dd/MM/yyyy',
+                                     'widget'   => 'single_text'))
                 ->add('lastManteinance', 'date', array(
                                      'format' => 'dd/MM/yyyy',
                                      'widget' => 'single_text'))
