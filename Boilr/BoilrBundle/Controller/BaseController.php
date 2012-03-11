@@ -2,16 +2,15 @@
 
 namespace Boilr\BoilrBundle\Controller;
 
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class BaseController extends Controller
+abstract class BaseController extends Controller
 {
     const FLASH_ERROR  = 'error';
     const FLASH_NOTICE = 'notice';
 
     /**
-     * Returns Session storage
+     * Returns the current session
      *
      * @return Symfony\Component\HttpFoundation\Session
      */
@@ -49,5 +48,35 @@ class BaseController extends Controller
     public function setFlashMessage($messageType, $message)
     {
         $this->getSession()->setFlash($messageType, $message);
+    }
+
+    /**
+     * Display a flash notice message to the user
+     *
+     * @param string $message
+     * @param array $placeholders
+     */
+    public function setNoticeMessage($message, $placeholders = null)
+    {
+        if (is_array($placeholders)) {
+            $message = vsprintf($message, $placeholders);
+        }
+
+        $this->setFlashMessage(self::FLASH_NOTICE, $message);
+    }
+
+    /**
+     * Display a flash error message to the user
+     *
+     * @param string $message
+     * @param array $placeholders
+     */
+    public function setErrorMessage($message, $placeholders = null)
+    {
+        if (is_array($placeholders)) {
+            $message = vsprintf($message, $placeholders);
+        }
+
+        $this->setFlashMessage(self::FLASH_ERROR, $message);
     }
 }
