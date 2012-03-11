@@ -15,6 +15,38 @@ use Boilr\BoilrBundle\Entity\System as MySystem,
 class ContractRepository extends EntityRepository
 {
 
+    /**
+     *
+     * @param MyContract $contract
+     * @return boolean
+     */
+    public function isContractLegal(MyContract $contract)
+    {
+        $success = true;
+
+        $contracts = $this->getEntityManager()->createQueryBuilder()
+                          ->select('c')
+                          ->from('BoilrBundle:Contract', 'c')
+                          ->where('c.customer = :owner AND c.system = :sys')
+                          ->andWhere('( (:date1 >= c.startDate AND :date1 <= c.endDate) OR '.
+                                     '(:date2 >= c.startDate AND :date2 <= c.endDate) )')
+                          ->setParameters(array('date1' => $contract->getStartDate(),
+                                                'date2' => $contract->getEndDate(),
+                                                'owner' => $contract->getCustomer(),
+                                                'sys'   => $contract->getSystem()))
+                          ->getQuery()->getResult();
+
+        $success = (count($contracts) == 0);
+
+        return $success;
+    }
+
+    /**
+     * Persist contract to store and create all next manteinance interventions
+     *
+     * @param MyContract $contract
+     * @return boolean
+     */
     public function createNewContract(MyContract $contract)
     {
         $success = true;
@@ -54,7 +86,7 @@ class ContractRepository extends EntityRepository
                         $manInt->setCustomer($customer);
                         $manInt->setSystem($contract->getSystem());
                         $manInt->setIsPlanned(true);
-                        $manInt->setStatus(ManteinanceIntervention::STATUS_OPEN);
+                        $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
                         $manInt->setDefaultOperationGroup($schema->getOperationGroup());
 
                         $em->persist($manInt);
@@ -67,7 +99,7 @@ class ContractRepository extends EntityRepository
                     $manInt->setCustomer($customer);
                     $manInt->setIsPlanned(true);
                     $manInt->setSystem($contract->getSystem());
-                    $manInt->setStatus(ManteinanceIntervention::STATUS_OPEN);
+                    $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
                     $manInt->setDefaultOperationGroup($schema->getOperationGroup());
 
                     $em->persist($manInt);
@@ -85,6 +117,7 @@ class ContractRepository extends EntityRepository
     }
 
     /**
+     * Evaluate a future date based on given interval
      *
      * @param \DateTime $date
      * @param string $interval
