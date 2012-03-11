@@ -33,8 +33,8 @@
 <fieldset>
     <legend>Tipologia contatto</legend>
 
-    {{ mymacro.fieldset_row('Cliente', mymacro.imgcheck_if_true(person.isCustomer)) }}
-    {{ mymacro.fieldset_row('Installatore', mymacro.imgcheck_if_true(person.isInstaller)) }}
-    {{ mymacro.fieldset_row('Amministratore', mymacro.imgcheck_if_true(person.isAdministrator)) }}
+    <div><label>Cliente:</label>{{ mymacro.imgcheck_if_true(person.isCustomer) }}</div>
+    <div><label>Installatore:</label>{{ mymacro.imgcheck_if_true(person.isInstaller) }}</div>
+    <div><label>Amministratore:</label>{{ mymacro.imgcheck_if_true(person.isAdministrator) }}</div>
 </fieldset>
 {% endif %}
