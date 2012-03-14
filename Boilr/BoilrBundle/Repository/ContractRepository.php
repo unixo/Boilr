@@ -66,7 +66,7 @@ class ContractRepository extends EntityRepository
                             ->select('ms')
                             ->from('BoilrBundle:ManteinanceSchema', 'ms')
                             ->where('ms.systemType = :type')
-                            ->orderBy('ms.order')
+                            ->orderBy('ms.listOrder')
                             ->setParameter('type', $sysType)
                             ->getQuery()
                             ->getResult();
