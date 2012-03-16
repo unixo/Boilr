@@ -23,7 +23,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
         $ms->setFreq("12 month");
-        $ms->setOrder(0);
+        $ms->setListOrder(0);
         $manager->persist($ms);
 
         // Impianti termici con combustibile solido: ogni 12 mesi, OPS1
@@ -33,7 +33,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
         $ms->setFreq("12 month");
-        $ms->setOrder(0);
+        $ms->setListOrder(0);
         $manager->persist($ms);
 
         /**
@@ -47,7 +47,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(false);
         $ms->setFreq("3 month");
-        $ms->setOrder(0);
+        $ms->setListOrder(0);
         $manager->persist($ms);
 
         $ms = new ManteinanceSchema();
@@ -55,7 +55,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
         $ms->setFreq("12 month");
-        $ms->setOrder(1);
+        $ms->setListOrder(1);
         $manager->persist($ms);
 
         // Impianti a gas > 35kw: ogni 12 mesi, OPS1
@@ -65,7 +65,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
         $ms->setFreq("12 month");
-        $ms->setOrder(0);
+        $ms->setListOrder(0);
         $manager->persist($ms);
 
         /**
@@ -79,7 +79,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(false);
         $ms->setFreq("3 month");
-        $ms->setOrder(0);
+        $ms->setListOrder(0);
         $manager->persist($ms);
 
         $ms = new ManteinanceSchema();
@@ -87,7 +87,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
         $ms->setFreq("12 month");
-        $ms->setOrder(1);
+        $ms->setListOrder(1);
         $manager->persist($ms);
 
         // Impianti a gas <= 35kw, tipologia B: ogni 12 mesi, OPS1
@@ -97,7 +97,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
         $ms->setFreq("12 month");
-        $ms->setOrder(0);
+        $ms->setListOrder(0);
         $manager->persist($ms);
 
         // Impianti a gas <= 35kw: ogni 24 mesi, OPS1 + OPS2
@@ -107,7 +107,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setOperationGroup($ops1and2);
         $ms->setIsPeriodic(true);
         $ms->setFreq("24 month");
-        $ms->setOrder(0);
+        $ms->setListOrder(0);
         $manager->persist($ms);
 
         $manager->flush();
