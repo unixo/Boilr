@@ -17,8 +17,9 @@ class CalendarTwigExtension extends \Twig_Extension
 
     public function calendar($year, $month, array $events, $weekNum = false)
     {
-        if (! is_integer($year) || !is_integer($month))
+        if (! is_numeric($year) || ! is_numeric($month)) {
             return null;
+        }
 
         $monthName = date("F", strtotime("01-$month-1970"));
         $date1     = date('Y-m-d', strtotime("first day of $monthName $year"));
@@ -27,20 +28,14 @@ class CalendarTwigExtension extends \Twig_Extension
         $interval  = \DateInterval::createFromDateString('1 day');
         $endDate   = new \DateTime($date2);
 
-        $title      = strftime('%B %Y', strtotime("first day of $monthName $year"));
-        $tableId    = "calendar_".$year."_".$month;
-        $html       = '<div class="calendar_container">'.
-                      '<span class="calendar_header">'.$title.'</span>';
-        $html      .= '<table id="'.$tableId.'" class="calendar" border="1">'.
-                      '<thead><tr><th>Lun</th><th>Mar</th><th>Mer</th><th>Gio</th>'.
-                      '<th>Ven</th><th>Sab</th><th>Dom</th></tr></thead><tbody>';
-
-        //$dayOfWeek = date('w', $date1);
-/*
- * 1 febbraio = mercoledì
- * 1 marzo    = giovedì
- * 1 aprile   = domenica
- */
+        // Building table header and title
+        $title     = strftime('%B %Y', strtotime("first day of $monthName $year"));
+        $tableId   = "calendar_".$year."_".$month;
+        $html      = '<div class="calendar_container">'.
+                     '<span class="calendar_header">'.$title.'</span>';
+        $html     .= '<table id="'.$tableId.'" class="calendar">'.
+                     '<thead><tr><th>Lun</th><th>Mar</th><th>Mer</th><th>Gio</th>'.
+                     '<th>Ven</th><th>Sab</th><th>Dom</th></tr></thead><tbody>';
 
         while ($current <= $endDate) {
             $html .= '<tr>';
@@ -58,9 +53,10 @@ class CalendarTwigExtension extends \Twig_Extension
 
             for ($i=$dayOfWeek; $i<8; $i++) {
                 $dayOfWeek = $current->format('N');
-                $day     = $current->format('d');
-                $class   = ($dayOfWeek>5?'weekend':'working');
-                $html   .= '<td class="'.$class.'">';
+                $day       = $current->format('d');
+                $class     = ($dayOfWeek>5?'weekend':'working');
+                $html     .= '<td class="'.$class.'">';
+
                 if ($current > $endDate) {
                     $html .= '&nbsp;';
                 } else {
@@ -78,6 +74,7 @@ class CalendarTwigExtension extends \Twig_Extension
             $html .= '</tr>';
         }
 
+        // Close table tag
         $html .= '</tbody></table></div>';
 
         return $html;
