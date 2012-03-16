@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Boilr\BoilrBundle\Entity\ManteinanceSchema
  *
  * @ORM\Table(name="manteinance_schema")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\ManteinanceSchemaRepository")
  */
 class ManteinanceSchema
 {
@@ -31,12 +31,12 @@ class ManteinanceSchema
     protected $systemType;
 
     /**
-     * @var $order
+     * @var $listOrder
      *
-     * @ORM\Column(name="order_pos", type="integer", nullable=false)
+     * @ORM\Column(name="list_order", type="integer", nullable=false)
      * @Assert\Type(type="integer")
      */
-    protected $order;
+    protected $listOrder;
 
     /**
      * @var $isPeriodic
@@ -152,23 +152,23 @@ class ManteinanceSchema
     }
 
     /**
-     * Set order
+     * Set list order
      *
-     * @param integer $order
+     * @param integer $listOrder
      */
-    public function setOrder($order)
+    public function setListOrder($listOrder)
     {
-        $this->order = $order;
+        $this->listOrder = $listOrder;
     }
 
     /**
-     * Get order
+     * Get listOrder
      *
      * @return integer
      */
-    public function getOrder()
+    public function getListOrder()
     {
-        return $this->order;
+        return $this->listOrder;
     }
 
     /**

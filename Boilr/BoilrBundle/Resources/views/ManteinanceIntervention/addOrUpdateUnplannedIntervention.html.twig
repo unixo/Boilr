@@ -1,0 +1,33 @@
+{% set secondaryMenu = 'Anagrafica' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+
+{% block central_block %}
+<h2>Inserimento intervento di manutenzione non programmato</h2>
+
+<form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+
+    {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': customer, 'allFields': false} %}
+
+    <fieldset>
+        <legend>Dettagli intervento</legend>
+
+        <div><label>Data intervento:</label>{{ form_widget(form.originalDate) }}</div>
+        <div><label>Impianto:</label>{{ form_widget(form.system) }}</div>
+        <div><label>Classe di controlli:</label>{{ form_widget(form.defaultOperationGroup) }}</div>
+    </fieldset>
+
+    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
+        <a href="{{ url('show_person', {'id': customer.id}) }}">Torna al dettaglio</a>
+        <input type="submit" value="Salva" />
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+</form>
+{% endblock %}
+
+
+{% block javascripts %}
+
+{% endblock %}

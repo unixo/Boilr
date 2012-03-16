@@ -1,0 +1,10 @@
+{% set secondaryMenu = 'Interventi' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+
+{% block central_block %}
+<h2>Elenco interventi mensili</h2>
+
+<br/>
+{{ calendar(year, month, records) }}
+<br/>
+{% endblock %}

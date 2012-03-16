@@ -2,15 +2,18 @@
 
 namespace Boilr\BoilrBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-//use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert,
+    Symfony\Component\Validator\ExecutionContext,
+    Doctrine\ORM\Mapping as ORM,
+    Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Boilr\BoilrBundle\Entity\ManteinanceIntervention
  *
  * @ORM\Table(name="maintenance_intervention")
  * @ORM\Entity
+ * @Gedmo\Timestampable
+ * @Assert\Callback(methods={"isUnplannedValid"}, groups={"unplanned"})
  */
 class ManteinanceIntervention
 {
@@ -38,10 +41,18 @@ class ManteinanceIntervention
     protected $isPlanned;
 
     /**
+     * @var Contract
+     *
+     * @ORM\ManyToOne(targetEntity="Contract")
+     * @ORM\JoinColumn(name="contract_id", referencedColumnName="id", nullable=true)
+     */
+    protected $contract;
+
+    /**
      * @var integer $status
      *
      * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"unplanned"})
      */
     protected $status;
 
@@ -49,7 +60,8 @@ class ManteinanceIntervention
      * @var date $originalDate
      *
      * @ORM\Column(name="original_date", type="date", nullable=false)
-     * @Assert\Date()
+     * @Assert\NotBlank(groups={"unplanned"})
+     * @Assert\Date(groups={"unplanned"})
      */
     protected $originalDate;
 
@@ -74,6 +86,7 @@ class ManteinanceIntervention
      *
      * @ORM\ManyToOne(targetEntity="Person")
      * @ORM\JoinColumn(name="customer_id", referencedColumnName="id", nullable=false)
+     * @Assert\NotBlank(groups={"unplanned"})
      */
     protected $customer;
 
@@ -82,6 +95,7 @@ class ManteinanceIntervention
      *
      * @ORM\ManyToOne(targetEntity="System")
      * @ORM\JoinColumn(name="system_id", referencedColumnName="id", nullable=false)
+     * @Assert\NotBlank(groups={"unplanned"})
      */
     protected $system;
 
@@ -98,6 +112,7 @@ class ManteinanceIntervention
      *
      * @ORM\ManyToOne(targetEntity="OperationGroup")
      * @ORM\JoinColumn(name="oper_group_id", referencedColumnName="id", nullable=false)
+     * * @Assert\NotBlank(groups={"unplanned"})
      */
     protected $defaultOperationGroup;
 
@@ -109,6 +124,24 @@ class ManteinanceIntervention
      */
     protected $details;
 
+    public static function UnplannedInterventionFactory()
+    {
+        $int = new ManteinanceIntervention();
+        $int->setIsPlanned(false);
+        $int->setStatus(self::STATUS_TENTATIVE);
+
+        return $int;
+    }
+
+    public function isUnplannedValid(ExecutionContext $context)
+    {
+        $now = new \DateTime();
+        if ($this->getOriginalDate() <= $now) {
+            $property_path = $context->getPropertyPath() . ".originalDate";
+            $context->setPropertyPath($property_path);
+            $context->addViolation('Non è possibile creare un evento nel passato', array(), null);
+        }
+    }
 
     public function __construct()
     {
@@ -318,10 +351,30 @@ class ManteinanceIntervention
     /**
      * Get originalDate
      *
-     * @return date 
+     * @return date
      */
     public function getOriginalDate()
     {
         return $this->originalDate;
+    }
+
+    /**
+     * Set contract
+     *
+     * @param Boilr\BoilrBundle\Entity\Contract $contract
+     */
+    public function setContract(\Boilr\BoilrBundle\Entity\Contract $contract)
+    {
+        $this->contract = $contract;
+    }
+
+    /**
+     * Get contract
+     *
+     * @return Boilr\BoilrBundle\Entity\Contract
+     */
+    public function getContract()
+    {
+        return $this->contract;
     }
 }

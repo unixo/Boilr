@@ -1,0 +1,8 @@
+{% set secondaryMenu = 'Interventi' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+
+{% block central_block %}
+<ul>
+    <li><a href="{{ url('list_all_interventions', {year: 2012, month:6}) }}">Interventi giugno 2012</a></li>
+</ul>
+{% endblock %}
