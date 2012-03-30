@@ -14,7 +14,6 @@ use Boilr\BoilrBundle\Entity\System as MySystem,
  */
 class ContractRepository extends EntityRepository
 {
-
     /**
      *
      * @param MyContract $contract
@@ -86,6 +85,7 @@ class ContractRepository extends EntityRepository
                         $manInt->setCustomer($customer);
                         $manInt->setSystem($contract->getSystem());
                         $manInt->setIsPlanned(true);
+                        $manInt->setContract($contract);
                         $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
                         $manInt->setDefaultOperationGroup($schema->getOperationGroup());
 
@@ -98,6 +98,7 @@ class ContractRepository extends EntityRepository
                     $manInt->setOriginalDate($lastDate);
                     $manInt->setCustomer($customer);
                     $manInt->setIsPlanned(true);
+                    $manInt->setContract($contract);
                     $manInt->setSystem($contract->getSystem());
                     $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
                     $manInt->setDefaultOperationGroup($schema->getOperationGroup());

@@ -23,6 +23,7 @@
 
 
 {% block field_widget %}
+{% spaceless %}
     {% set type = type|default('text') %}
 
     {% if errors|length > 0 %}
@@ -30,10 +31,9 @@
       'data-tips':errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }) %}
     {% endif %}
 
-    {% spaceless %}
-        <input type="{{ type }}" {{ block('widget_attributes') }} value="{{ value }}"  />
-        {% if suffix is defined %}{{ suffix|raw }} {% endif %}
-    {% endspaceless %}
+    <input type="{{ type }}" {{ block('widget_attributes') }} value="{{ value }}"  />
+    {% if suffix is defined %}{{ suffix|raw }} {% endif %}
+{% endspaceless %}
 {% endblock %}
 
 

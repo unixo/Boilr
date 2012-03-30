@@ -1,0 +1,32 @@
+{% set secondaryMenu = 'Amministrazione' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+
+{% block central_block %}
+<h2>Creazione nuovo schema di manutenzione</h2>
+
+<form id="form_schema" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+
+    <fieldset>
+        <legend>Dettagli schema di manutenzione</legend>
+
+        <div><label>Tipo impianto:</label>{{ form_widget(form.systemType) }}</div>
+        <div><label>Periodico:</label>{{ form_widget(form.isPeriodic) }}</div>
+        <div><label>Frequenza:</label>{{ form_widget(form.freq) }}</div>
+        <div><label>Operazioni:</label>{{ form_widget(form.operationGroup) }}</div>
+    </fieldset>
+
+    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
+        <a href="{{ url('manteinance_schema_list') }}">Torna al dettaglio</a>
+        <input type="submit" value="Salva" />
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+</form>
+{% endblock %}
+
+
+{% block javascripts %}
+
+{% endblock %}

@@ -4,16 +4,16 @@ namespace Boilr\BoilrBundle\Entity;
 
 use Boilr\BoilrBundle\Validator\Constraints as MyAssert;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM,
+    Symfony\Component\Validator\Constraints as Assert,
+    Symfony\Component\Validator\ExecutionContext;
 
 /**
  * Boilr\BoilrBundle\Entity\System
  *
  * @ORM\Table(name="systems")
  * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\SystemRepository")
- * @Gedmo\Timestampable
+ * @Assert\Callback(methods={"isSystemValid"}, groups={"system"})
  */
 class System
 {
@@ -43,6 +43,14 @@ class System
      * @Assert\NotBlank(groups={"system", "flow_newPerson_step3"})
      */
     protected $product;
+
+    /**
+     * @var Address
+     *
+     * @ORM\ManyToOne(targetEntity="Address", cascade={"persist"})
+     * @ORM\JoinColumn(name="address_id", referencedColumnName="id", nullable=true)
+     */
+    protected $address;
 
     /**
      * @var date $installDate
@@ -258,5 +266,52 @@ class System
         }
 
         return $success;
+    }
+
+    /**
+     * Set address
+     *
+     * @param Boilr\BoilrBundle\Entity\Address $address
+     */
+    public function setAddress(\Boilr\BoilrBundle\Entity\Address $address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * Get address
+     *
+     * @return Boilr\BoilrBundle\Entity\Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    public function isSystemValid(ExecutionContext $context)
+    {
+        $now = new \DateTime();
+
+        if ($this->getInstallDate() > $now) {
+            $property_path = $context->getPropertyPath() . ".installDate";
+            $context->setPropertyPath($property_path);
+            $context->addViolation("La data d'installazione è successiva a quella odierna", array(), null);
+
+            return;
+        }
+
+        if ($this->getLastManteinance() > $now) {
+            $property_path = $context->getPropertyPath() . ".lastManteinance";
+            $context->setPropertyPath($property_path);
+            $context->addViolation("La data d'ultima manutenzione è successiva a quella odierna", array(), null);
+
+            return;
+        }
+
+        if ($this->getInstallDate() > $this->getLastManteinance()) {
+            $property_path = $context->getPropertyPath() . ".lastManteinance";
+            $context->setPropertyPath($property_path);
+            $context->addViolation("La data d'installazione è successiva all'ultima manutenzione", array(), null);
+        }
     }
 }

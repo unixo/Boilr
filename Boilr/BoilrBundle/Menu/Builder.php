@@ -18,13 +18,16 @@ class Builder extends ContainerAware
         $item->addChild('Nuovo',   array('route' => 'new_person'));
         $item->addChild('Ricerca', array('route' => 'search_person'));
 
+        $item = $menu->addChild('Interventi', array('route' => 'main_intervention'));
+
+
         // Add link to administration if current user has admin role
         $securityContext = $this->container->get('security.context');
         $token = $securityContext->getToken();
         $roles = array('ROLE_ADMIN', 'ROLE_SUPERUSER');
         if ($token && $securityContext->isGranted($roles)) {
             $item = $menu->addChild('Amministrazione', array('route' => 'admin_homepage'));
-            $item->addChild('Schemi Manutenz.', array('route' => 'ms_list'));
+            $item->addChild('Schemi Manutenz.', array('route' => 'manteinance_schema_list'));
         }
 
         $menu->addChild('logout', array('route' => '_security_logout'))->setLabel('Logout');

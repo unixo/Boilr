@@ -71,7 +71,7 @@ class PersonController extends BaseController
 
     /**
      * @Route("/search", name="search_person")
-     * @Template("BoilrBundle:Person:search.html.twig")
+     * @Template()
      */
     public function searchAction()
     {
@@ -90,8 +90,9 @@ class PersonController extends BaseController
         $sSearch        = $request->get('sSearch');
 
         $sWhere = '';
-        if ($sSearch)
+        if ($sSearch) {
             $sWhere = "WHERE surname LIKE '%$sSearch%'";
+        }
 
         $iTotalRecords  = $this->getDoctrine()->getEntityManager()
                                ->createQuery('SELECT COUNT(p.id) FROM BoilrBundle:Person p')
@@ -150,60 +151,44 @@ class PersonController extends BaseController
     }
 
     /**
+     * @Route("/ajax-search-installer", name="ajax_pick_installer")
+     */
+    public function ajaxInstallerSearchAction()
+    {
+        $value  = $this->getRequest()->get('term');
+        $people = $this->getEntityManager()->createQuery(
+                                "SELECT p FROM BoilrBundle:Person p ".
+                                "WHERE p.name LIKE :value OR p.surname LIKE :value AND ".
+                                "      p.isInstaller = 1 ".
+                                "ORDER BY p.surname, p.name")
+                       ->setParameter('value', "%$value%")
+                       ->getResult();
+
+        $json = array();
+        foreach ($people as $person) {
+            $json[] = array(
+                'label' => $person->getFullName(),
+                'value' => $person->getId()
+            );
+        }
+
+        $response = new Response();
+        $response->setContent(json_encode($json));
+
+        return $response;
+    }
+
+    /**
      * @Route("/show/{id}", name="show_person")
      * @ParamConverter("person", class="BoilrBundle:Person")
      * @Template
      */
     public function showAction(MyPerson $person)
     {
-        $interventions = $this->getEntityManager()->createQueryBuilder()
-                              ->select('mi')
-                              ->from('BoilrBundle:ManteinanceIntervention', 'mi')
-                              ->where('mi.customer = :owner')
-                              ->orderBy('mi.originalDate')
-                              ->setParameter('owner', $person)
-                              ->getQuery()->getResult();
+        $interventions = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceIntervention')
+                              ->interventionsForCustomer($person);
 
         return array('person' => $person, 'interventions' => $interventions);
-    }
-
-    /**
-     * @Route("/json-details/{id}", name="json_person_details")
-     * @ParamConverter("person", class="BoilrBundle:Person")
-     */
-    public function jsonPersonDetailAction(MyPerson $person)
-    {
-        // @todo: al momento il metodo è inutile: valutare se possa servire in ottica RESTful
-        $data = array(
-                'type'            => $person->getType(),
-                'name'            => $person->getName(),
-                'surname'         => $person->getSurname(),
-                'fiscalCode'      => $person->getFiscalCode(),
-                'vatCode'         => $person->getVatCode(),
-                'isInstaller'     => $person->getIsInstaller(),
-                'isCustomer'      => $person->getIsCustomer(),
-                'isAdministrator' => $person->getIsAdministrator(),
-                'homePhone'       => $person->getHomePhone(),
-                'officePhone'     => $person->getOfficePhone(),
-                'cellularPhone'   => $person->getCellularPhone(),
-                'faxNumber'       => $person->getFaxNumber(),
-                'email1'          => $person->getPrimaryMail(),
-                'email2'          => $person->getSecondaryMail()
-        );
-
-        foreach ($person->getAddresses() as $address) {
-            /* @var $address \Boilr\BoilrBundle\Entity\Address */
-            $data['addresses'][] = array(
-              'street' => $address->getStreet(),
-              'city' => $address->getCity(),
-              'postalCode' => $address->getPostalCode()
-            );
-        }
-
-        $response = new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
     }
 
     /**

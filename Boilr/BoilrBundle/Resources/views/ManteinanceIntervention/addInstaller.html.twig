@@ -1,0 +1,30 @@
+{% set secondaryMenu = 'Anagrafica' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+{% block central_block %}
+<form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+    <fieldset>
+        <legend>Dettagli intervento</legend>
+
+        {{ mymacro.fieldset_row('Cliente', interv.customer.fullName) }}
+        {{ mymacro.fieldset_row('Data', interv.originalDate|date('d-m-Y')) }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Selezione installatore</legend>
+
+        <div><label>Nominativo:</label>{{ form_widget(form.id) }}</div>
+    </fieldset>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+</form>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ form_javascript(form) }}
+{% endblock %}
+

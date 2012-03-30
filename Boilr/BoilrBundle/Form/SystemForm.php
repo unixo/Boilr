@@ -5,12 +5,14 @@ namespace Boilr\BoilrBundle\Form;
 use Symfony\Component\Form\AbstractType,
     Symfony\Component\Form\FormBuilder;
 
-use Boilr\BoilrBundle\Entity\Address as MyAddress;
-
 class SystemForm extends AbstractType
 {
     public function buildForm(FormBuilder $builder, array $options)
     {
+        $system = $options['data'];
+        /* @var $system \Boilr\BoilrBundle\Entity\System */
+        $owner  = $system->getOwner();
+
         $builder->add('systemType', 'entity', array(
                                      'class'       => 'BoilrBundle:SystemType',
                                      'property'    => 'name',
@@ -19,6 +21,12 @@ class SystemForm extends AbstractType
                                      'class'       => 'BoilrBundle:Product',
                                      'property'    => 'name',
                                      'empty_value' => ''))
+                ->add('address', 'entity', array(
+                                     'class'       => 'BoilrBundle:Address',
+                                     'property'    => 'address',
+                                     'choices'     => $system->getOwner()->getAddresses()->getValues(),
+                                     'empty_value' => ''
+                     ))
                 ->add('installDate', 'date', array(
                                      'required' => true,
                                      'format'   => 'dd/MM/yyyy',

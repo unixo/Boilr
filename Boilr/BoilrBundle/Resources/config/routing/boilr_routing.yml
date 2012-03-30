@@ -29,7 +29,12 @@ system:
     resource: "@BoilrBundle/Controller/SystemController.php"
     type:     annotation
 
-manteinance:
-    prefix:   /manteinance
+manteinance_schema:
+    prefix:   /manteinance-schema
     resource: "@BoilrBundle/Controller/ManteinanceSchemaController.php"
+    type:     annotation
+
+manteinance_intervention:
+    prefix:   /manteinance-intervention
+    resource: "@BoilrBundle/Controller/ManteinanceInterventionController.php"
     type:     annotation

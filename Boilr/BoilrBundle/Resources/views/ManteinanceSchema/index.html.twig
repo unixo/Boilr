@@ -3,29 +3,47 @@
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 {% block central_block %}
+<h2>Elenco schemi di manutenzione</h2>
+
 <fieldset>
-    <legend>Elenco schemi di manutenzione</legend>
-<table>
-    <thead>
-        <tr>
-            <th>Tipologia impianto</th>
-            <th>Gruppo Operaz.</th>
-            <th>Periodico?</th>
-            <th>Frequenza</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% set lastId = 0 %}
-        {% for key,schema in schemas %}
+    <table>
+        <thead>
             <tr>
-                <td>{{ (lastId == schema.systemType.id) ? '' : schema.systemType.name }}</td>
-                <td>{{ schema.operationGroup.name }}</td>
-                <td>{{ mymacro.imgcheck_if_true(schema.isPeriodic) }}</td>
-                <td>{{ schema.freq }}</td>
+                <th>Tipologia impianto</th>
+                <th>Gruppo Operaz.</th>
+                <th>Periodico?</th>
+                <th>Frequenza</th>
+                <th>Ordine</th>
             </tr>
-            {% set lastId = schema.systemType.id %}
-        {% endfor %}
-    </tbody>
-</table>
-        </fieldset>
+        </thead>
+        <tbody>
+            {% set lastId = 0 %}
+            {% for key,schema in schemas %}
+                <tr>
+                    <td>{{ (lastId == schema.systemType.id) ? '' : schema.systemType.name }}</td>
+                    <td>{{ schema.operationGroup.name }}</td>
+                    <td>{{ mymacro.imgcheck_if_true(schema.isPeriodic) }}</td>
+                    <td>{{ schema.freq }}</td>
+                    <td>
+                    {% if schema.listOrder > 0 %}
+                        <a href="{{ url('manteinance_schema_move', {'id': schema.id, 'dir':'up'}) }}"><img src="/img/arrow_up.gif" /></a>
+                    {% endif %}
+                        <a href="{{ url('manteinance_schema_move', {'id': schema.id, 'dir':'down'}) }}"><img src="/img/arrow_down.gif" /></a>
+                    </td>
+                </tr>
+                {% set lastId = schema.systemType.id %}
+            {% endfor %}
+        </tbody>
+    </table>
+</fieldset>
+
+<div style="margin-top: 10px;">
+    <ul id="icons" class="ui-widget ui-helper-clearfix">
+        <li class="ui-state-default ui-corner-all">
+            <a href="{{ url('manteinance_schema_add') }}">
+                <span class="ui-icon ui-icon-plusthick" title="Aggiungi schema..."></span>
+            </a>
+        </li>
+    </ul>
+</div>
 {% endblock %}

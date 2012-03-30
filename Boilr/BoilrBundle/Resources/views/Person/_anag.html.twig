@@ -1,4 +1,5 @@
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
 {% if allFields == true %}
     {% set firstClass  = "half_left" %}
     {% set secondClass = "half_right" %}
@@ -7,8 +8,12 @@
     {% set secondClass = "wide" %}
 {% endif %}
 
+{% if title is not defined %}
+    {% set title = "Dati anagrafici" %}
+{% endif %}
+
 <fieldset class="{{ firstClass }}">
-    <legend>Dati anagrafici</legend>
+    <legend>{{ title }}</legend>
 
     {{ mymacro.fieldset_row('Tipo', person.getTypeAsString()) }}
     {{ mymacro.fieldset_row('Titolo', person.title|default('-')) }}

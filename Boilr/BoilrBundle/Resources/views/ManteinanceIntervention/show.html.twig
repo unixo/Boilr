@@ -1,0 +1,41 @@
+{% set secondaryMenu = 'Interventi' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+{% block central_block %}
+<h2>Dettaglio intervento {{ interv.isPlanned?"programmato":"non programmato" }}</h2>
+
+<fieldset>
+    <legend>Dettaglio</legend>
+
+    {{ mymacro.fieldset_row('Data intervento', interv.originalDate|date('d-m-Y H:m')) }}
+    {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
+
+    {% set closeDate = interv.closeDate?interv.closeDate|date('d-m-Y H:m'):'-' %}
+    {{ mymacro.fieldset_row('Data chiusura', closeDate ) }}
+    {% if interv.isPlanned %}
+        {{ mymacro.fieldset_row('Scadenza contratto', interv.contract.endDate|date('d-m-Y')) }}
+    {% endif %}
+</fieldset>
+
+{% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': interv.customer, 'allFields': false, 'title': 'Dati cliente' } %}
+
+{% if interv.installer is not null %}
+    {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': interv.installer, 'allFields': false, 'title': 'Dati installatore' } %}
+{% else %}
+    <fieldset>
+        <legend>Dati installatore</legend>
+        <div>Non è stato assegnato alcun installatore all'intervento</div>
+        <div style="margin-top: 10px;">
+            <ul id="icons" class="ui-widget ui-helper-clearfix">
+                <li class="ui-state-default ui-corner-all">
+                    <a href="{{ url('add_installer_to_interv', {'id': interv.id}) }}">
+                        <span class="ui-icon ui-icon-plusthick" title="Associa installatore"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </fieldset>
+{% endif %}
+
+{% endblock %}

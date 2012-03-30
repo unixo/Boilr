@@ -37,15 +37,23 @@ class ContractController extends BaseController
             $form->bindRequest( $this->getRequest() );
 
             if ($form->isValid()) {
-                $success = $this->getDoctrine()->getRepository('BoilrBundle:Contract')
-                                ->createNewContract($contract);
-                
-                if ($success) {
-                    $this->setFlashMessage(self::FLASH_NOTICE, 'Operazione completata con successo');
+                $repo = $this->getDoctrine()->getRepository('BoilrBundle:Contract');
 
-                    return $this->redirect( $this->generateUrl('show_person', array('id' => $customer->getId() )));
+                // Check if this contract overlaps other active contracts
+                if ($repo->isContractLegal($contract)) {
+                    // Persist contract to store
+                    $success = $repo->createNewContract($contract);
+
+                    // Display flash message to the user
+                    if ($success) {
+                        $this->setFlashMessage(self::FLASH_NOTICE, 'Operazione completata con successo');
+
+                        return $this->redirect( $this->generateUrl('show_person', array('id' => $customer->getId() )));
+                    } else {
+                        $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un'errore durante il salvataggio");
+                    }
                 } else {
-                    $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un'errore durante il salvataggio");
+                    $this->setFlashMessage(self::FLASH_ERROR, "I dati inseriti contrastano con altri contratti");
                 }
             }
         }

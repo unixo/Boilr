@@ -28,7 +28,7 @@ class SystemRepository extends EntityRepository
             $em->remove($system);
             $em->flush();
             $em->commit();
-        } catch (Exception $exc) {
+        } catch (\PDOException $exc) {
             $em->rollback();
             $success = false;
         }

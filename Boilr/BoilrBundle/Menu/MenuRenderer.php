@@ -6,8 +6,8 @@ use Knp\Menu\ItemInterface,
     Knp\Menu\Renderer\Renderer,
     Knp\Menu\Renderer\RendererInterface;
 
-class MenuRenderer extends Renderer implements RendererInterface {
-
+class MenuRenderer extends Renderer implements RendererInterface
+{
     /**
      * @see RendererInterface::render
      */
@@ -161,10 +161,6 @@ class MenuRenderer extends Renderer implements RendererInterface {
      */
     protected function format($html, $type, $level)
     {
-        if ($this->renderCompressed) {
-            return $html;
-        }
-
         switch ($type) {
         case 'ul':
         case 'link':

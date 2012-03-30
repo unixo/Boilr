@@ -86,14 +86,14 @@ class CalendarTwigExtension extends \Twig_Extension
 
         if (array_key_exists($day, $records)) {
             $titles = $records[$day];
+
             for ($i=0; $i<count($titles); $i++) {
-                $value .= '<span class="event">'.$titles[$i].'</span>';
+                $value .= $titles[$i];
             }
         }
 
         return $value;
     }
-
 
     public function getName()
     {

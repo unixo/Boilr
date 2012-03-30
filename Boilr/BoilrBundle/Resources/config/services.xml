@@ -47,7 +47,7 @@
         <!-- Form flows -->
             <!-- New person flow -->
             <service id="boilr.form.newPerson" class="Boilr\BoilrBundle\Form\NewPersonForm">
-                <tag name="form.type" alias="realChngDnsDeleg" />
+                <tag name="form.type" alias="boilr_newperson" />
             </service>
 
             <service id="boilr.form.flow.newPerson" class="Boilr\BoilrBundle\Form\Flow\NewPersonFlow"
@@ -56,6 +56,7 @@
                     <argument type="service" id="boilr.form.newPerson" />
                 </call>
             </service>
+            <!-- End of New person flow -->
         <!-- End of Form flows -->
     </services>
 </container>

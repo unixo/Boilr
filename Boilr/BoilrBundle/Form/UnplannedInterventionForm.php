@@ -10,49 +10,38 @@ use Boilr\BoilrBundle\Entity\Address as MyAddress;
 
 class UnplannedInterventionForm extends AbstractType
 {
-    /**
-     * @var EntityRepository
-     */
-    protected $systemRepository;
-
-    function __construct(EntityRepository $systemRep)
-    {
-       $this->systemRepository = $systemRep;
-    }
-
     public function buildForm(FormBuilder $builder, array $options)
     {
         $intervention = $options['data'];
         /* @var $intervention \Boilr\BoilrBundle\Entity\ManteinanceIntervention */
-        $owner = $intervention->getCustomer();
-
-        $qb = $this->systemRepository->createQueryBuilder('s')
-                                     ->where('s.owner = :owner')
-
-                                     ->setParameter('owner', $owner);
-
 
         $builder->add('system',       'entity', array(
-                                                'class'         => 'BoilrBundle:System',
-                                                'property'      => 'descr',
-                                                'query_builder' => $qb,
-                                                'empty_value'   => '')
+                                        'class'       => 'BoilrBundle:System',
+                                        'property'    => 'descr',
+                                        'choices'     => $intervention->getCustomer()->getSystems()->getValues(),
+                                        'empty_value' => '')
                      )
-                ->add('originalDate', 'date', array(
+                ->add('address', 'entity', array(
+                                        'class'       => 'BoilrBundle:Address',
+                                        'property'    => 'address',
+                                        'choices'     => $intervention->getCustomer()->getAddresses()->getValues(),
+                                        'empty_value' => '')
+                     )
+                ->add('originalDate', 'datetime', array(
                                                 'required' => true,
-                                                'format'   => 'dd/MM/yyyy',
-                                                'widget'   => 'single_text')
+                                                //'format'   => 'dd/MM/yyyy',
+                                                'date_widget'   => 'single_text')
                      )
                 ->add('defaultOperationGroup', 'entity', array(
                                     'class' => 'BoilrBundle:OperationGroup',
                                     'property' => 'name'
-                    ));
+                     ));
 
     }
 
     public function getDefaultOptions(array $options) {
         return array(
-            'data_class' => 'Boilr\BoilrBundle\Entity\ManteinanceIntervention'
+            'data_class'  => 'Boilr\BoilrBundle\Entity\ManteinanceIntervention',
         );
     }
 

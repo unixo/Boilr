@@ -2,17 +2,15 @@
 
 namespace Boilr\BoilrBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert,
+use Doctrine\ORM\Mapping as ORM,
+    Symfony\Component\Validator\Constraints as Assert,
     Symfony\Component\Validator\ExecutionContext;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Boilr\BoilrBundle\Entity\Person
  *
  * @ORM\Table(name="people")
  * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\PersonRepository")
- * @Gedmo\Loggable
  * @Assert\Callback(methods={"isStep1Valid"}, groups={"registry", "flow_newPerson_step1"})
  */
 class Person
@@ -43,22 +41,6 @@ class Person
      * @Assert\NotBlank(groups={"registry", "flow_newPerson_step1"})
      */
     protected $type;
-
-    /**
-     * @var datetime $created
-     *
-     * @ORM\Column(type="datetime")
-     * @Gedmo\Timestampable(on="create")
-     */
-    private $created;
-
-    /**
-     * @var datetime $updated
-     *
-     * @ORM\Column(type="datetime")
-     * @Gedmo\Timestampable(on="update")
-     */
-    private $updated;
 
     /**
      * @var string $title
@@ -203,9 +185,29 @@ class Person
      */
     protected $contracts;
 
+    /**
+     * Magic method
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getFullName();
+    }
+
+    /**
+     * Returns contact type description as string
+     *
+     * @return string
+     */
     public function getTypeDescr()
     {
         return self::$typeDescr[ $this->getType() ];
+    }
+
+    public function getFullName()
+    {
+        return sprintf("%s %s", $this->getSurname(), $this->getName());
     }
 
     public function __construct()
@@ -242,46 +244,6 @@ class Person
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * Set created
-     *
-     * @param datetime $created
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-    }
-
-    /**
-     * Get created
-     *
-     * @return datetime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set updated
-     *
-     * @param datetime $updated
-     */
-    public function setUpdated($updated)
-    {
-        $this->updated = $updated;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return datetime
-     */
-    public function getUpdated()
-    {
-        return $this->updated;
     }
 
     /**
@@ -659,7 +621,8 @@ class Person
         return self::$typeDescr[ $this->type ];
     }
 
-    public function isStep1Valid(ExecutionContext $context) {
+    public function isStep1Valid(ExecutionContext $context)
+    {
         if (empty($this->homePhone) && empty($this->cellularPhone) && empty($this->officePhone)) {
             $property_path = $context->getPropertyPath() . ".homePhone";
             $context->setPropertyPath($property_path);

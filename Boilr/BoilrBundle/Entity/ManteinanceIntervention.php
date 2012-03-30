@@ -11,17 +11,25 @@ use Symfony\Component\Validator\Constraints as Assert,
  * Boilr\BoilrBundle\Entity\ManteinanceIntervention
  *
  * @ORM\Table(name="maintenance_intervention")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\ManteinanceInterventionRepository")
  * @Gedmo\Timestampable
  * @Assert\Callback(methods={"isUnplannedValid"}, groups={"unplanned"})
  */
 class ManteinanceIntervention
 {
     const STATUS_TENTATIVE = 0;
-    const STATUS_OPEN      = 1;
+    const STATUS_CONFIRMED = 1;
     const STATUS_CLOSED    = 2;
     const STATUS_ABORTED   = 3;
     const STATUS_SUSPENDED = 4;
+
+    public static $statusDescr = array(
+        self::STATUS_TENTATIVE => "Da confermare",
+        self::STATUS_CONFIRMED => "Confermato",
+        self::STATUS_CLOSED    => 'Concluso',
+        self::STATUS_ABORTED   => 'Annullato',
+        self::STATUS_SUSPENDED => 'Sospeso'
+    );
 
     /**
      * @var integer $id
@@ -57,9 +65,9 @@ class ManteinanceIntervention
     protected $status;
 
     /**
-     * @var date $originalDate
+     * @var datetime $originalDate
      *
-     * @ORM\Column(name="original_date", type="date", nullable=false)
+     * @ORM\Column(name="original_date", type="datetime", nullable=false)
      * @Assert\NotBlank(groups={"unplanned"})
      * @Assert\Date(groups={"unplanned"})
      */
@@ -74,14 +82,6 @@ class ManteinanceIntervention
     protected $closeDate;
 
     /**
-     * @var $isConfirmed
-     *
-     * @ORM\Column(name="is_confirmed", type="boolean")
-     * @Assert\Type(type="bool")
-     */
-    protected $isConfirmed = false;
-
-    /**
      * @var Person
      *
      * @ORM\ManyToOne(targetEntity="Person")
@@ -89,6 +89,15 @@ class ManteinanceIntervention
      * @Assert\NotBlank(groups={"unplanned"})
      */
     protected $customer;
+
+    /**
+     * @var Address
+     *
+     * @ORM\ManyToOne(targetEntity="Address")
+     * @ORM\JoinColumn(name="address_id", referencedColumnName="id", nullable=false)
+     * @Assert\NotBlank(groups={"unplanned"})
+     */
+    protected $address;
 
     /**
      * @var System
@@ -133,14 +142,30 @@ class ManteinanceIntervention
         return $int;
     }
 
+    /**
+     * Check if this unplanned intervention is valid
+     *
+     * @param ExecutionContext $context
+     */
     public function isUnplannedValid(ExecutionContext $context)
     {
+        // Intervention date must be in the future
         $now = new \DateTime();
-        if ($this->getOriginalDate() <= $now) {
+        if ($this->getOriginalDate() < $now) {
             $property_path = $context->getPropertyPath() . ".originalDate";
             $context->setPropertyPath($property_path);
             $context->addViolation('Non è possibile creare un evento nel passato', array(), null);
         }
+    }
+
+    /**
+     * Returns intervention status as string
+     *
+     * @return string
+     */
+    public function getStatusDescr()
+    {
+        return self::$statusDescr[ $this->getStatus() ];
     }
 
     public function __construct()
@@ -239,26 +264,6 @@ class ManteinanceIntervention
     }
 
     /**
-     * Set isConfirmed
-     *
-     * @param boolean $isConfirmed
-     */
-    public function setIsConfirmed($isConfirmed)
-    {
-        $this->isConfirmed = $isConfirmed;
-    }
-
-    /**
-     * Get isConfirmed
-     *
-     * @return boolean
-     */
-    public function getIsConfirmed()
-    {
-        return $this->isConfirmed;
-    }
-
-    /**
      * Set installer
      *
      * @param Boilr\BoilrBundle\Entity\Person $installer
@@ -341,7 +346,7 @@ class ManteinanceIntervention
     /**
      * Set originalDate
      *
-     * @param date $originalDate
+     * @param datetime $originalDate
      */
     public function setOriginalDate($originalDate)
     {
@@ -351,7 +356,7 @@ class ManteinanceIntervention
     /**
      * Get originalDate
      *
-     * @return date
+     * @return datetime
      */
     public function getOriginalDate()
     {
@@ -376,5 +381,25 @@ class ManteinanceIntervention
     public function getContract()
     {
         return $this->contract;
+    }
+
+    /**
+     * Set address
+     *
+     * @param Boilr\BoilrBundle\Entity\Address $address
+     */
+    public function setAddress(\Boilr\BoilrBundle\Entity\Address $address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * Get address
+     *
+     * @return Boilr\BoilrBundle\Entity\Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
     }
 }

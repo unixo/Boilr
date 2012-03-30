@@ -1,6 +1,5 @@
 {% set secondaryMenu = 'Anagrafica' %}
 {% extends 'BoilrBundle:Default:template5.html.twig' %}
-{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 {% block extra_header %}
     {% if person.addresses | length > 0 %}
@@ -10,66 +9,78 @@
 {% endblock %}
 
 {% block central_block %}
-    <h2>Scheda anagrafica</h2>
+<h2>Scheda anagrafica</h2>
 
-    <div id="tabs">
-        <ul>
-            <li><a href="#fragment-1"><span>Anagrafica</span></a></li>
-            <li><a href="#tabAddresses"><span>Indirizzi</span></a></li>
-            <li><a href="#fragment-3"><span>Impianti</span></a></li>
-            <li><a href="#tabContracts"><span>Assistenza</span></a></li>
-        </ul>
-        <div id="fragment-1">
-            {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': person, 'allFields': true } %}
+<div id="tabs">
+    <ul>
+        <li><a href="#fragment-1"><span>Anagrafica</span></a></li>
+        <li><a href="#tabAddresses"><span>Indirizzi</span></a></li>
+        <li><a href="#fragment-3"><span>Impianti</span></a></li>
+        <li><a href="#tabContracts"><span>Assistenza</span></a></li>
+    </ul>
+    <div id="fragment-1">
+        {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': person, 'allFields': true } %}
 
-            <div style="margin-top: 10px;">
-                <button id="btnRegistry" title="Modifica anagrafica">Modifica</button>
-            </div>
-        </div>
-        <div id="tabAddresses">
-            {% include 'BoilrBundle:Person:_addresses.html.twig' with { 'person': person, 'toolbar': true } %}
-
-            {% if person.addresses | length > 0 %}
-                <div>{{ vichgeo_map_for('location', person.addresses) }}</div>
-                <div style="margin-top: 10px;">
-                    <button id="btnCenterMap" title="Centra" onClick="console.log(addressesMap.getZoom());addressesMap.fitBounds(addressesMapBounds);">centra</button>
-                </div>
-            {% endif %}
-        </div>
-        <div id="fragment-3">
-            {% include 'BoilrBundle:Person:_systems.html.twig' with { 'person': person, 'toolbar': true } %}
-        </div>
-        <div id="tabContracts">
-            {% include 'BoilrBundle:Person:_contracts.html.twig' with { 'person': person } %}
-
-            {% if interventions | length > 0 %}
-                <fieldset>
-                    <legend>Calendario prossimi interventi</legend>
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Tipo impianto</th>
-                                <th>Impianto</th>
-                                <th>Tipo controllo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for key,mi in interventions %}
-                                <tr class="{{ cycle(['odd', 'even'], key) }}">
-                                    <td>{{ mi.originalDate | date('d-m-Y') }}</td>
-                                    <td>{{ mi.system.systemType.name }}</td>
-                                    <td>{{ mi.system.descr }}</td>
-                                    <td>{{ mi.defaultOperationGroup.name }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-            {% endif %}
+        <div style="margin-top: 10px;">
+            <button id="btnRegistry" title="Modifica anagrafica">Modifica</button>
         </div>
     </div>
-    <br/>
+    <div id="tabAddresses">
+        {% include 'BoilrBundle:Person:_addresses.html.twig' with { 'person': person, 'toolbar': true } %}
+
+        {% if person.addresses | length > 0 %}
+            <div>{{ vichgeo_map_for('location', person.addresses) }}</div>
+            <div style="margin-top: 10px;">
+                <button id="btnCenterMap" title="Centra" onClick="console.log(addressesMap.getZoom());addressesMap.fitBounds(addressesMapBounds);">centra</button>
+            </div>
+        {% endif %}
+    </div>
+    <div id="fragment-3">
+        {% include 'BoilrBundle:Person:_systems.html.twig' with { 'person': person, 'toolbar': true } %}
+    </div>
+    <div id="tabContracts">
+        {% include 'BoilrBundle:Person:_contracts.html.twig' with { 'person': person } %}
+
+        {% if interventions | length > 0 %}
+            <fieldset>
+                <legend>Calendario prossimi interventi</legend>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo impianto</th>
+                            <th>Impianto</th>
+                            <th>Tipo controllo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key,mi in interventions %}
+                            <tr class="{{ cycle(['odd', 'even'], key) }}">
+                                <td>
+                                    <a href="{{ url('list_all_interventions', { year : mi.originalDate|date('Y'), month: mi.originalDate|date('m')} ) }}">
+                                        {{ mi.originalDate | date('d-m-Y H:m') }}
+                                    </a>
+                                </td>
+                                <td>{{ mi.system.systemType.name }}</td>
+                                <td>{{ mi.system.descr }}</td>
+                                <td>{{ mi.defaultOperationGroup.name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        {% endif %}
+
+        {% if person.systems | length > 0 %}
+            <div style="margin-top: 10px;">
+                <button id="btnAddUnplanned" title="Intervento non programmato">
+                    Aggiungi intervento non programmato
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<br/>
 {% endblock %}
 
 
@@ -98,6 +109,10 @@
                                     window.location.href = '{{ url('person_registry_edit', {id: person.id}) }}';
                                 });
          $('#btnCenterMap').button({ icons: { primary: "ui-icon-arrow-4-diag" }, text: false });
+         $('#btnAddUnplanned').button({ icons: { primary: "ui-icon-clock" }, text: false })
+                              .click(function(event) {
+                                    window.location.href = '{{ url('unplanned_intervention_add', {pid: person.id}) }}';
+                              });
     });
 
     /* ]]> */

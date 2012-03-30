@@ -3,12 +3,15 @@
 namespace Boilr\BoilrBundle\Controller;
 
 use Boilr\BoilrBundle\Entity\ManteinanceIntervention,
-    Boilr\BoilrBundle\Form\UnplannedInterventionForm;
+    Boilr\BoilrBundle\Entity\Person as MyPerson,
+    Boilr\BoilrBundle\Form\UnplannedInterventionForm,
+    Boilr\BoilrBundle\Form\PersonPickerForm;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
     JMS\SecurityExtraBundle\Annotation\Secure;
 
 class ManteinanceInterventionController extends BaseController
@@ -43,10 +46,37 @@ class ManteinanceInterventionController extends BaseController
         foreach ($records as $intervention) {
             $date = $intervention->getOriginalDate();
             $day  = $date->format('d');
-            $results[$day][] = $intervention->getCustomer()->getSurname();
+            $results[$day][] = $this->getInterventionTitle($intervention);
         }
 
         return array('records' => $results, 'year' => $year, 'month' => $month);
+    }
+
+    /**
+     * @Route("/show/{id}", name="intervention_detail")
+     * @ParamConverter("interv", class="BoilrBundle:ManteinanceIntervention")
+     * @Template(vars={"interv"})
+     */
+    public function showAction(ManteinanceIntervention $interv)
+    {
+
+    }
+
+    /**
+     * Returns HTML representation of this intervention
+     *
+     * @return string
+     */
+    protected function getInterventionTitle(ManteinanceIntervention $int)
+    {
+        $url   = $this->generateUrl('intervention_detail', array('id' => $int->getId()));
+        $icon  = ($int->getStatus()==ManteinanceIntervention::STATUS_TENTATIVE?"ui-icon-help":"ui-icon-check");
+        $title = $int->getCustomer()->getSurname();
+
+        $html = sprintf('<span class="event"><a href="%s"><span class="ui-icon %s"></span>%s</a></span>',
+                $url, $icon, $title);
+
+        return $html;
     }
 
     /**
@@ -98,6 +128,13 @@ class ManteinanceInterventionController extends BaseController
             $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
+                // If system is not linked with any address, update with user selection
+                if ($interv->getSystem()->getAddress() === null) {
+                   $system = $interv->getSystem();
+                   $system->setAddress($interv->getAddress());
+                }
+
+                // try to persist changes to the store
                 $success = true;
 
                 try {
@@ -121,5 +158,26 @@ class ManteinanceInterventionController extends BaseController
         }
 
         return array('form' => $form->createView(), 'customer' => $customer);
+    }
+
+    /**
+     * @Route("/set-installer/{id}", name="add_installer_to_interv")
+     * @ParamConverter("interv", class="BoilrBundle:ManteinanceIntervention")
+     * @Template()
+     */
+    public function addInstallerAction(ManteinanceIntervention $interv)
+    {
+        $form = $this->createForm(new PersonPickerForm());
+
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
+
+            if ($form->isValid()) {
+                $installer = $form->getClientData();
+                die();
+            }
+        }
+
+        return array('form' => $form->createView(), 'interv' => $interv);
     }
 }
