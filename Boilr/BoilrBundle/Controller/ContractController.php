@@ -23,8 +23,10 @@ class ContractController extends BaseController
      */
     public function addAction(MySystem $system)
     {
-        if (! $system) {
-            throw new NotFoundHttpException("Invalid parameter");
+        if (! $system->getAddress()) {
+            $this->setErrorMessage("L'impianto non è associato ad alcun indirizzo: selezionarlo adesso.");
+
+            return $this->redirect( $this->generateUrl('system_edit', array('sid' => $system->getId())) );
         }
 
         $customer = $system->getOwner();

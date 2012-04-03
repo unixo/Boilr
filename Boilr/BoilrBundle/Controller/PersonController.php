@@ -29,6 +29,7 @@ class PersonController extends BaseController
      */
     public function newAction()
     {
+        // Build the flow/form
         $newPerson = new MyPerson();
         $flow      = $this->get('boilr.form.flow.newperson');
 
@@ -64,9 +65,7 @@ class PersonController extends BaseController
             }
         }
 
-        return array('form'   => $form->createView(),
-                     'flow'   => $flow,
-                     'person' => $newPerson );
+        return array('form' => $form->createView(), 'flow' => $flow, 'person' => $newPerson );
     }
 
     /**
@@ -104,18 +103,24 @@ class PersonController extends BaseController
                                ->setMaxResults($iDisplayLength)
                                ->orderBy('p.surname, p.name');
 
-        if ($request->get('is_customer') != null)
-            $query->andWhere('p.isCustomer = 0');
+        if ($request->get('is_installer') != null) {
+            $query->andWhere('p.isInstaller = 0');
+        }
 
-        if ($request->get('is_customer') != null)
+        if ($request->get('is_customer') != null) {
             $query->andWhere('p.isCustomer = 0');
+        }
 
-        if ($request->get('is_admin') != null)
+        if ($request->get('is_admin') != null) {
             $query->andWhere('p.isAdministrator = 0');
+        }
 
-        if (strlen($sSearch))
+        if (strlen($sSearch)) {
             $query->andWhere('p.name LIKE :term or p.surname LIKE :term')
                   ->setParameter('term', '%'.$sSearch.'%');
+        }
+
+        $this->_log($query->getDQL());
 
         $results = $query->getQuery()->getResult();
 
@@ -124,15 +129,16 @@ class PersonController extends BaseController
             /* @var $iTotalRecords \Doctrine\DBAL\Driver\PDOConnection */
             $result = $conn->query('SELECT FOUND_ROWS()');
             $iTotalDisplayRecords = $result->fetchColumn();
-        } else
+        } else {
             $iTotalDisplayRecords = $iTotalRecords;
+        }
 
         $data = array('aaData'               => array(),
                       'sEcho'                => $sEcho,
                       'iTotalRecords'        => $iTotalRecords,
                       'iTotalDisplayRecords' => $iTotalDisplayRecords);
 
-        foreach ($results as $p)
+        foreach ($results as $p) {
             $data['aaData'][] = array(
                     'id'           => $p->getId(),
                     'type'         => $p->getType(),
@@ -142,7 +148,39 @@ class PersonController extends BaseController
                     'is_supplier'  => $p->getIsSupplier(),
                     'is_customer'  => $p->getIsCustomer()
                 );
+        }
 
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * Returns all person properties formatted in json
+     *
+     * @Route("/json-get-person-detail", name="json_get_person")
+     */
+    public function jsonGetPersonDetailAction()
+    {
+        $data   = array();
+        $pid    = $this->getRequest()->get('pid');
+        $person = $this->getDoctrine()->getRepository('BoilrBundle:Person')->findOneById($pid);
+        /* @var $person \Boilr\BoilrBundle\Entity\Person */
+
+        if ($person) {
+            $reflect = new \ReflectionClass($person);
+            $props   = $reflect->getProperties();
+
+            foreach ($props as $prop) {
+                $name   = $prop->getName();
+                $method = 'get'. ucfirst($name);
+                $value  = $person->$method();
+                if (!is_object($value)) {
+                    $data[ $name ] = $value;
+                }
+            }
+        }
 
         $response = new Response(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');
@@ -157,10 +195,9 @@ class PersonController extends BaseController
     {
         $value  = $this->getRequest()->get('term');
         $people = $this->getEntityManager()->createQuery(
-                                "SELECT p FROM BoilrBundle:Person p ".
-                                "WHERE p.name LIKE :value OR p.surname LIKE :value AND ".
-                                "      p.isInstaller = 1 ".
-                                "ORDER BY p.surname, p.name")
+                            "SELECT p FROM BoilrBundle:Person p ".
+                            "WHERE (p.name LIKE :value OR p.surname LIKE :value) AND p.isInstaller = 1 ".
+                            "ORDER BY p.surname, p.name")
                        ->setParameter('value', "%$value%")
                        ->getResult();
 

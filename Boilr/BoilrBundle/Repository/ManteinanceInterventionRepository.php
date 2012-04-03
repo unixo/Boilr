@@ -12,7 +12,7 @@ class ManteinanceInterventionRepository extends EntityRepository
 {
     /**
      * Returns list of manteinance interventions for given customer
-     * 
+     *
      * @param MyPerson $person
      * @return array
      */
@@ -27,5 +27,24 @@ class ManteinanceInterventionRepository extends EntityRepository
                               ->getQuery()->getResult();
 
         return $interventions;
+    }
+
+    /**
+     * Returns all interventions within a date interval
+     *
+     * @param string $start
+     * @param string $end
+     * @return array
+     */
+    public function interventionsBetweenDates($start, $end)
+    {
+        $records = $this->getEntityManager()->createQuery(
+                            "SELECT si FROM BoilrBundle:ManteinanceIntervention si ".
+                            "WHERE si.originalDate >= :date1 AND si.originalDate <= :date2 ".
+                            "ORDER BY si.originalDate")
+                        ->setParameters(array('date1' => $start, 'date2' => $end))
+                        ->getResult();
+
+        return $records;
     }
 }

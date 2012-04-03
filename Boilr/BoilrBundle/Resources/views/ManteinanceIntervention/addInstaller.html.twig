@@ -4,19 +4,32 @@
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 {% block central_block %}
+<h2>Selezione installatore</h2>
+
 <form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+    {% include 'CraueFormFlowBundle:FormFlow:stepField.html.twig' %}
+        
     <fieldset>
         <legend>Dettagli intervento</legend>
 
         {{ mymacro.fieldset_row('Cliente', interv.customer.fullName) }}
         {{ mymacro.fieldset_row('Data', interv.originalDate|date('d-m-Y')) }}
+        {{ mymacro.fieldset_row('indirizzo', interv.address.address) }}
     </fieldset>
 
-    <fieldset>
-        <legend>Selezione installatore</legend>
+    {% if flow.getCurrentStep() == 1 %}
+        <fieldset>
+            <legend>Selezione installatore</legend>
 
-        <div><label>Nominativo:</label>{{ form_widget(form.id) }}</div>
-    </fieldset>
+            <div><label>Nominativo:</label>{{ form_widget(form.installer) }}</div>
+        </fieldset>
+    {% elseif flow.getCurrentStep() == 2 %}
+         {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': interv.installer,
+                                                                'allFields': false,
+                                                                'title': 'Dati installatore' } %}
+    {% endif %}
+
+    {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' %}
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
@@ -25,6 +38,5 @@
 
 
 {% block javascripts %}
-    {{ form_javascript(form) }}
+{{ form_javascript(form) }}
 {% endblock %}
-

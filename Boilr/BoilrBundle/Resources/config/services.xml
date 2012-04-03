@@ -57,6 +57,19 @@
                 </call>
             </service>
             <!-- End of New person flow -->
+
+            <!-- Link installer flow -->
+            <service id="boilr.form.linkInstaller" class="Boilr\BoilrBundle\Form\LinkInstallerForm">
+                <tag name="form.type" alias="boilr_linkinstaller" />
+            </service>
+
+            <service id="boilr.form.flow.linkInstaller" class="Boilr\BoilrBundle\Form\Flow\LinkInstallerFlow"
+                    parent="craue.form.flow" scope="request">
+                <call method="setFormType">
+                    <argument type="service" id="boilr.form.linkInstaller" />
+                </call>
+            </service>
+            <!-- End of Link installer flow -->
         <!-- End of Form flows -->
     </services>
 </container>

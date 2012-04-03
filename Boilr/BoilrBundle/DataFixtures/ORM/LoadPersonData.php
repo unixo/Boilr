@@ -36,6 +36,7 @@ class LoadPersonData extends AbstractFixture implements OrderedFixtureInterface
                 $p->setFaxNumber( $record[4] );
                 $p->setIsCustomer( (rand() % 2) );
                 $p->setIsInstaller( (rand() % 2) );
+                $p->setIsAdministrator( (rand() % 2) );
             } else {
                 $p = $lastPerson;
             }
@@ -54,8 +55,9 @@ class LoadPersonData extends AbstractFixture implements OrderedFixtureInterface
             $manager->persist($p);
             $count++;
 
-            if ($count % 100)
+            if ($count % 100) {
                 $manager->flush();
+            }
 
             $lastPerson = $p;
         }

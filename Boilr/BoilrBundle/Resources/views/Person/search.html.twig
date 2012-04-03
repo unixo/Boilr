@@ -28,9 +28,9 @@
         <table id="people" class="views-table">
             <thead>
                 <tr>
-                    <th width="5%">C</th>
-                    <th width="5%">A</th>
-                    <th width="5%">S</th>
+                    <th width="5%">Cl.</th>
+                    <th width="5%">Amm.</th>
+                    <th width="5%">Inst.</th>
                     <th>Nominativo</th>
                 </tr>
             </thead>
@@ -76,32 +76,31 @@ $(function() {
             "aoColumns": [
                     { "mDataProp": "is_customer", "fnRender": renderBoolean, "bSortable": false },
                     { "mDataProp": "is_admin",    "fnRender": renderBoolean, "bSortable": false },
-                    { "mDataProp": "is_supplier", "fnRender": renderBoolean, "bSortable": false },
+                    { "mDataProp": "is_installer", "fnRender": renderBoolean, "bSortable": false },
                     { "mDataProp": "fullname",    "fnRender": renderFullname },
                 ],
             "fnServerData": function ( sSource, aoData, fnCallback )
                             {
-                                if ( $('#is_customer').attr('checked') != 'checked' )
+                                if ( $('#is_customer').attr('checked') != 'checked' ) {
                                     aoData.push( { "name": "is_customer", "value": 0 } );
+                                }
 
-                                if ( $('#is_installer').attr('checked') == 'checked' )
+                                if ( $('#is_installer').attr('checked') != 'checked' ) {
                                     aoData.push( { "name": "is_installer", "value": 0 } );
+                                }
 
-                                if ( $('#is_admin').attr('checked') == 'checked' )
+                                if ( $('#is_admin').attr('checked') != 'checked' ) {
                                     aoData.push( { "name": "is_admin", "value": 0 } );
+                                }
 
                                 $.ajax( { "dataType": 'json',
-                                            "url": sSource,
-                                            "data": aoData,
-                                            "success": fnCallback
-                                            } );
+                                          "url"     : sSource,
+                                          "data"    : aoData,
+                                          "success" : fnCallback } );
                             },
                   });
 
-    $('.jcheck').bind('click', function(event)
-                               {
-                                   oTable.fnReloadAjax();
-                               });
+    $('.jcheck').bind('click', function(event) { oTable.fnReloadAjax(); });
 
 });
 

@@ -84,6 +84,7 @@ class ContractRepository extends EntityRepository
                         $manInt->setOriginalDate($lastDate);
                         $manInt->setCustomer($customer);
                         $manInt->setSystem($contract->getSystem());
+                        $manInt->setAddress($contract->getSystem()->getAddress());
                         $manInt->setIsPlanned(true);
                         $manInt->setContract($contract);
                         $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
@@ -100,6 +101,7 @@ class ContractRepository extends EntityRepository
                     $manInt->setIsPlanned(true);
                     $manInt->setContract($contract);
                     $manInt->setSystem($contract->getSystem());
+                    $manInt->setAddress($contract->getSystem()->getAddress());
                     $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
                     $manInt->setDefaultOperationGroup($schema->getOperationGroup());
 

@@ -113,6 +113,7 @@ class ManteinanceIntervention
      *
      * @ORM\ManyToOne(targetEntity="Person")
      * @ORM\JoinColumn(name="installer_id", referencedColumnName="id", nullable=true)
+     * @Assert\NotBlank(groups={"flow_interventionInstallerForm_step1"})
      */
     protected $installer;
 

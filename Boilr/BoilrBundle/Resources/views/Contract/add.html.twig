@@ -12,6 +12,9 @@
     <fieldset>
         <legend>Dettagli Contratto</legend>
 
+        <div><label>Tipologia impianto:</label><span>{{ system.systemType.name }}</span></div>
+        <div><label>Descriz. impianto:</label><span>{{ system.descr }}</span></div>
+        <div><label>Collocaz. impianto:</label><span>{{ system.address.address }}</span></div>
         <div><label>Data inizio:</label>{{ form_widget(form.startDate, {'attr': {'class': 'jdate'}}) }}</div>
         <div><label>Data termine:</label>{{ form_widget(form.endDate, {'attr': {'class': 'jdate'}}) }}</div>
     </fieldset>

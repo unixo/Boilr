@@ -79,4 +79,10 @@ abstract class BaseController extends Controller
 
         $this->setFlashMessage(self::FLASH_ERROR, $message);
     }
+
+    public function _log($message, $params = array())
+    {
+        $logger = $this->get('logger');
+        $logger->info($message, $params);
+    }
 }

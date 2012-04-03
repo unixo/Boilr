@@ -4,8 +4,7 @@ namespace Boilr\BoilrBundle\Controller;
 
 use Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Boilr\BoilrBundle\Entity\Person as MyPerson,
-    Boilr\BoilrBundle\Form\UnplannedInterventionForm,
-    Boilr\BoilrBundle\Form\PersonPickerForm;
+    Boilr\BoilrBundle\Form\UnplannedInterventionForm;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
@@ -26,22 +25,34 @@ class ManteinanceInterventionController extends BaseController
     }
 
     /**
+     * @Route("/current-month", name="current_month_interventions")
+     * @Template()
+     */
+    public function listCurrentMonthAction()
+    {
+        $now   = new \DateTime();
+        $year  = $now->format('Y');
+        $month = $now->format('m');
+
+        return $this->redirect( $this->generateUrl('list_all_interventions', array('month' => $month, 'year' => $year)) );
+    }
+
+    /**
      * @Route("/list-all/{year}/{month}", name="list_all_interventions")
      * @Template()
      */
     public function listAllAction($year, $month)
     {
+        // Build interval
         $monthName = date("F", strtotime("01-$month-1970"));
         $date1 = date('Y-m-d', strtotime("first day of $monthName $year"));
         $date2 = date('Y-m-d', strtotime("last day of $monthName $year"));
 
-        $records = $this->getEntityManager()->createQuery(
-                            "SELECT si FROM BoilrBundle:ManteinanceIntervention si ".
-                            "WHERE si.originalDate >= :date1 AND si.originalDate <= :date2 ".
-                            "ORDER BY si.originalDate")
-                        ->setParameters(array('date1' => $date1, 'date2' => $date2))
-                        ->getResult();
+        // Search interventions
+        $records = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceIntervention')
+                        ->interventionsBetweenDates($date1, $date2);
 
+        // Format titles
         $results = array();
         foreach ($records as $intervention) {
             $date = $intervention->getOriginalDate();
@@ -59,7 +70,6 @@ class ManteinanceInterventionController extends BaseController
      */
     public function showAction(ManteinanceIntervention $interv)
     {
-
     }
 
     /**
@@ -167,17 +177,52 @@ class ManteinanceInterventionController extends BaseController
      */
     public function addInstallerAction(ManteinanceIntervention $interv)
     {
-        $form = $this->createForm(new PersonPickerForm());
+        // Build the flow/form
+        $flow = $this->get('boilr.form.flow.linkInstaller');
 
-        if ($this->isPOSTRequest()) {
-            $form->bindRequest($this->getRequest());
+        // reset data if it's first time I request the page
+        if ($this->getRequest()->getMethod() === 'GET') {
+            $flow->reset();
+        }
 
-            if ($form->isValid()) {
-                $installer = $form->getClientData();
-                die();
+        $flow->setAllowDynamicStepNavigation(true);
+        $flow->bind($interv);
+
+        $form = $flow->createForm($interv);
+        if ($flow->isValid($form)) {
+            $flow->saveCurrentStepData();
+
+            if ($flow->nextStep()) {
+                return array(
+                    'form'   => $flow->createForm($interv)->createView(),
+                    'flow'   => $flow,
+                    'interv' => $interv
+                );
+            }
+
+            // flow finished
+            try {
+                $em = $this->getEntityManager();
+                $em->persist($interv);
+                $em->flush();
+                $flow->reset();
+                $this->setNoticeMessage("Operazione completata con successo");
+
+                return $this->redirect($this->generateUrl('intervention_detail', array('id' => $interv->getId() )));
+            } catch (\PDOException $exc) {
+                $this->setErrorMessage("Si è verificato un'errore durante il salvataggio");
             }
         }
 
-        return array('form' => $form->createView(), 'interv' => $interv);
+        return array('form' => $form->createView(), 'flow' => $flow, 'interv' => $interv );
+    }
+
+    /**
+     * @Route("/search", name="search_intervention")
+     * @Template
+     */
+    public function searchAction()
+    {
+
     }
 }
