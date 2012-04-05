@@ -4,7 +4,8 @@ namespace Boilr\BoilrBundle\Controller;
 
 use Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Boilr\BoilrBundle\Entity\Person as MyPerson,
-    Boilr\BoilrBundle\Form\UnplannedInterventionForm;
+    Boilr\BoilrBundle\Form\UnplannedInterventionForm,
+    Boilr\BoilrBundle\Extension\MyDateTime;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
@@ -43,14 +44,26 @@ class ManteinanceInterventionController extends BaseController
      */
     public function listAllAction($year, $month)
     {
-        // Build interval
-        $monthName = date("F", strtotime("01-$month-1970"));
-        $date1 = date('Y-m-d', strtotime("first day of $monthName $year"));
-        $date2 = date('Y-m-d', strtotime("last day of $monthName $year"));
+        // Build date interval
+        $startDate = new \DateTime();
+        $endDate   = new \DateTime();
+        $startDate->setDate($year, $month, 1);
+        $monthName = $startDate->format('F');
+        $lastDay = date("d", strtotime("last day of $monthName $year"));
+        $endDate->setDate($year, $month, $lastDay);
+
+        // Evaluate next/prev month
+        $interval  = \DateInterval::createFromDateString('1 month');
+        $nextMonth = new \DateTime();
+        $nextMonth->setDate($year, $month, 1);
+        $nextMonth->add($interval);
+        $prevMonth = new \DateTime();
+        $prevMonth->setDate($year, $month, 1);
+        $prevMonth->sub($interval);
 
         // Search interventions
         $records = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceIntervention')
-                        ->interventionsBetweenDates($date1, $date2);
+                        ->interventionsBetweenDates($startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
 
         // Format titles
         $results = array();
@@ -60,7 +73,7 @@ class ManteinanceInterventionController extends BaseController
             $results[$day][] = $this->getInterventionTitle($intervention);
         }
 
-        return array('records' => $results, 'year' => $year, 'month' => $month);
+        return array('records' => $results, 'year' => $year, 'month' => $month, 'prevMonth' => $prevMonth, 'nextMonth' => $nextMonth);
     }
 
     /**
@@ -120,7 +133,11 @@ class ManteinanceInterventionController extends BaseController
 
             $interv = ManteinanceIntervention::UnplannedInterventionFactory();
             $interv->setCustomer($customer);
+            $aDate = MyDateTime::nextWorkingDay(new \DateTime() );
+            $aDate->setTime(8, 0, 0);
+            $interv->setOriginalDate($aDate);
         } else {
+            // An update has been requested, fetch the intervention from the store
             $interv = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceIntervention')->findOneById($iid);
             if (! $interv) {
                 throw new NotFoundHttpException("Invalid intervention");
@@ -129,40 +146,51 @@ class ManteinanceInterventionController extends BaseController
         }
 
         // Build the form
-        $repository = $this->getEntityManager()->getRepository('BoilrBundle:System');
-        $form       = $this->createForm(new UnplannedInterventionForm($repository), $interv,
-                                        array('validation_groups' => array('unplanned')) );
+        $form = $this->createForm(new UnplannedInterventionForm(), $interv,
+                                  array('validation_groups' => array('unplanned')) );
 
         // Check if user submitted the form
         if ($this->isPOSTRequest()) {
             $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
-                // If system is not linked with any address, update with user selection
-                if ($interv->getSystem()->getAddress() === null) {
-                   $system = $interv->getSystem();
-                   $system->setAddress($interv->getAddress());
-                }
+                $miRepo = $this->getEntityManager()->getRepository('BoilrBundle:ManteinanceIntervention');
 
-                // try to persist changes to the store
-                $success = true;
-
-                try {
-                    $em = $this->getEntityManager();
-                    $em->persist($interv);
-                    $em->flush();
-                } catch (\PDOException $exc) {
-                    $success = false;
-                }
-
-                if ($success) {
-                    $this->setNoticeMessage('Operazione creata con successo');
-                    $year  = $interv->getOriginalDate()->format('Y');
-                    $month = $interv->getOriginalDate()->format('m');
-
-                    return $this->redirect( $this->generateUrl('list_all_interventions', array('year' => $year, 'month' => $month)));
+                // further check: verify that given intervention doesn't overlap with any other
+                $overlaps = $miRepo->doesInterventionOverlaps($interv);
+                if ($overlaps) {
+                    $this->setErrorMessage("La data/ora richiesta si sovrappone con un altro appuntamento.");
                 } else {
-                    $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
+                    // evaluate expected close date
+                    $miRepo->evalExpectedCloseDate($interv);
+
+                    // If system is not linked with any address, update with user selection
+                    if ($interv->getSystem()->getAddress() === null) {
+                    $system = $interv->getSystem();
+                    $system->setAddress($interv->getAddress());
+                    }
+
+                    // try to persist changes to the store
+                    $success = true;
+
+                    try {
+                        $em = $this->getEntityManager();
+                        $em->persist($interv);
+                        $em->flush();
+                    } catch (\PDOException $exc) {
+                        var_dump($exc->getMessage());
+                        $success = false;
+                    }
+
+                    if ($success) {
+                        $this->setNoticeMessage('Operazione creata con successo');
+                        $year  = $interv->getOriginalDate()->format('Y');
+                        $month = $interv->getOriginalDate()->format('m');
+
+                        return $this->redirect( $this->generateUrl('list_all_interventions', array('year' => $year, 'month' => $month)));
+                    } else {
+                        $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
+                    }
                 }
             }
         }

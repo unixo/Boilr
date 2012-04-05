@@ -11,7 +11,11 @@ class SystemForm extends AbstractType
     {
         $system = $options['data'];
         /* @var $system \Boilr\BoilrBundle\Entity\System */
-        $owner  = $system->getOwner();
+
+        $addresses = array();
+        if ($system) {
+            $addresses = $system->getOwner()->getAddresses()->getValues();
+        }
 
         $builder->add('systemType', 'entity', array(
                                      'class'       => 'BoilrBundle:SystemType',
@@ -24,16 +28,16 @@ class SystemForm extends AbstractType
                 ->add('address', 'entity', array(
                                      'class'       => 'BoilrBundle:Address',
                                      'property'    => 'address',
-                                     'choices'     => $system->getOwner()->getAddresses()->getValues(),
+                                     'choices'     => $addresses,
                                      'empty_value' => ''
                      ))
                 ->add('installDate', 'date', array(
-                                     'required' => true,
-                                     'format'   => 'dd/MM/yyyy',
-                                     'widget'   => 'single_text'))
+                                     'required'    => true,
+                                     'format'      => 'dd/MM/yyyy',
+                                     'widget'      => 'single_text'))
                 ->add('lastManteinance', 'date', array(
-                                     'format' => 'dd/MM/yyyy',
-                                     'widget' => 'single_text'))
+                                     'format'      => 'dd/MM/yyyy',
+                                     'widget'      => 'single_text'))
                 ->add('code',  'text', array('required' => true))
                 ->add('descr', 'text', array('required' => true));
     }

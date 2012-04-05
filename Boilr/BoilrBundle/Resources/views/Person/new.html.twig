@@ -12,7 +12,7 @@
 
     {% include 'BoilrBundle:Person:new_step' ~ flow.getCurrentStep() ~ '.html.twig' with {'form': form } %}
 
-    <div>{{ form_rest(form) }}</div>
+    <div style="display: none">{{ form_rest(form) }}</div>
     {{ form_errors(form) }}
 
     {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' %}

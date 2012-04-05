@@ -9,6 +9,8 @@ use Boilr\BoilrBundle\Entity\System as MySystem,
     Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Doctrine\ORM\EntityRepository;
 
+use Boilr\BoilrBundle\Extension\MyDateTime;
+
 /**
  * ContractRepository
  */
@@ -70,7 +72,10 @@ class ContractRepository extends EntityRepository
                             ->getQuery()
                             ->getResult();
 
-            $lastDate = $contract->getStartDate();
+            $lastDate = MyDateTime::nextWorkingDay( $contract->getStartDate() );
+            $lastDate->setTime(8,0);
+
+            $miRepos = $this->getEntityManager()->getRepository('BoilrBundle:ManteinanceIntervention');
 
             // Create as much manteinance date appointment as schema
             foreach ($schemas as $schema) {
@@ -89,6 +94,7 @@ class ContractRepository extends EntityRepository
                         $manInt->setContract($contract);
                         $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
                         $manInt->setDefaultOperationGroup($schema->getOperationGroup());
+                        $miRepos->evalExpectedCloseDate($manInt);
 
                         $em->persist($manInt);
                         $lastDate = $this->getFutureDate($lastDate, $schema->getFreq());
@@ -104,6 +110,7 @@ class ContractRepository extends EntityRepository
                     $manInt->setAddress($contract->getSystem()->getAddress());
                     $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
                     $manInt->setDefaultOperationGroup($schema->getOperationGroup());
+                    $miRepos->evalExpectedCloseDate($manInt);
 
                     $em->persist($manInt);
                 }

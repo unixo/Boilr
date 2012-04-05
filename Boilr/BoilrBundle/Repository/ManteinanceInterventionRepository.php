@@ -3,7 +3,10 @@
 namespace Boilr\BoilrBundle\Repository;
 
 use Boilr\BoilrBundle\Entity\Person as MyPerson,
-    Doctrine\ORM\EntityRepository;
+    Boilr\BoilrBundle\Entity\ManteinanceIntervention,
+    Boilr\BoilrBundle\Entity\OperationGroup;
+
+use Doctrine\ORM\EntityRepository;
 
 /**
  * ManteinanceInterventionRepository
@@ -46,5 +49,39 @@ class ManteinanceInterventionRepository extends EntityRepository
                         ->getResult();
 
         return $records;
+    }
+
+    /**
+     * Returns true if given intervention overlaps some other interventions
+     *
+     * @param ManteinanceIntervention $interv
+     * @return boolean
+     */
+    public function doesInterventionOverlaps(ManteinanceIntervention $interv)
+    {
+        $aDate   = $interv->getOriginalDate();
+        $miCount = $this->getEntityManager()->createQuery(
+                "SELECT COUNT(mi) FROM BoilrBundle:ManteinanceIntervention mi ".
+                "WHERE :date >= mi.originalDate AND :date <= mi.expectedCloseDate")
+                        ->setParameter('date', $aDate)->getSingleScalarResult();
+
+        return ($miCount > 0);
+    }
+
+    public function evalExpectedCloseDate(ManteinanceIntervention $interv)
+    {
+        if (! $interv->getOriginalDate() || ! $interv->getDefaultOperationGroup()) {
+            return;
+        }
+
+        $repo       = $this->getEntityManager()->getRepository('BoilrBundle:OperationGroup');
+        $timeLength = $repo->getEstimatedTimeLength( $interv->getDefaultOperationGroup() );
+        $interval   = \DateInterval::createFromDateString("+". $timeLength ." second");
+
+        $aDate = new \DateTime();
+        $aDate->setTimestamp( $interv->getOriginalDate()->format('U') );
+        $aDate->add($interval);
+
+        $interv->setExpectedCloseDate($aDate);
     }
 }

@@ -30,7 +30,8 @@ class UnplannedInterventionForm extends AbstractType
                 ->add('originalDate', 'datetime', array(
                                                 'required' => true,
                                                 //'format'   => 'dd/MM/yyyy',
-                                                'date_widget'   => 'single_text')
+                                                //'date_widget'   => 'single_text')
+                                                )
                      )
                 ->add('defaultOperationGroup', 'entity', array(
                                     'class' => 'BoilrBundle:OperationGroup',

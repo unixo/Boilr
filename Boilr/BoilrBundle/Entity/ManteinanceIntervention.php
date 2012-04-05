@@ -7,6 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert,
     Doctrine\ORM\Mapping as ORM,
     Gedmo\Mapping\Annotation as Gedmo;
 
+use Boilr\BoilrBundle\Validator\Constraints as MyAssert;
+
 /**
  * Boilr\BoilrBundle\Entity\ManteinanceIntervention
  *
@@ -70,8 +72,17 @@ class ManteinanceIntervention
      * @ORM\Column(name="original_date", type="datetime", nullable=false)
      * @Assert\NotBlank(groups={"unplanned"})
      * @Assert\Date(groups={"unplanned"})
+     * @MyAssert\WorkingDay(groups={"unplanned"})
      */
     protected $originalDate;
+
+    /**
+     * @var datetime $closeDate
+     *
+     * @ORM\Column(name="exp_close_date", type="datetime", nullable=false)
+     * @Assert\DateTime()
+     */
+    protected $expectedCloseDate;
 
     /**
      * @var datetime $closeDate
@@ -152,10 +163,10 @@ class ManteinanceIntervention
     {
         // Intervention date must be in the future
         $now = new \DateTime();
-        if ($this->getOriginalDate() < $now) {
+        if ($this->getOriginalDate() <= $now) {
             $property_path = $context->getPropertyPath() . ".originalDate";
             $context->setPropertyPath($property_path);
-            $context->addViolation('Non è possibile creare un evento nel passato', array(), null);
+            $context->addViolation('Non è possibile creare un intervento nel passato', array(), null);
         }
     }
 
@@ -402,5 +413,25 @@ class ManteinanceIntervention
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Set expectedCloseDate
+     *
+     * @param datetime $expectedCloseDate
+     */
+    public function setExpectedCloseDate($expectedCloseDate)
+    {
+        $this->expectedCloseDate = $expectedCloseDate;
+    }
+
+    /**
+     * Get expectedCloseDate
+     *
+     * @return datetime 
+     */
+    public function getExpectedCloseDate()
+    {
+        return $this->expectedCloseDate;
     }
 }

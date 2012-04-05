@@ -24,9 +24,15 @@ class ContractController extends BaseController
     public function addAction(MySystem $system)
     {
         if (! $system->getAddress()) {
-            $this->setErrorMessage("L'impianto non è associato ad alcun indirizzo: selezionarlo adesso.");
+            if ($system->getOwner()->getAddresses()->count() > 0) {
+                $this->setErrorMessage("L'impianto non è associato ad alcun indirizzo: selezionarlo adesso.");
 
-            return $this->redirect( $this->generateUrl('system_edit', array('sid' => $system->getId())) );
+                return $this->redirect( $this->generateUrl('system_edit', array('sid' => $system->getId())) );
+            } else {
+                $this->setErrorMessage("L'impianto non è associato ad alcun indirizzo: specificare l'indirizzo.");
+
+                return $this->redirect( $this->generateUrl('address_add', array('pid' => $system->getOwner()->getId())) );
+            }
         }
 
         $customer = $system->getOwner();

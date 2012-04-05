@@ -76,7 +76,7 @@
         {% endif %}
         <input type="text" {{ block('widget_attributes') }} value="{{ value }}" />
     {% else %}
-        <div {{ block('widget_container_attributes') }}>
+        <div style="display: inline-block" {{ block('widget_container_attributes') }}>
             {{ date_pattern|replace({
                 '{{ year }}':  form_widget(form.year),
                 '{{ month }}': form_widget(form.month),
@@ -86,3 +86,19 @@
     {% endif %}
 {% endspaceless %}
 {% endblock date_widget %}
+
+
+{% block datetime_widget %}
+{% spaceless %}
+    {% if widget == 'single_text' %}
+        {{ block('field_widget') }}
+    {% else %}
+        <div style="display: inline-block" {{ block('widget_container_attributes') }}>
+            {{ form_errors(form.date) }}
+            {{ form_errors(form.time) }}
+            {{ form_widget(form.date) }}
+            {{ form_widget(form.time) }}
+        </div>
+    {% endif %}
+{% endspaceless %}
+{% endblock datetime_widget %}

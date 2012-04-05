@@ -1,10 +1,47 @@
 {% set secondaryMenu = 'Interventi' %}
 {% extends 'BoilrBundle:Default:template5.html.twig' %}
 
+{% block extra_header %}
+<style>
+#btnPrev {
+    float: left;
+}
+
+#btnNext {
+    float: right;
+}
+</style>
+{% endblock %}
+
 {% block central_block %}
 <h2>Elenco interventi mensili</h2>
 
 <br/>
+<div>
+    <button id="btnPrev">Mese precedente</button>
+    <button id="btnNext">Mese successivo</button>
+</div>
+<br/><br/><br/>
 {{ calendar(year, month, records) }}
 <br/>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+/* <![CDATA[ */
+    $(function()
+    {
+        $('#btnPrev').button({ icons: { primary: "ui-icon-arrow-1-w" }, text: false })
+                     .click(function(event) {
+                                    window.location.href = "{{ url('list_all_interventions', {year: prevMonth|date('Y'), month: prevMonth|date('m')} ) }}";
+                            });
+
+        $('#btnNext').button({ icons: { primary: "ui-icon-arrow-1-e" }, text: false })
+                     .click(function(event) {
+                                    window.location.href = "{{ url('list_all_interventions', {year: nextMonth|date('Y'), month: nextMonth|date('m')} ) }}";
+                            });
+    });
+
+/* ]]> */
+</script>
 {% endblock %}

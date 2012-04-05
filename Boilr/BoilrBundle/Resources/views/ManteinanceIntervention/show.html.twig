@@ -8,17 +8,27 @@
 <fieldset>
     <legend>Dettaglio</legend>
 
-    {{ mymacro.fieldset_row('Data intervento', interv.originalDate|date('d-m-Y H:m')) }}
+    {{ mymacro.fieldset_row('Cliente', interv.customer.fullname) }}
+    {{ mymacro.fieldset_row('Indirizzo', interv.address.address) }}
+    {{ mymacro.fieldset_row('Data intervento', interv.originalDate|date('d-m-Y H:i')) }}
+    {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate|date('d-m-Y H:i')) }}
     {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
 
-    {% set closeDate = interv.closeDate?interv.closeDate|date('d-m-Y H:m'):'-' %}
+    {% set closeDate = interv.closeDate?interv.closeDate|date('d-m-Y H:i'):'-' %}
     {{ mymacro.fieldset_row('Data chiusura', closeDate ) }}
     {% if interv.isPlanned %}
         {{ mymacro.fieldset_row('Scadenza contratto', interv.contract.endDate|date('d-m-Y')) }}
     {% endif %}
 </fieldset>
 
-{% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': interv.customer, 'allFields': false, 'title': 'Dati cliente' } %}
+<fieldset>
+    <legend>Impianto da revisionare</legend>
+
+    {{ mymacro.fieldset_row('Matricola', interv.system.code) }}
+    {{ mymacro.fieldset_row('Descrizione', interv.system.descr) }}
+    {{ mymacro.fieldset_row('Tipo impianto', interv.system.systemType.name) }}
+    {{ mymacro.fieldset_row('Controlli previsti', interv.defaultOperationGroup.fullDescr) }}
+</fieldset>
 
 {% if interv.installer is not null %}
     {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': interv.installer, 'allFields': false, 'title': 'Dati installatore' } %}

@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Boilr\BoilrBundle\Entity\OperationGroup
  *
  * @ORM\Table(name="operation_groups")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\OperationGroupRepository")
  */
 class OperationGroup
 {
@@ -85,5 +85,10 @@ class OperationGroup
     public function getDescr()
     {
         return $this->descr;
+    }
+
+    public function getFullDescr()
+    {
+        return sprintf("%s (%s)", $this->getDescr(), $this->getName());
     }
 }
