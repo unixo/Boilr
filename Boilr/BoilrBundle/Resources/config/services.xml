@@ -19,6 +19,13 @@
     -->
 
     <services>
+        <!-- Request listener -->
+        <service id="boilr.referer.listener" class="Boilr\BoilrBundle\Listener\RefererListener">
+              <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
+              <argument type="service" id="router" />
+        </service>
+        <!-- End of Request listener -->
+
         <!-- Geo-map -->
         <service id="boilr.map.location" class="Boilr\BoilrBundle\Map\LocationMap">
             <tag name="vichgeo.map" alias="location" />

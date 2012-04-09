@@ -61,7 +61,7 @@
                             <tr class="{{ cycle(['odd', 'even'], key) }}">
                                 <td>
                                     <a href="{{ url('list_all_interventions', { year : mi.originalDate|date('Y'), month: mi.originalDate|date('m')} ) }}">
-                                        {{ mi.originalDate | date('d-m-Y H:m') }}
+                                        {{ mi.originalDate | date('d-m-Y H:i') }}
                                     </a>
                                 </td>
                                 <td>{{ mi.system.systemType.name }}</td>

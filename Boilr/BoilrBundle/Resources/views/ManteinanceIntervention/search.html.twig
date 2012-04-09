@@ -1,0 +1,96 @@
+{% set secondaryMenu = 'Interventi' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+{% block central_block %}
+<h2>Inserimento intervento di manutenzione non programmato</h2>
+
+<form id="form_search_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+    <fieldset>
+        <legend>Filtri di ricerca</legend>
+
+        <div><label>Intervallo temporal?:</label>{{ form_widget(form.searchByDate) }}</div>
+        <div><label>Dal:</label>{{ form_widget(form.startDate) }}</div>
+        <div><label>Al:</label>{{ form_widget(form.endDate) }}</div>
+        <div><label>Solo programmati?</label>{{ form_widget(form.planned) }}</div>
+        <div><label>Stato:</label>{{ form_widget(form.status) }}</div>
+    </fieldset>
+
+    <div>
+        <button type="submit">Cerca</button>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+</form>
+
+{% if results|length > 0 %}
+<fieldset>
+    <legend>Interventi trovati</legend>
+
+    <table id="tblResults">
+        <thead>
+            <tr>
+                <th>Stato</th>
+                <th>Progr.</th>
+                <th>Data/Ora</th>
+                <th>Cliente</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for interv in results %}
+            <tr>
+                <td>&nbsp;</td>
+                <td>{{ mymacro.imgcheck_if_true(interv.isPlanned) }}</td>
+                <td>{{ interv.originalDate | date('d-m-Y H:i') }}</td>
+                <td><a onclick="fnShowPersonDetail({{ interv.customer.id }})">{{ interv.customer.fullName }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</fieldset>
+
+{% include 'BoilrBundle:Person:_details.html.twig' %}
+{% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+
+<script type="text/javascript">
+/* <![CDATA[ */
+
+function fnToggleDates(bValue)
+{
+    if (bValue) {
+        $('#interventionSearchForm_startDate_date').removeAttr('disabled');
+        $('#interventionSearchForm_startDate_time_hour').removeAttr('disabled');
+        $('#interventionSearchForm_startDate_time_minute').removeAttr('disabled');
+        $('#interventionSearchForm_endDate_date').removeAttr('disabled');
+        $('#interventionSearchForm_endDate_time_hour').removeAttr('disabled');
+        $('#interventionSearchForm_endDate_time_minute').removeAttr('disabled');
+    } else {
+        $('#interventionSearchForm_startDate_date').attr('disabled', 'disabled');
+        $('#interventionSearchForm_startDate_time_hour').attr('disabled', 'disabled');
+        $('#interventionSearchForm_startDate_time_minute').attr('disabled', 'disabled');
+        $('#interventionSearchForm_endDate_date').attr('disabled', 'disabled');
+        $('#interventionSearchForm_endDate_time_hour').attr('disabled', 'disabled');
+        $('#interventionSearchForm_endDate_time_minute').attr('disabled', 'disabled');
+    }
+}
+
+$(function() {
+    {% if results|length > 0 %}
+    $('#tblResults').dataTable({ });
+    {% endif %}
+
+    fnToggleDates( $('#interventionSearchForm_searchByDate').is(':checked') );
+    $('#interventionSearchForm_searchByDate').change(
+                        function (event) { fnToggleDates( $(event.target).is(':checked') ); });
+});
+
+/* ]]> */
+</script>
+
+{% endblock %}

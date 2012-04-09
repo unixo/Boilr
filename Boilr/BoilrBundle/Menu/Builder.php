@@ -20,6 +20,7 @@ class Builder extends ContainerAware
 
         $item = $menu->addChild('Interventi', array('route' => 'main_intervention'));
         $item->addChild('Mese corrente', array('route' => 'current_month_interventions'));
+        $item->addChild('Ricerca', array('route' => 'search_intervention'));
 
 
         // Add link to administration if current user has admin role

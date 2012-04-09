@@ -4,7 +4,8 @@ namespace Boilr\BoilrBundle\Repository;
 
 use Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Entity\ManteinanceIntervention,
-    Boilr\BoilrBundle\Entity\OperationGroup;
+    Boilr\BoilrBundle\Entity\OperationGroup,
+    Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -68,6 +69,11 @@ class ManteinanceInterventionRepository extends EntityRepository
         return ($miCount > 0);
     }
 
+    /**
+     * Evaluate expected close time based on operation group time length
+     *
+     * @param ManteinanceIntervention $interv
+     */
     public function evalExpectedCloseDate(ManteinanceIntervention $interv)
     {
         if (! $interv->getOriginalDate() || ! $interv->getDefaultOperationGroup()) {
@@ -83,5 +89,36 @@ class ManteinanceInterventionRepository extends EntityRepository
         $aDate->add($interval);
 
         $interv->setExpectedCloseDate($aDate);
+    }
+
+    public function searchInterventions(ManteinanceInterventionFilter $filter)
+    {
+        $params = array();
+        $qb     = $this->getEntityManager()->createQueryBuilder()->select('mi')
+                       ->from('BoilrBundle:ManteinanceIntervention', 'mi')
+                       ->orderBy('mi.originalDate');
+
+        // Date interval
+        if ($filter->getSearchByDate()) {
+            $qb->andWhere('mi.originalDate >= :date1 AND mi.originalDate <= :date2');
+            $params += array('date1' => $filter->getStartDate(), 'date2' => $filter->getEndDate());
+        }
+
+        // Only planned?
+        if ($filter->getPlanned()) {
+            $qb->andWhere('mi.isPlanned = 1');
+        }
+
+        // Status
+        if (count($filter->getStatus()) > 0) {
+            $qb->andWhere('mi.status in (:statuses)');
+            $params += array('statuses' => $filter->getStatus() );
+        }
+
+        if (count($params)) {
+            $qb->setParameters($params);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

@@ -36,6 +36,7 @@
     <fieldset>
         <legend>Dati installatore</legend>
         <div>Non è stato assegnato alcun installatore all'intervento</div>
+        {% if interv.isAborted() == false %}
         <div style="margin-top: 10px;">
             <ul id="icons" class="ui-widget ui-helper-clearfix">
                 <li class="ui-state-default ui-corner-all">
@@ -45,7 +46,31 @@
                 </li>
             </ul>
         </div>
+        {% endif %}
     </fieldset>
 {% endif %}
 
+<fieldset>
+    <legend>Operazioni disponibili</legend>
+    <button id="btnCancel">Annulla intervento</button>
+</fieldset>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    /* <![CDATA[ */
+
+    $(function() {
+        {% if interv.isAborted() == false %}
+        $('#btnCancel').button({ icons: { primary: "ui-icon-trash" }, text: false })
+                       .click(function(event) {
+                                    window.location.href = '{{ url('intervention_abort', {id: interv.id}) }}';
+                              });
+        {% else %}
+            $('#btnCancel').button({ icons: { primary: "ui-icon-trash" }, text: false, disabled: true });
+        {% endif %}
+    });
+
+    /* ]]> */
+</script>
 {% endblock %}

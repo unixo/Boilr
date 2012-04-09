@@ -16,14 +16,13 @@
 {% block central_block %}
 <h2>Elenco interventi mensili</h2>
 
-<br/>
 <div>
     <button id="btnPrev">Mese precedente</button>
     <button id="btnNext">Mese successivo</button>
+
+    {{ calendar(year, month, records) }}
 </div>
-<br/><br/><br/>
-{{ calendar(year, month, records) }}
-<br/>
+
 {% endblock %}
 
 {% block javascripts %}

@@ -5,6 +5,8 @@ namespace Boilr\BoilrBundle\Controller;
 use Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Form\UnplannedInterventionForm,
+    Boilr\BoilrBundle\Form\ManteinanceInterventionSearchForm,
+    Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter,
     Boilr\BoilrBundle\Extension\MyDateTime;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
@@ -16,6 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 
 class ManteinanceInterventionController extends BaseController
 {
+    const ENTITY = 'BoilrBundle:ManteinanceIntervention';
+
     /**
      * @Route("/", name="main_intervention")
      * @Template
@@ -62,7 +66,7 @@ class ManteinanceInterventionController extends BaseController
         $prevMonth->sub($interval);
 
         // Search interventions
-        $records = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceIntervention')
+        $records = $this->getDoctrine()->getRepository(self::ENTITY)
                         ->interventionsBetweenDates($startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
 
         // Format titles
@@ -93,11 +97,25 @@ class ManteinanceInterventionController extends BaseController
     protected function getInterventionTitle(ManteinanceIntervention $int)
     {
         $url   = $this->generateUrl('intervention_detail', array('id' => $int->getId()));
-        $icon  = ($int->getStatus()==ManteinanceIntervention::STATUS_TENTATIVE?"ui-icon-help":"ui-icon-check");
+        switch ($int->getStatus()) {
+            case ManteinanceIntervention::STATUS_TENTATIVE:
+                $icon = "ui-icon-help";
+                break;
+            case ManteinanceIntervention::STATUS_ABORTED:
+                $icon = "ui-icon-trash";
+                break;
+            default:
+                break;
+        }
         $title = $int->getCustomer()->getSurname();
 
+        /*
         $html = sprintf('<span class="event"><a href="%s"><span class="ui-icon %s"></span>%s</a></span>',
                 $url, $icon, $title);
+         */
+        $time = $int->getOriginalDate()->format('H:i');
+        $html = sprintf('<li><a href="%s">%s <span class="ui-icon %s"></span>%s</a></li>',
+                $url, $time, $icon, $title);
 
         return $html;
     }
@@ -138,7 +156,7 @@ class ManteinanceInterventionController extends BaseController
             $interv->setOriginalDate($aDate);
         } else {
             // An update has been requested, fetch the intervention from the store
-            $interv = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceIntervention')->findOneById($iid);
+            $interv = $this->getDoctrine()->getRepository(self::ENTITY)->findOneById($iid);
             if (! $interv) {
                 throw new NotFoundHttpException("Invalid intervention");
             }
@@ -154,7 +172,7 @@ class ManteinanceInterventionController extends BaseController
             $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
-                $miRepo = $this->getEntityManager()->getRepository('BoilrBundle:ManteinanceIntervention');
+                $miRepo = $this->getDoctrine()->getRepository(self::ENTITY);
 
                 // further check: verify that given intervention doesn't overlap with any other
                 $overlaps = $miRepo->doesInterventionOverlaps($interv);
@@ -251,6 +269,38 @@ class ManteinanceInterventionController extends BaseController
      */
     public function searchAction()
     {
+        $filter  = new ManteinanceInterventionFilter();
+        $form    = $this->createForm(new ManteinanceInterventionSearchForm, $filter);
+        $results = array();
 
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
+
+            if ($form->isValid()) {
+                $results = $this->getEntityManager()->getRepository(self::ENTITY)->searchInterventions($filter);
+            }
+        }
+
+        return array('form' => $form->createView(), 'results' => $results);
+    }
+
+    /**
+     * Cancel given intervention
+     *
+     * @Route("/abort/{id}", name="intervention_abort")
+     * @ParamConverter("interv", class="BoilrBundle:ManteinanceIntervention")
+     * @Template()
+     */
+    public function abortAction(ManteinanceIntervention $interv)
+    {
+        try {
+            $interv->setStatus(ManteinanceIntervention::STATUS_ABORTED);
+            $this->getEntityManager()->flush();
+            $this->setNoticeMessage('Intervento annullato con successo');
+        } catch (Exception $exc) {
+            $this->setErrorMessage('Si è verificato un problema durante il salvataggio');
+        }
+
+        return $this->redirect($this->generateUrl('intervention_detail', array('id' => $interv->getId() )));
     }
 }

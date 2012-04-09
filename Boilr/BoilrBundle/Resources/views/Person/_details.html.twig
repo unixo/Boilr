@@ -1,0 +1,42 @@
+<div id="dlgPersonDetail">
+    <fieldset class="half_left">
+        <legend>Dati</legend>
+
+        <div><label>Tipo:</label><span id="typeDescr"></span></div>
+        <div><label>Nome:</label><span id="name"></span></div>
+        <div><label>Cognome:</label><span id="surname"></span></div>
+        <div><label>Codice fiscale:</label><span id="fiscalCode"></span></div>
+        <div><label>Partita Iva:</label><span id="vatCode"></span></div>
+    </fieldset>
+
+    <fieldset class="half_right">
+        <legend>Recapiti</legend>
+
+        <div><label>Casa:</label><span id="homePhone"></span></div>
+        <div><label>Ufficio:</label><span id="officePhone"></span></div>
+        <div><label>Cellulare:</label><span id="cellularPhone"></span></div>
+        <div><label>FAX:</label><span id="faxNumber"></span></div>
+        <div><label>Mail #1:</label><span id="primaryMail"></span></div>
+        <div><label>Mail #2:</label><span id="secondaryMail"></span></div>
+    </fieldset>
+</div>
+
+<script type="text/javascript">
+    /* <![CDATA[ */
+    function fnShowPersonDetail(pid)
+    {
+        var params = {'pid': pid};
+        $.getJSON("{{ url('json_get_person') }}", params, function(data) {
+                $.each(data, function(key, val) {
+                        var obj = document.getElementById(key);
+                        if (obj && val) obj.innerHTML = val+'&nbsp;';
+                    });
+            });
+        $("#dlgPersonDetail").dialog('open');
+    }
+
+    $(function() {
+         $("#dlgPersonDetail").dialog({ autoOpen: false, width: 640 });
+    });
+    /* ]]> */
+</script>

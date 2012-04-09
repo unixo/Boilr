@@ -164,7 +164,7 @@ class ManteinanceIntervention
         // Intervention date must be in the future
         $now = new \DateTime();
         if ($this->getOriginalDate() <= $now) {
-            $property_path = $context->getPropertyPath() . ".originalDate";
+            $property_path = $context->getPropertyPath() . ".originalDate.date";
             $context->setPropertyPath($property_path);
             $context->addViolation('Non è possibile creare un intervento nel passato', array(), null);
         }
@@ -428,10 +428,15 @@ class ManteinanceIntervention
     /**
      * Get expectedCloseDate
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getExpectedCloseDate()
     {
         return $this->expectedCloseDate;
+    }
+
+    public function isAborted()
+    {
+        return ($this->getStatus() == self::STATUS_ABORTED);
     }
 }
