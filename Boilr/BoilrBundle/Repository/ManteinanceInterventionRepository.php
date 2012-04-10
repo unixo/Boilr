@@ -26,7 +26,7 @@ class ManteinanceInterventionRepository extends EntityRepository
                               ->select('mi')
                               ->from('BoilrBundle:ManteinanceIntervention', 'mi')
                               ->where('mi.customer = :owner')
-                              ->orderBy('mi.originalDate')
+                              ->orderBy('mi.scheduledDate')
                               ->setParameter('owner', $person)
                               ->getQuery()->getResult();
 
@@ -44,8 +44,8 @@ class ManteinanceInterventionRepository extends EntityRepository
     {
         $records = $this->getEntityManager()->createQuery(
                             "SELECT si FROM BoilrBundle:ManteinanceIntervention si ".
-                            "WHERE si.originalDate >= :date1 AND si.originalDate <= :date2 ".
-                            "ORDER BY si.originalDate")
+                            "WHERE si.scheduledDate >= :date1 AND si.scheduledDate <= :date2 ".
+                            "ORDER BY si.scheduledDate")
                         ->setParameters(array('date1' => $start, 'date2' => $end))
                         ->getResult();
 
@@ -63,7 +63,7 @@ class ManteinanceInterventionRepository extends EntityRepository
         $aDate   = $interv->getOriginalDate();
         $miCount = $this->getEntityManager()->createQuery(
                 "SELECT COUNT(mi) FROM BoilrBundle:ManteinanceIntervention mi ".
-                "WHERE :date >= mi.originalDate AND :date <= mi.expectedCloseDate")
+                "WHERE :date >= mi.scheduledDate AND :date <= mi.expectedCloseDate")
                         ->setParameter('date', $aDate)->getSingleScalarResult();
 
         return ($miCount > 0);
@@ -96,11 +96,11 @@ class ManteinanceInterventionRepository extends EntityRepository
         $params = array();
         $qb     = $this->getEntityManager()->createQueryBuilder()->select('mi')
                        ->from('BoilrBundle:ManteinanceIntervention', 'mi')
-                       ->orderBy('mi.originalDate');
+                       ->orderBy('mi.scheduledDate');
 
         // Date interval
         if ($filter->getSearchByDate()) {
-            $qb->andWhere('mi.originalDate >= :date1 AND mi.originalDate <= :date2');
+            $qb->andWhere('mi.scheduledDate >= :date1 AND mi.originalDate <= :date2');
             $params += array('date1' => $filter->getStartDate(), 'date2' => $filter->getEndDate());
         }
 
