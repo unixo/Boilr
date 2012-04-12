@@ -385,9 +385,9 @@ class ManteinanceIntervention
         return $this->expectedCloseDate;
     }
 
-    public function isAborted()
+    public function isTentative()
     {
-        return ($this->getStatus() == self::STATUS_ABORTED);
+        return ($this->getStatus() == self::STATUS_TENTATIVE);
     }
 
     /**

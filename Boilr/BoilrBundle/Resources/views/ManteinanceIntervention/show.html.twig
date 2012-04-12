@@ -76,7 +76,7 @@
     /* <![CDATA[ */
 
     $(function() {
-        {% if interv.isAborted() == false %}
+        {% if interv.isTentative() == true %}
         $('#btnCancel').button({ icons: { primary: "ui-icon-trash" }, text: false })
                        .click(function(event) {
                                     window.location.href = '{{ url('intervention_abort', {id: interv.id}) }}';
