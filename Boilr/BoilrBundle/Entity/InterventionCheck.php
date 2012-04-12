@@ -32,6 +32,15 @@ class InterventionCheck
     protected $templateItem;
 
     /**
+     * @var InterventionDetail
+     *
+     * @ORM\ManyToOne(targetEntity="InterventionDetail")
+     * @ORM\JoinColumn(name="detail_id", referencedColumnName="id", nullable=false)
+     * @ORM\Id
+     */
+    protected $parentDetail;
+
+    /**
      * @var string $id
      *
      * @ORM\Column(type="string", length=100, nullable=false)
@@ -97,5 +106,25 @@ class InterventionCheck
     public function getTemplateItem()
     {
         return $this->templateItem;
+    }
+
+    /**
+     * Set parentDetail
+     *
+     * @param Boilr\BoilrBundle\Entity\InterventionDetail $parentDetail
+     */
+    public function setParentDetail(\Boilr\BoilrBundle\Entity\InterventionDetail $parentDetail)
+    {
+        $this->parentDetail = $parentDetail;
+    }
+
+    /**
+     * Get parentDetail
+     *
+     * @return Boilr\BoilrBundle\Entity\InterventionDetail
+     */
+    public function getParentDetail()
+    {
+        return $this->parentDetail;
     }
 }

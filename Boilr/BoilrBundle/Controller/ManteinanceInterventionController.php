@@ -5,8 +5,10 @@ namespace Boilr\BoilrBundle\Controller;
 use Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Form\UnplannedInterventionForm,
+    Boilr\BoilrBundle\Entity\InterventionDetail,
     Boilr\BoilrBundle\Form\ManteinanceInterventionSearchForm,
     Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter,
+    Boilr\BoilrBundle\Form\ManteinanceInterventionForm,
     Boilr\BoilrBundle\Extension\MyDateTime;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
@@ -72,7 +74,7 @@ class ManteinanceInterventionController extends BaseController
         // Format titles
         $results = array();
         foreach ($records as $intervention) {
-            $date = $intervention->getOriginalDate();
+            $date = $intervention->getScheduledDate();
             $day  = $date->format('d');
             $results[$day][] = $this->getInterventionTitle($intervention);
         }
@@ -113,7 +115,7 @@ class ManteinanceInterventionController extends BaseController
         $html = sprintf('<span class="event"><a href="%s"><span class="ui-icon %s"></span>%s</a></span>',
                 $url, $icon, $title);
          */
-        $time = $int->getOriginalDate()->format('H:i');
+        $time = $int->getScheduledDate()->format('H:i');
         $html = sprintf('<li><a href="%s">%s <span class="ui-icon %s"></span>%s</a></li>',
                 $url, $time, $icon, $title);
 
@@ -121,21 +123,76 @@ class ManteinanceInterventionController extends BaseController
     }
 
     /**
-     * @Route("/add-unplanned/{pid}", name="unplanned_intervention_add")
-     * @Route("/update-unplanned/{iid}", name="unplanned_intervention_edit")
+     * @Route("/add-unplanned/{id}", name="unplanned_intervention_add")
+     * @ParamConverter("customer", class="BoilrBundle:Person")
      * @Template()
      */
-    public function addOrUpdateUnplannedInterventionAction($pid = null, $iid = null)
+    public function addUnplannedInterventionAction(MyPerson $customer)
     {
-        $interv   = null;
-        /* @var $interv \Boilr\BoilrBundle\Entity\ManteinanceIntervention */
-        $customer = null;
-        /* @var $customer \Boilr\BoilrBundle\Entity\Person */
+        $interv = ManteinanceIntervention::interventionForCustomer($customer);
+        $form   = $this->createForm(new ManteinanceInterventionForm(), $interv, array('validation_groups' => array('unplanned')));
+
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
+
+            if ($form->isValid()) {
+                $miRepo   = $this->getDoctrine()->getRepository(self::ENTITY);
+                $retValue = $miRepo->persistUnplannedIntervention($interv);
+
+                if ($retValue['success'] === true) {
+                    $this->setNoticeMessage('Operazione conclusa con successo');
+                    $year  = $interv->getScheduledDate()->format('Y');
+                    $month = $interv->getScheduledDate()->format('m');
+
+                    return $this->redirect( $this->generateUrl('list_all_interventions', array('year' => $year, 'month' => $month)));
+                } else {
+                    $this->setErrorMessage($retValue['message']);
+                }
+            }
+        }
+
+        return array('form' => $form->createView(), 'customer' => $customer);
+    }
+
+    /**
+     * @Route("/update-unplanned/{id}", name="unplanned_intervention_edit")
+     * @ParamConverter("interv", class="BoilrBundle:ManteinanceIntervention")
+     * @Template()
+     */
+    public function updateUnplannedInterventionAction(ManteinanceIntervention $interv)
+    {
+        $customer = $this->getDoctrine()->getRepository('BoilrBundle:Person')->findOneById($pid);
+        $mi = new ManteinanceIntervention();
+        $mi->setCustomer($customer);
+
+        foreach ($customer->getSystems() as $system) {
+            $detail = new \Boilr\BoilrBundle\Entity\InterventionDetail();
+            $detail->setIntervention($mi);
+            $detail->setSystem($system);
+
+            $mi->addInterventionDetail($detail);
+        }
+
+        $form = $this->createForm(new \Boilr\BoilrBundle\Form\ManteinanceInterventionForm, $mi);
+
+        return array('form' => $form->createView(), 'customer' => $customer);
+
+        /*
+        $opGroups = $this->getDoctrine()->getRepository('BoilrBundle:OperationGroup')->findAll();
+        $customer = $this->getDoctrine()->getRepository('BoilrBundle:Person')->findOneById($pid);
+        $mi = new \Boilr\BoilrBundle\Form\Model\UnplannedIntervention($customer, $opGroups);
+        $form = $this->createForm(new UnplannedInterventionForm(), $mi);
+
+        return array('form' => $form->createView(), 'customer' => $customer);
+        */
+
+        //--------------------------------------------------------------------
 
         /**
          * If I'm creating a new intervention, a customer must be specified (pid)
          * otherwise I'm trying to edit an existing intervention (iid)
          */
+        /*
         if (isset($pid)) {
             $customer = $this->getDoctrine()->getRepository('BoilrBundle:Person')->findOneById($pid);
             if (! $customer) {
@@ -144,16 +201,15 @@ class ManteinanceInterventionController extends BaseController
 
             // Check if selected customer has at least one system, otherwise redirect to his profile page
             if ($customer->getSystems()->count() == 0) {
-                $this->setErrorMessage('Non è stato associato alcun impianto alla persona.');
+                $this->setErrorMessage('Non è stato associato alcun impianto al cliente.');
 
                 return $this->redirect( $this->generateUrl('show_person', array('id' => $customer->getId() )));
             }
 
-            $interv = ManteinanceIntervention::UnplannedInterventionFactory();
-            $interv->setCustomer($customer);
+            $interv = new \Boilr\BoilrBundle\Form\Model\UnplannedIntervention($customer);
             $aDate = MyDateTime::nextWorkingDay(new \DateTime() );
             $aDate->setTime(8, 0, 0);
-            $interv->setOriginalDate($aDate);
+            $interv->setScheduledDate($aDate);
         } else {
             // An update has been requested, fetch the intervention from the store
             $interv = $this->getDoctrine()->getRepository(self::ENTITY)->findOneById($iid);
@@ -164,36 +220,32 @@ class ManteinanceInterventionController extends BaseController
         }
 
         // Build the form
-        $form = $this->createForm(new UnplannedInterventionForm(), $interv,
-                                  array('validation_groups' => array('unplanned')) );
+        $form = $this->createForm(new UnplannedInterventionForm(), $interv);
+                                  // array('validation_groups' => array('unplanned')) );
 
         // Check if user submitted the form
         if ($this->isPOSTRequest()) {
             $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
+                // ladybug_dump($interv); die();
                 $miRepo = $this->getDoctrine()->getRepository(self::ENTITY);
 
                 // further check: verify that given intervention doesn't overlap with any other
-                $overlaps = $miRepo->doesInterventionOverlaps($interv);
+                $overlaps = $miRepo->doesInterventionOverlaps( $interv->getScheduledDate() );
                 if ($overlaps) {
                     $this->setErrorMessage("La data/ora richiesta si sovrappone con un altro appuntamento.");
                 } else {
+                    $mi = $interv->factory();
                     // evaluate expected close date
-                    $miRepo->evalExpectedCloseDate($interv);
-
-                    // If system is not linked with any address, update with user selection
-                    if ($interv->getSystem()->getAddress() === null) {
-                    $system = $interv->getSystem();
-                    $system->setAddress($interv->getAddress());
-                    }
+                    $miRepo->evalExpectedCloseDate($mi);
 
                     // try to persist changes to the store
                     $success = true;
 
                     try {
                         $em = $this->getEntityManager();
-                        $em->persist($interv);
+                        $em->persist($mi);
                         $em->flush();
                     } catch (\PDOException $exc) {
                         var_dump($exc->getMessage());
@@ -202,8 +254,8 @@ class ManteinanceInterventionController extends BaseController
 
                     if ($success) {
                         $this->setNoticeMessage('Operazione creata con successo');
-                        $year  = $interv->getOriginalDate()->format('Y');
-                        $month = $interv->getOriginalDate()->format('m');
+                        $year  = $mi->getScheduledDate()->format('Y');
+                        $month = $mi->getScheduledDate()->format('m');
 
                         return $this->redirect( $this->generateUrl('list_all_interventions', array('year' => $year, 'month' => $month)));
                     } else {
@@ -214,6 +266,7 @@ class ManteinanceInterventionController extends BaseController
         }
 
         return array('form' => $form->createView(), 'customer' => $customer);
+        */
     }
 
     /**

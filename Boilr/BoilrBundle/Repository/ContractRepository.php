@@ -89,14 +89,12 @@ class ContractRepository extends EntityRepository
 
                     while ($lastDate <= $contract->getEndDate()) {
                         $manInt   = new ManteinanceIntervention();
-                        $manInt->setOriginalDate($lastDate);
-                        $manInt->setCustomer($customer);
-                        $manInt->setSystem($contract->getSystem());
-                        $manInt->setAddress($contract->getSystem()->getAddress());
                         $manInt->setIsPlanned(true);
                         $manInt->setContract($contract);
                         $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
-                        $manInt->setDefaultOperationGroup($schema->getOperationGroup());
+                        $manInt->setScheduledDate($lastDate);
+                        $manInt->setCustomer($customer);
+                        $manInt->addSystem($contract->getSystem(), $schema->getOperationGroup());
                         $miRepos->evalExpectedCloseDate($manInt);
 
                         $em->persist($manInt);
@@ -105,14 +103,12 @@ class ContractRepository extends EntityRepository
                 } else {
                     $lastDate = $this->getFutureDate($lastDate, $schema->getFreq());
                     $manInt   = new ManteinanceIntervention();
-                    $manInt->setOriginalDate($lastDate);
-                    $manInt->setCustomer($customer);
                     $manInt->setIsPlanned(true);
                     $manInt->setContract($contract);
-                    $manInt->setSystem($contract->getSystem());
-                    $manInt->setAddress($contract->getSystem()->getAddress());
                     $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
-                    $manInt->setDefaultOperationGroup($schema->getOperationGroup());
+                    $manInt->setScheduledDate($lastDate);
+                    $manInt->setCustomer($customer);
+                    $manInt->addSystem($contract->getSystem(), $schema->getOperationGroup());
                     $miRepos->evalExpectedCloseDate($manInt);
 
                     $em->persist($manInt);

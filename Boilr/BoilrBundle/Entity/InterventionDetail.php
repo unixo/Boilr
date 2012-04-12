@@ -2,9 +2,10 @@
 
 namespace Boilr\BoilrBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM,
+    Symfony\Component\Validator\Constraints as Assert,
+    Symfony\Component\Validator\ExecutionContext,
+    Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Boilr\BoilrBundle\Entity\InterventionDetail
@@ -12,6 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="intervention_detail", uniqueConstraints={
  * @ORM\UniqueConstraint(name="sys_int_idx", columns={"intervention_id", "system_id"})})
  * @ORM\Entity
+ * @Assert\Callback(methods={"isDetailValid"}, groups={"unplanned"})
  */
 class InterventionDetail
 {
@@ -51,9 +53,17 @@ class InterventionDetail
     /**
      * @var InterventionCheck
      *
-     * @ORM\OneToMany(targetEntity="InterventionCheck", mappedBy="person", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="InterventionCheck", mappedBy="parentDetail", cascade={"persist"})
      */
     protected $checks = array();
+
+    /**
+     * WARNING: this field is not bound to any column on DB!!
+     * It's used by some forms to select more than one system at time
+     *
+     * @var bool $checked
+     */
+    protected $checked;
 
     public function __construct()
     {
@@ -148,5 +158,25 @@ class InterventionDetail
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getChecked()
+    {
+        return $this->checked;
+    }
+
+    public function setChecked($checked)
+    {
+        $this->checked = $checked;
+    }
+
+    public function isDetailValid(ExecutionContext $context)
+    {
+        // Intervention date must be in the future
+        if ($this->getChecked() && (! $this->getOperationGroup()) ) {
+            $property_path = $context->getPropertyPath() . ".operationGroup";
+            $context->setPropertyPath($property_path);
+            $context->addViolation('Specificare la tipologia di controllo', array(), null);
+        }
     }
 }

@@ -1,0 +1,68 @@
+{% set secondaryMenu = 'Anagrafica' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+
+{% block central_block %}
+<h2>Inserimento intervento di manutenzione non programmato</h2>
+
+<form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+
+    {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': customer, 'allFields': false, 'title': 'Dati cliente'} %}
+
+    <fieldset>
+        <legend>Dettagli intervento</legend>
+
+        <div><label>Data intervento:</label>{{ form_widget(form.scheduledDate) }}</div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Impianti associati</legend>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Selezione</th>
+                    <th>Controllo</th>
+                    <th>Seriale</th>
+                    <th>Descrizione</th>
+                    <th>Tipologia impianto</th>
+                    <th>Data installaz.</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for detail in form.details %}
+            <tr>
+                <td>{{ form_widget(detail.checked) }}</td>
+                <td>{{ form_widget(detail.operationGroup) }}</td>
+                <td>{{ detail.vars.value.system.code }}</td>
+                <td>{{ detail.vars.value.system.descr }}</td>
+                <td>{{ detail.vars.value.system.systemType.name }}</td>
+                <td>{{ detail.vars.value.system.installDate | date('d-m-Y') }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </fieldset>
+
+    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
+        <a href="{{ url('show_person', {'id': customer.id}) }}">Torna al dettaglio</a>
+        <input type="submit" value="Salva" />
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+</form>
+{% endblock %}
+
+
+{% block javascripts %}
+<script type="text/javascript">
+/* <![CDATA[ */
+
+    $(function() {
+
+    });
+
+/* ]]> */
+</script>
+{% endblock %}

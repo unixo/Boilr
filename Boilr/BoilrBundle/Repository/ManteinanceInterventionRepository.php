@@ -55,12 +55,12 @@ class ManteinanceInterventionRepository extends EntityRepository
     /**
      * Returns true if given intervention overlaps some other interventions
      *
-     * @param ManteinanceIntervention $interv
+     * @param \DateTime $aDate
      * @return boolean
      */
     public function doesInterventionOverlaps(ManteinanceIntervention $interv)
     {
-        $aDate   = $interv->getOriginalDate();
+        $aDate   = $interv->getScheduledDate();
         $miCount = $this->getEntityManager()->createQuery(
                 "SELECT COUNT(mi) FROM BoilrBundle:ManteinanceIntervention mi ".
                 "WHERE :date >= mi.scheduledDate AND :date <= mi.expectedCloseDate")
@@ -76,17 +76,24 @@ class ManteinanceInterventionRepository extends EntityRepository
      */
     public function evalExpectedCloseDate(ManteinanceIntervention $interv)
     {
-        if (! $interv->getOriginalDate() || ! $interv->getDefaultOperationGroup()) {
+        if (! $interv->getScheduledDate()) {
             return;
         }
 
-        $repo       = $this->getEntityManager()->getRepository('BoilrBundle:OperationGroup');
-        $timeLength = $repo->getEstimatedTimeLength( $interv->getDefaultOperationGroup() );
-        $interval   = \DateInterval::createFromDateString("+". $timeLength ." second");
-
+        $repo  = $this->getEntityManager()->getRepository('BoilrBundle:OperationGroup');
         $aDate = new \DateTime();
-        $aDate->setTimestamp( $interv->getOriginalDate()->format('U') );
-        $aDate->add($interval);
+        $aDate->setTimestamp( $interv->getScheduledDate()->format('U') );
+
+        // For each system belonging to this intervention, evaluate work time
+        foreach ($interv->getDetails() as $detail) {
+            /* @var $detail \Boilr\BoilrBundle\Entity\InterventionDetail */
+
+            if ($detail->getChecked()) {
+                $timeLength = $repo->getEstimatedTimeLength( $detail->getOperationGroup() );
+                $interval   = \DateInterval::createFromDateString("+". $timeLength ." second");
+                $aDate->add($interval);
+            }
+        }
 
         $interv->setExpectedCloseDate($aDate);
     }
@@ -120,5 +127,40 @@ class ManteinanceInterventionRepository extends EntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function persistUnplannedIntervention(ManteinanceIntervention $interv)
+    {
+        // verify that given intervention doesn't overlap with any other
+        if ($this->doesInterventionOverlaps($interv)) {
+            return array('success' => false, 'message' => "La data/ora richiesta si sovrappone con un altro appuntamento.");
+        }
+
+        // purge any unchecked system
+        $detailsToRemove = array();
+        foreach ($interv->getDetails() as $detail) {
+            if (! $detail->getChecked()) {
+                $detailsToRemove[] = $detail;
+            }
+        }
+        foreach ($detailsToRemove as $detail) {
+            $interv->getDetails()->removeElement($detail);
+        }
+
+        // evaluate close date based on system types
+        $this->evalExpectedCloseDate($interv);
+
+        $em  = $this->getEntityManager();
+        $em->beginTransaction();
+        try {
+            $em->persist($interv);
+            $em->flush();
+            $em->commit();
+        } catch (Exception $exc) {
+            $em->rollback();
+            return array('success' => false, 'message' => 'Si è verificato un errore durante il salvataggio');
+        }
+
+        return array('success' => true);
     }
 }

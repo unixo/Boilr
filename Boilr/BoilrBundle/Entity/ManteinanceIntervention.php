@@ -7,7 +7,11 @@ use Symfony\Component\Validator\Constraints as Assert,
     Doctrine\ORM\Mapping as ORM,
     Gedmo\Mapping\Annotation as Gedmo;
 
-use Boilr\BoilrBundle\Validator\Constraints as MyAssert;
+use Boilr\BoilrBundle\Validator\Constraints as MyAssert,
+    Boilr\BoilrBundle\Entity\InterventionDetail,
+    Boilr\BoilrBundle\Entity\System as MySystem,
+    Boilr\BoilrBundle\Entity\Person as MyPerson,
+    Boilr\BoilrBundle\Entity\OperationGroup;
 
 /**
  * Boilr\BoilrBundle\Entity\ManteinanceIntervention
@@ -67,14 +71,14 @@ class ManteinanceIntervention
     protected $status;
 
     /**
-     * @var datetime $originalDate
+     * @var datetime $scheduledDate
      *
-     * @ORM\Column(name="original_date", type="datetime", nullable=false)
+     * @ORM\Column(name="scheduled_date", type="datetime", nullable=false)
      * @Assert\NotBlank(groups={"unplanned"})
      * @Assert\Date(groups={"unplanned"})
      * @MyAssert\WorkingDay(groups={"unplanned"})
      */
-    protected $originalDate;
+    protected $scheduledDate;
 
     /**
      * @var datetime $closeDate
@@ -102,24 +106,6 @@ class ManteinanceIntervention
     protected $customer;
 
     /**
-     * @var Address
-     *
-     * @ORM\ManyToOne(targetEntity="Address")
-     * @ORM\JoinColumn(name="address_id", referencedColumnName="id", nullable=false)
-     * @Assert\NotBlank(groups={"unplanned"})
-     */
-    protected $address;
-
-    /**
-     * @var System
-     *
-     * @ORM\ManyToOne(targetEntity="System")
-     * @ORM\JoinColumn(name="system_id", referencedColumnName="id", nullable=false)
-     * @Assert\NotBlank(groups={"unplanned"})
-     */
-    protected $system;
-
-    /**
      * @var Installer
      *
      * @ORM\ManyToOne(targetEntity="Person")
@@ -129,22 +115,17 @@ class ManteinanceIntervention
     protected $installer;
 
     /**
-     * @var OperationGroup
-     *
-     * @ORM\ManyToOne(targetEntity="OperationGroup")
-     * @ORM\JoinColumn(name="oper_group_id", referencedColumnName="id", nullable=false)
-     * * @Assert\NotBlank(groups={"unplanned"})
-     */
-    protected $defaultOperationGroup;
-
-    /**
      * @var InterventionDetail
      *
-     * @ORM\OneToMany(targetEntity="InterventionDetail", mappedBy="intervention")
-     * @Assert\Valid
+     * @ORM\OneToMany(targetEntity="InterventionDetail", mappedBy="intervention", cascade={"persist"})
+     * @Assert\Valid(groups={"unplanned"})
      */
     protected $details;
 
+    /**
+     *
+     * @return \Boilr\BoilrBundle\Entity\ManteinanceIntervention
+     */
     public static function UnplannedInterventionFactory()
     {
         $int = new ManteinanceIntervention();
@@ -152,6 +133,26 @@ class ManteinanceIntervention
         $int->setStatus(self::STATUS_TENTATIVE);
 
         return $int;
+    }
+
+    /**
+     * Add a system to be checked
+     *
+     * @param MySystem $sys
+     * @return \Boilr\BoilrBundle\Entity\InterventionDetail
+     */
+    public function addSystem(MySystem $sys, OperationGroup $opGroup)
+    {
+        // create a new instance of InterventionDetail
+        $detail = new InterventionDetail();
+        $detail->setSystem($sys);
+        $detail->setIntervention($this);
+        $detail->setOperationGroup($opGroup);
+
+        // Link it with this intervention
+        $this->addInterventionDetail($detail);
+
+        return $detail;
     }
 
     /**
@@ -163,10 +164,23 @@ class ManteinanceIntervention
     {
         // Intervention date must be in the future
         $now = new \DateTime();
-        if ($this->getOriginalDate() <= $now) {
-            $property_path = $context->getPropertyPath() . ".originalDate.date";
+        if ($this->getScheduledDate() <= $now) {
+            $property_path = $context->getPropertyPath() . ".scheduledDate.date";
             $context->setPropertyPath($property_path);
             $context->addViolation('Non è possibile creare un intervento nel passato', array(), null);
+        }
+
+        $oneAtLeast = false;
+        foreach ($this->getDetails() as $detail) {
+            if ($detail->getChecked() && $detail->getOperationGroup()) {
+                $oneAtLeast = true;
+                break;
+            }
+        }
+        if (! $oneAtLeast) {
+            $property_path = $context->getPropertyPath() . ".details";
+            $context->setPropertyPath($property_path);
+            $context->addViolation("Selezionare almeno un sistema da revisionare", array(), null);
         }
     }
 
@@ -178,6 +192,22 @@ class ManteinanceIntervention
     public function getStatusDescr()
     {
         return self::$statusDescr[ $this->getStatus() ];
+    }
+
+    public static function interventionForCustomer(MyPerson $customer)
+    {
+        $interv = ManteinanceIntervention::UnplannedInterventionFactory();
+        $interv->setCustomer($customer);
+        $interv->setScheduledDate(new \DateTime());
+
+        foreach ($customer->getSystems() as $system) {
+            $detail = new InterventionDetail();
+            $detail->setIntervention($interv);
+            $detail->setSystem($system);
+            $interv->addInterventionDetail($detail);
+        }
+
+        return $interv;
     }
 
     public function __construct()
@@ -316,66 +346,6 @@ class ManteinanceIntervention
     }
 
     /**
-     * Set system
-     *
-     * @param Boilr\BoilrBundle\Entity\System $system
-     */
-    public function setSystem(\Boilr\BoilrBundle\Entity\System $system)
-    {
-        $this->system = $system;
-    }
-
-    /**
-     * Get system
-     *
-     * @return Boilr\BoilrBundle\Entity\System
-     */
-    public function getSystem()
-    {
-        return $this->system;
-    }
-
-    /**
-     * Set defaultOperationGroup
-     *
-     * @param Boilr\BoilrBundle\Entity\OperationGroup $defaultOperationGroup
-     */
-    public function setDefaultOperationGroup(\Boilr\BoilrBundle\Entity\OperationGroup $defaultOperationGroup)
-    {
-        $this->defaultOperationGroup = $defaultOperationGroup;
-    }
-
-    /**
-     * Get defaultOperationGroup
-     *
-     * @return Boilr\BoilrBundle\Entity\OperationGroup
-     */
-    public function getDefaultOperationGroup()
-    {
-        return $this->defaultOperationGroup;
-    }
-
-    /**
-     * Set originalDate
-     *
-     * @param datetime $originalDate
-     */
-    public function setOriginalDate($originalDate)
-    {
-        $this->originalDate = $originalDate;
-    }
-
-    /**
-     * Get originalDate
-     *
-     * @return datetime
-     */
-    public function getOriginalDate()
-    {
-        return $this->originalDate;
-    }
-
-    /**
      * Set contract
      *
      * @param Boilr\BoilrBundle\Entity\Contract $contract
@@ -393,26 +363,6 @@ class ManteinanceIntervention
     public function getContract()
     {
         return $this->contract;
-    }
-
-    /**
-     * Set address
-     *
-     * @param Boilr\BoilrBundle\Entity\Address $address
-     */
-    public function setAddress(\Boilr\BoilrBundle\Entity\Address $address)
-    {
-        $this->address = $address;
-    }
-
-    /**
-     * Get address
-     *
-     * @return Boilr\BoilrBundle\Entity\Address
-     */
-    public function getAddress()
-    {
-        return $this->address;
     }
 
     /**
@@ -438,5 +388,25 @@ class ManteinanceIntervention
     public function isAborted()
     {
         return ($this->getStatus() == self::STATUS_ABORTED);
+    }
+
+    /**
+     * Set scheduledDate
+     *
+     * @param datetime $scheduledDate
+     */
+    public function setScheduledDate($scheduledDate)
+    {
+        $this->scheduledDate = $scheduledDate;
+    }
+
+    /**
+     * Get scheduledDate
+     *
+     * @return datetime
+     */
+    public function getScheduledDate()
+    {
+        return $this->scheduledDate;
     }
 }

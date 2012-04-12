@@ -9,9 +9,8 @@
     <legend>Dettaglio</legend>
 
     {{ mymacro.fieldset_row('Cliente', interv.customer.fullname) }}
-    {{ mymacro.fieldset_row('Indirizzo', interv.address.address) }}
-    {{ mymacro.fieldset_row('Data intervento', interv.originalDate|date('d-m-Y H:i')) }}
-    {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate|date('d-m-Y H:i')) }}
+    {{ mymacro.fieldset_row('Data intervento', interv.scheduledDate | date('d-m-Y H:i')) }}
+    {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate | date('d-m-Y H:i')) }}
     {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
 
     {% set closeDate = interv.closeDate?interv.closeDate|date('d-m-Y H:i'):'-' %}
@@ -22,12 +21,28 @@
 </fieldset>
 
 <fieldset>
-    <legend>Impianto da revisionare</legend>
+    <legend>Impianti da revisionare</legend>
 
-    {{ mymacro.fieldset_row('Matricola', interv.system.code) }}
-    {{ mymacro.fieldset_row('Descrizione', interv.system.descr) }}
-    {{ mymacro.fieldset_row('Tipo impianto', interv.system.systemType.name) }}
-    {{ mymacro.fieldset_row('Controlli previsti', interv.defaultOperationGroup.fullDescr) }}
+    <table>
+        <thead>
+            <tr>
+                <th>Matricola</th>
+                <th>Descrizione</th>
+                <th>Tipologia</th>
+                <th>Gruppo controlli</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for detail in interv.details %}
+            <tr>
+                <td>{{ detail.system.code }}</td>
+                <td>{{ detail.system.descr }}</td>
+                <td>{{ detail.system.systemType.name }}</td>
+                <td>{{ detail.operationGroup.fullDescr }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </fieldset>
 
 {% if interv.installer is not null %}

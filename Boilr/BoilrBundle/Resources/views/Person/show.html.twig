@@ -43,49 +43,49 @@
         {% include 'BoilrBundle:Person:_contracts.html.twig' with { 'person': person } %}
 
         {% if interventions | length > 0 %}
-            <fieldset>
-                <legend>Calendario prossimi interventi</legend>
+        <fieldset>
+            <legend>Calendario prossimi interventi</legend>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Stato</th>
-                            <th>Impianto</th>
-                            <th>Programmato</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for key,mi in interventions %}
-                            <tr class="{{ cycle(['odd', 'even'], key) }}">
-                                <td>
-                                    <a href="{{ url('list_all_interventions', { year : mi.scheduledDate|date('Y'), month: mi.scheduledDate|date('m')} ) }}">
-                                        {{ mi.scheduledDate | date('d-m-Y H:i') }}
-                                    </a>
-                                </td>
-                                <td>{{ mi.getStatusDescr() }}</td>
-                                <td>
-                                    {% spaceless %}
-                                        {% if mi.details|length == 1 %}
-                                            {{ mi.details[0].system.descr }}
-                                        {% else %}
-                                            {{ mi.details | length }} impianti
-                                        {% endif %}
-                                    {% endspaceless %}
-                                </td>
-                                <td>{{ mymacro.imgcheck_if_true(mi.isPlanned) }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Stato</th>
+                        <th>Impianto</th>
+                        <th>Programmato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key,mi in interventions %}
+                    <tr class="{{ cycle(['odd', 'even'], key) }}">
+                        <td>
+                            <a href="{{ url('list_all_interventions', { year : mi.scheduledDate|date('Y'), month: mi.scheduledDate|date('m')} ) }}">
+                                {{ mi.scheduledDate | date('d-m-Y H:i') }}
+                            </a>
+                        </td>
+                        <td>{{ mi.getStatusDescr() }}</td>
+                        <td>
+                        {% spaceless %}
+                            {% if mi.details|length == 1 %}
+                                {{ mi.details[0].system.descr }}
+                            {% else %}
+                                {{ mi.details | length }} impianti
+                            {% endif %}
+                        {% endspaceless %}
+                        </td>
+                        <td>{{ mymacro.imgcheck_if_true(mi.isPlanned) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% endif %}
 
         {% if person.systems | length > 0 %}
-            <div style="margin-top: 10px;">
-                <button id="btnAddUnplanned" title="Intervento non programmato">
-                    Aggiungi intervento non programmato
-                </button>
-            </div>
+        <div style="margin-top: 10px;">
+            <button id="btnAddUnplanned" title="Intervento non programmato">
+                Aggiungi intervento non programmato
+            </button>
+        </div>
         {% endif %}
     </div>
 </div>

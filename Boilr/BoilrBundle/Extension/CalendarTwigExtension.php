@@ -152,7 +152,7 @@ class CalendarTwigExtension extends \Twig_Extension
 
         if (array_key_exists($day, $records)) {
             $titles = $records[$day];
-            $count  = max(array(count($titles), self::MAX_EVENTS_IN_CELL));
+            $count  = min(array(count($titles), self::MAX_EVENTS_IN_CELL));
 
             $value = "<ul>";
             for ($i=0; $i < $count; $i++) {
