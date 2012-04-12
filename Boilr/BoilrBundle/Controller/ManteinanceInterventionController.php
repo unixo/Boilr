@@ -106,7 +106,12 @@ class ManteinanceInterventionController extends BaseController
             case ManteinanceIntervention::STATUS_ABORTED:
                 $icon = "ui-icon-trash";
                 break;
+            case ManteinanceIntervention::STATUS_CLOSED:
+                $icon = "ui-icon-check";
+                break;
+
             default:
+                $icon = "ui-icon-alert";
                 break;
         }
         $title = $int->getCustomer()->getSurname();
