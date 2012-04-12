@@ -13,8 +13,10 @@
                     <th>Ultima manut.</th>
                     <th>Seriale</th>
                     <th>Descr.</th>
+                    {% if toolbar is defined and toolbar == true %}
                     <th title="In assistenza?">A</th>
                     <th>Operaz.</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -27,6 +29,7 @@
                         <td>{{ value.lastManteinance | date ('d-m-Y') }}</td>
                         <td>{{ value.code }}</td>
                         <td>{{ value.descr }}</td>
+                        {% if toolbar is defined and toolbar == true %}
                         <td>{{ mymacro.imgcheck_if_true(hasContract) }}</td>
                         <td>
                             <a href="{{ url('system_edit', {'sid': value.id} ) }}">
@@ -41,6 +44,7 @@
                                 </a>
                             {% endif %}
                         </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
