@@ -50,9 +50,8 @@
                     <thead>
                         <tr>
                             <th>Data</th>
-                            <th>Tipo impianto</th>
+                            <th>Stato</th>
                             <th>Impianto</th>
-                            <th>Tipo controllo</th>
                             <th>Programmato</th>
                         </tr>
                     </thead>
@@ -64,9 +63,16 @@
                                         {{ mi.scheduledDate | date('d-m-Y H:i') }}
                                     </a>
                                 </td>
-                                <td>{{ mi.system.systemType.name }}</td>
-                                <td>{{ mi.system.descr }}</td>
-                                <td>{{ mi.defaultOperationGroup.name }}</td>
+                                <td>{{ mi.getStatusDescr() }}</td>
+                                <td>
+                                    {% spaceless %}
+                                        {% if mi.details|length == 1 %}
+                                            {{ mi.details[0].system.descr }}
+                                        {% else %}
+                                            {{ mi.details | length }} impianti
+                                        {% endif %}
+                                    {% endspaceless %}
+                                </td>
                                 <td>{{ mymacro.imgcheck_if_true(mi.isPlanned) }}</td>
                             </tr>
                         {% endfor %}
@@ -114,7 +120,7 @@
          $('#btnCenterMap').button({ icons: { primary: "ui-icon-arrow-4-diag" }, text: false });
          $('#btnAddUnplanned').button({ icons: { primary: "ui-icon-clock" }, text: false })
                               .click(function(event) {
-                                    window.location.href = '{{ url('unplanned_intervention_add', {pid: person.id}) }}';
+                                    window.location.href = '{{ url('unplanned_intervention_add', {id: person.id}) }}';
                               });
     });
 
