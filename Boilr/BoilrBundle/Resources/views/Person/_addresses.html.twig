@@ -13,7 +13,7 @@
                     <th width="15%">Città</th>
                     <th width="5%">Provincia</th>
                     <th>Nazione</th>
-                    <th>Operaz.</th>
+                    {% if toolbar is defined and toolbar == true %}<th>Operaz.</th>{% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -25,6 +25,7 @@
                         <td>{{ value.city }}</td>
                         <td class="center">{{ value.province }}</td>
                         <td>{{ value.state }}</td>
+                        {% if toolbar is defined and toolbar == true %}
                         <td>
                             <a href="{{ url('address_edit', {'aid': value.id} ) }}">
                                 <span class="ui-icon ui-icon-pencil" title="Modifica"></span>
@@ -33,6 +34,7 @@
                                 <span class="ui-icon ui-icon-trash" title="Elimina"></span>
                             </a>
                         </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
