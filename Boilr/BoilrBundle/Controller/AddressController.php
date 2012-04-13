@@ -39,9 +39,9 @@ class AddressController extends BaseController
         }
 
         if ($success) {
-            $this->setFlashMessage(self::FLASH_NOTICE, "Indirizzo eliminato con successo");
+            $this->setNoticeMessage("Indirizzo eliminato con successo");
         } else {
-            $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un errore durante l'eliminazione.");
+            $this->setErrorMessage("Si è verificato un errore durante l'eliminazione.");
         }
 
         return $this->redirect( $this->generateUrl('show_person', array('id' => $person->getId())) );
@@ -86,11 +86,11 @@ class AddressController extends BaseController
                 try {
                     $em = $this->getEntityManager();
                     $em->flush();
-                    $this->setFlashMessage(self::FLASH_NOTICE, 'Operazione completata con successo');
+                    $this->setNoticeMessage('Operazione completata con successo');
 
                     return $this->redirect( $this->generateUrl('show_person', array('id' => $person->getId() )));
                 } catch (Exception $exc) {
-                    $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un errore durante il salvataggio");
+                    $this->setErrorMessage("Si è verificato un errore durante il salvataggio");
                 }
             }
         }
