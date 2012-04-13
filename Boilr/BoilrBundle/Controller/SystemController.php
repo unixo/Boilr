@@ -14,6 +14,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
 
 class SystemController extends BaseController
 {
+    function __construct()
+    {
+        $this->entityName = 'BoilrBundle:System';
+    }
+
     /**
      * @Route("/delete/{id}", name="system_delete")
      * @ParamConverter("system", class="BoilrBundle:System")
@@ -21,17 +26,13 @@ class SystemController extends BaseController
      */
     public function deleteAction(MySystem $system)
     {
-        if (! $system) {
-            throw new NotFoundHttpException("Invalid system");
-        }
-
         $person  = $system->getOwner();
-        $success = $this->getDoctrine()->getRepository('BoilrBundle:System')->deleteSystem($system);
+        $success = $this->getEntityRepository()->deleteSystem($system);
 
         if ($success) {
-            $this->setFlashMessage(self::FLASH_NOTICE, "Impianto eliminato con successo");
+            $this->setNoticeMessage("Impianto eliminato con successo");
         } else {
-            $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un errore durante l'eliminazione.");
+            $this->setErrorMessage("Si è verificato un errore durante l'eliminazione.");
         }
 
         return $this->redirect( $this->generateUrl('show_person', array('id' => $person->getId())) );
@@ -50,8 +51,7 @@ class SystemController extends BaseController
         /* @var $person MyPerson */
 
         if (isset($sid)) {
-            $system = $this->getDoctrine()->getRepository('BoilrBundle:System')
-                            ->findOneById($sid);
+            $system = $this->getEntityRepository()->findOneById($sid);
             if (!$system) {
                 throw new NotFoundHttpException("Invalid system");
             } else {
@@ -78,11 +78,11 @@ class SystemController extends BaseController
                 try {
                     $em = $this->getEntityManager();
                     $em->flush();
-                    $this->setFlashMessage(self::FLASH_NOTICE, 'Operazione completata con successo');
+                    $this->setNoticeMessage('Operazione completata con successo');
 
                     return $this->redirect( $this->generateUrl('show_person', array('id' => $person->getId() )));
                 } catch (Exception $exc) {
-                    $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un errore durante il salvataggio");
+                    $this->setErrorMessage("Si è verificato un errore durante il salvataggio");
                 }
             }
         }

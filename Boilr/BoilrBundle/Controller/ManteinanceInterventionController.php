@@ -20,7 +20,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 
 class ManteinanceInterventionController extends BaseController
 {
-    const ENTITY = 'BoilrBundle:ManteinanceIntervention';
+    function __construct()
+    {
+        $this->entityName = 'BoilrBundle:ManteinanceIntervention';
+    }
 
     /**
      * @Route("/", name="main_intervention")
@@ -68,7 +71,7 @@ class ManteinanceInterventionController extends BaseController
         $prevMonth->sub($interval);
 
         // Search interventions
-        $records = $this->getDoctrine()->getRepository(self::ENTITY)
+        $records = $this->getEntityRepository()
                         ->interventionsBetweenDates($startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
 
         // Format titles
@@ -109,20 +112,15 @@ class ManteinanceInterventionController extends BaseController
             case ManteinanceIntervention::STATUS_CLOSED:
                 $icon = "ui-icon-check";
                 break;
-
             default:
                 $icon = "ui-icon-alert";
                 break;
         }
-        $title = $int->getCustomer()->getSurname();
 
-        /*
-        $html = sprintf('<span class="event"><a href="%s"><span class="ui-icon %s"></span>%s</a></span>',
-                $url, $icon, $title);
-         */
-        $time = $int->getScheduledDate()->format('H:i');
-        $html = sprintf('<li><a href="%s">%s <span class="ui-icon %s"></span>%s</a></li>',
-                $url, $time, $icon, $title);
+        $title = $int->getCustomer()->getSurname();
+        $time  = $int->getScheduledDate()->format('H:i');
+        $html  = sprintf('<li><a href="%s">%s <span class="ui-icon %s"></span>%s</a></li>',
+                         $url, $time, $icon, $title);
 
         return $html;
     }

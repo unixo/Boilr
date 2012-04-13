@@ -54,14 +54,14 @@ class ContractController extends BaseController
 
                     // Display flash message to the user
                     if ($success) {
-                        $this->setFlashMessage(self::FLASH_NOTICE, 'Operazione completata con successo');
+                        $this->setNoticeMessage('Operazione completata con successo');
 
                         return $this->redirect( $this->generateUrl('show_person', array('id' => $customer->getId() )));
                     } else {
-                        $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un'errore durante il salvataggio");
+                        $this->setErrorMessage("Si è verificato un'errore durante il salvataggio");
                     }
                 } else {
-                    $this->setFlashMessage(self::FLASH_ERROR, "I dati inseriti contrastano con altri contratti");
+                    $this->setErrorMessage("I dati inseriti contrastano con altri contratti");
                 }
             }
         }

@@ -9,6 +9,8 @@ abstract class BaseController extends Controller
     const FLASH_ERROR  = 'error';
     const FLASH_NOTICE = 'notice';
 
+    protected $entityName;
+
     /**
      * Returns the current session
      *
@@ -84,5 +86,15 @@ abstract class BaseController extends Controller
     {
         $logger = $this->get('logger');
         $logger->info($message, $params);
+    }
+
+    /**
+     * Returns an instance of doctrine repository for entity managed by the controller
+     *
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    public function getEntityRepository()
+    {
+        return $this->getDoctrine()->getRepository($this->entityName);
     }
 }

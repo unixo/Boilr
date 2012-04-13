@@ -17,6 +17,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
  */
 class ManteinanceSchemaController extends BaseController
 {
+    function __construct()
+    {
+        $this->entityName = 'BoilrBundle:ManteinanceSchema';
+    }
+
     /**
      * @Route("/", name="manteinance_schema_list")
      * @Template()
@@ -43,9 +48,7 @@ class ManteinanceSchemaController extends BaseController
         /* @var $schema ManteinanceSchema */
 
         if (isset($id)) {
-            $schema = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceSchema')
-                            ->findOneById($id);
-            if (! $schema) {
+            if (! ($schema = $this->getEntityRepository()->findOneById($id)) ) {
                 throw new NotFoundHttpException("Invalid schema");
             }
         } else {
@@ -60,8 +63,7 @@ class ManteinanceSchemaController extends BaseController
             $form->bindRequest( $this->getRequest() );
 
             if ($form->isValid()) {
-                $success = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceSchema')
-                                ->persistSchema($schema);
+                $success = $this->getEntityRepository()->persistSchema($schema);
                 if ($success) {
                     $this->setNoticeMessage('Operazione completata con successo');
 
@@ -82,16 +84,12 @@ class ManteinanceSchemaController extends BaseController
      */
     public function moveAction(ManteinanceSchema $schema, $dir = "down")
     {
-        if (! $schema) {
-            throw new NotFoundHttpException("Invalid schema");
-        }
         $_dir = strtolower($dir);
         if (! in_array($_dir, array('up', 'down'))) {
             throw new \InvalidArgumentException("Invalid argument");
         }
 
-        $schemas = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceSchema')
-                        ->findBySystemType($schema->getSystemType()->getId());
+        $schemas = $this->getEntityRepository()->findBySystemType($schema->getSystemType()->getId());
 
         $pos = -1;
         for ($i=0; $i < count($schemas); $i++) {

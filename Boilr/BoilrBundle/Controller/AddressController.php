@@ -21,10 +21,6 @@ class AddressController extends BaseController
      */
     public function deleteAction(MyAddress $address)
     {
-        if (! $address) {
-            throw new NotFoundHttpException("Invalid address");
-        }
-
         $person  = $address->getPerson();
         $success = false;
 

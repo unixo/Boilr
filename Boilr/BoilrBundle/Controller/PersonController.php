@@ -14,6 +14,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 
 class PersonController extends BaseController
 {
+    function __construct()
+    {
+        $this->entityName = 'BoilrBundle:Person';
+    }
+
     /**
      * @Route("/", name="main_person")
      * @Template
@@ -54,14 +59,14 @@ class PersonController extends BaseController
             }
 
             // flow finished
-            $success = $this->getDoctrine()->getRepository('BoilrBundle:Person')->persistPerson($newPerson);
+            $success = $this->getEntityRepository()->persistPerson($newPerson);
             if ($success) {
                 $flow->reset();
-                $this->setFlashMessage(self::FLASH_NOTICE, "Operazione completata con successo");
+                $this->setNoticeMessage("Operazione completata con successo");
 
                 return $this->redirect($this->generateUrl('show_person', array('id' => $newPerson->getId() )));
             } else {
-                $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un'errore durante il salvataggio");
+                $this->setErrorMessage("Si è verificato un'errore durante il salvataggio");
             }
         }
 
@@ -97,7 +102,7 @@ class PersonController extends BaseController
                                ->createQuery('SELECT COUNT(p.id) FROM BoilrBundle:Person p')
                                ->getSingleScalarResult();
 
-        $query          = $this->getDoctrine()->getRepository('BoilrBundle:Person')
+        $query          = $this->getEntityRepository()
                                ->createQueryBuilder('p')->select('p')
                                ->setFirstResult($iDisplayStart)
                                ->setMaxResults($iDisplayLength)
@@ -165,7 +170,7 @@ class PersonController extends BaseController
     {
         $data   = array();
         $pid    = $this->getRequest()->get('pid');
-        $person = $this->getDoctrine()->getRepository('BoilrBundle:Person')->findOneById($pid);
+        $person = $this->getEntityRepository()->findOneById($pid);
         /* @var $person \Boilr\BoilrBundle\Entity\Person */
 
         if ($person) {
@@ -235,10 +240,6 @@ class PersonController extends BaseController
      */
     public function updateRegistryAction(MyPerson $person)
     {
-        if (! $person) {
-            throw new NotFoundHttpException("Invalid person");
-        }
-
         // Create the form, fill with data and select proper validation group
         $form = $this->createForm(new PersonRegistryForm(), $person,
                              array( 'validation_groups' => array('registry') ));
@@ -250,11 +251,11 @@ class PersonController extends BaseController
                 try {
                     $em = $this->getEntityManager();
                     $em->flush();
-                    $this->setFlashMessage(self::FLASH_NOTICE, 'Operazione completata con successo');
+                    $this->setNoticeMessage('Operazione completata con successo');
 
                     return $this->redirect( $this->generateUrl('show_person', array('id' => $person->getId() )));
                 } catch (Exception $exc) {
-                    $this->setFlashMessage(self::FLASH_ERROR, "Si è verificato un errore durante il salvataggio");
+                    $this->setErrorMessage("Si è verificato un errore durante il salvataggio");
                 }
             }
         }
