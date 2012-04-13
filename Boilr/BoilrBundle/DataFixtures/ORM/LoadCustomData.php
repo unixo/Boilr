@@ -9,14 +9,14 @@ use Doctrine\Common\DataFixtures\AbstractFixture,
 use Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Entity\Address as MyAddress,
     Boilr\BoilrBundle\Entity\System as MySystem,
-    Boilr\BoilrBundle\Entity\ManteinanceIntervention;
+    Boilr\BoilrBundle\Entity\ManteinanceIntervention,
+    Boilr\BoilrBundle\Entity\InterventionDetail,
+    Boilr\BoilrBundle\Entity\InterventionCheck;
 
 class LoadCustomData extends AbstractFixture implements OrderedFixtureInterface
 {
     function load(ObjectManager $manager)
     {
-        return;
-        
         // Installer address #1
         $addr0 = new MyAddress();
         $addr0->setStreet('Via Cristoforo Colombo 123');
@@ -34,6 +34,7 @@ class LoadCustomData extends AbstractFixture implements OrderedFixtureInterface
         $inst1->setIsInstaller(true);
         $inst1->setCellularPhone('06 123456');
         $inst1->setAddresses( array($addr0) );
+        $addr0->setPerson($inst1);
 
         $manager->persist($inst1);
 
@@ -74,17 +75,23 @@ class LoadCustomData extends AbstractFixture implements OrderedFixtureInterface
         $sys1->setOwner($cust1);
 
         // unplanned intervention
-        $aDate1->setDate(2011, 8, 10);
-        $aDate1->setTime(10, 0, 0);
+        $aDate1->setDate(2011, 8, 10);   $aDate1->setTime(10, 0, 0);
+        $aDate2->setDate(2011, 8, 10);   $aDate2->setTime(10, 50, 0);
         $mi = ManteinanceIntervention::UnplannedInterventionFactory();
-        $mi->setOriginalDate($aDate1);
+        $mi->setScheduledDate($aDate1);
+        $mi->setExpectedCloseDate($aDate2);
         $mi->setCustomer($cust1);
-        $mi->setSystem($sys1);
-        $mi->setAddress($addr1);
         $mi->setInstaller($inst1);
         $mi->setStatus(ManteinanceIntervention::STATUS_CLOSED);
 
+        $detail = new InterventionDetail();
+        $detail->setIntervention($mi);
+        $detail->setSystem($sys1);
+        $detail->setOperationGroup( $manager->merge($this->getReference('ops1+2')) );
+        $mi->addInterventionDetail($detail);
+
         $manager->persist($cust1);
+        $manager->persist($mi);
         $manager->flush();
     }
 
