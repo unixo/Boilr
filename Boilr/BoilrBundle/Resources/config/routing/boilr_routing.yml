@@ -43,3 +43,8 @@ operation_group:
     prefix:   /operation-group
     resource: "@BoilrBundle/Controller/OperationGroupController.php"
     type:     annotation
+
+operation:
+    prefix:   /operation
+    resource: "@BoilrBundle/Controller/OperationController.php"
+    type:     annotation

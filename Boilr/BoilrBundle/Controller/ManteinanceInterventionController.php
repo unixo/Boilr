@@ -139,7 +139,7 @@ class ManteinanceInterventionController extends BaseController
             $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
-                $miRepo   = $this->getDoctrine()->getRepository(self::ENTITY);
+                $miRepo   = $this->getEntityRepository();
                 $retValue = $miRepo->persistUnplannedIntervention($interv);
 
                 if ($retValue['success'] === true) {
@@ -333,7 +333,7 @@ class ManteinanceInterventionController extends BaseController
             $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
-                $results = $this->getEntityManager()->getRepository(self::ENTITY)->searchInterventions($filter);
+                $results = $this->getEntityRepository()->searchInterventions($filter);
             }
         }
 

@@ -38,6 +38,14 @@ class OperationGroup
     protected $descr;
 
     /**
+     * @var TemplateItem
+     *
+     * @ORM\OneToMany(targetEntity="Operation", mappedBy="parentGroup")
+     * @ORM\OrderBy({"listOrder" = "ASC"})
+     */
+    protected $operations;
+
+    /**
      * Get id
      *
      * @return integer
@@ -90,5 +98,29 @@ class OperationGroup
     public function getFullDescr()
     {
         return sprintf("%s (%s)", $this->getDescr(), $this->getName());
+    }
+    public function __construct()
+    {
+        $this->operations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add operations
+     *
+     * @param Boilr\BoilrBundle\Entity\Operation $operations
+     */
+    public function addOperation(\Boilr\BoilrBundle\Entity\Operation $operations)
+    {
+        $this->operations[] = $operations;
+    }
+
+    /**
+     * Get operations
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getOperations()
+    {
+        return $this->operations;
     }
 }

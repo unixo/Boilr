@@ -30,18 +30,15 @@ class TemplateSection
     private $name;
 
     /**
-     * @var integer $timeLength
+     * @var Operation
      *
-     * @ORM\Column(name="time_length", type="integer", nullable=false)
+     * @ORM\ManyToMany(targetEntity="Operation", inversedBy="sections")
+     * @ORM\JoinTable(name="operation_sections",
+     *      joinColumns={@ORM\JoinColumn(name="section_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="operation_id", referencedColumnName="id")}
+     *      )
      */
-    private $timeLength;
-
-    /**
-     * @var TemplateItem
-     *
-     * @ORM\OneToMany(targetEntity="TemplateItem", mappedBy="section")
-     */
-    protected $items;
+    protected $operations;
 
     /**
      * @var Template
@@ -58,14 +55,6 @@ class TemplateSection
      * @ORM\Column(name="list_order", type="integer", nullable=false)
      */
     protected $listOrder;
-
-    /**
-     * @var OperationGroup
-     *
-     * @ORM\ManyToOne(targetEntity="OperationGroup")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
-     */
-    protected $group;
 
     public function __construct()
     {
@@ -103,66 +92,6 @@ class TemplateSection
     }
 
     /**
-     * Set timeLength
-     *
-     * @param integer $timeLength
-     */
-    public function setTimeLength($timeLength)
-    {
-        $this->timeLength = $timeLength;
-    }
-
-    /**
-     * Get timeLength
-     *
-     * @return integer
-     */
-    public function getTimeLength()
-    {
-        return $this->timeLength;
-    }
-
-    /**
-     * Add items
-     *
-     * @param Boilr\BoilrBundle\Entity\TemplateItem $items
-     */
-    public function addTemplateItem(\Boilr\BoilrBundle\Entity\TemplateItem $items)
-    {
-        $this->items[] = $items;
-    }
-
-    /**
-     * Get items
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getItems()
-    {
-        return $this->items;
-    }
-
-    /**
-     * Set group
-     *
-     * @param Boilr\BoilrBundle\Entity\OperationGroup $group
-     */
-    public function setGroup(\Boilr\BoilrBundle\Entity\OperationGroup $group)
-    {
-        $this->group = $group;
-    }
-
-    /**
-     * Get group
-     *
-     * @return Boilr\BoilrBundle\Entity\OperationGroup
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-
-    /**
      * Set template
      *
      * @param Boilr\BoilrBundle\Entity\Template $template
@@ -183,26 +112,6 @@ class TemplateSection
     }
 
     /**
-     * Set order
-     *
-     * @param integer $order
-     */
-    public function setOrder($order)
-    {
-        $this->order = $order;
-    }
-
-    /**
-     * Get order
-     *
-     * @return integer
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-
-    /**
      * Set listOrder
      *
      * @param integer $listOrder
@@ -220,5 +129,25 @@ class TemplateSection
     public function getListOrder()
     {
         return $this->listOrder;
+    }
+
+    /**
+     * Add operations
+     *
+     * @param Boilr\BoilrBundle\Entity\Operation $operations
+     */
+    public function addOperation(\Boilr\BoilrBundle\Entity\Operation $operations)
+    {
+        $this->operations[] = $operations;
+    }
+
+    /**
+     * Get operations
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getOperations()
+    {
+        return $this->operations;
     }
 }

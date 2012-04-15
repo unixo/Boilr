@@ -30,15 +30,16 @@ class OperationGroupController extends BaseController
     }
 
     /**
-     * @Route("/sections/{id}", name="operation_group_sections")
+     * @Route("/{id}/list-operations", name="operation_group_operations")
      * @ParamConverter("group", class="BoilrBundle:OperationGroup")
      * @Template()
      */
-    public function showSectionsAction(OperationGroup $group)
+    public function showOperationsAction(OperationGroup $group)
     {
-        $sections = $this->getDoctrine()->getRepository('BoilrBundle:TemplateSection')
-                         ->findBy(array('group' => $group), array('listOrder' => 'ASC'));
+        $operations = $this->getDoctrine()->getRepository('BoilrBundle:Operation')
+                           ->findBy(array('parentGroup' => $group->getId()),
+                                    array('listOrder' => 'ASC'));
 
-        return array('sections' => $sections);
+        return array('operations' => $operations, 'count' => count($operations));
     }
 }

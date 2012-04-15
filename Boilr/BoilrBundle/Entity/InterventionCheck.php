@@ -23,15 +23,6 @@ class InterventionCheck
     private $parent;
 
     /**
-     * @var TemplateItem
-     *
-     * @ORM\ManyToOne(targetEntity="TemplateItem")
-     * @ORM\JoinColumn(name="template_item_id", referencedColumnName="id", nullable=false)
-     * @ORM\Id
-     */
-    protected $templateItem;
-
-    /**
      * @var InterventionDetail
      *
      * @ORM\ManyToOne(targetEntity="InterventionDetail")
@@ -41,12 +32,30 @@ class InterventionCheck
     protected $parentDetail;
 
     /**
+     * @var Operation
+     *
+     * @ORM\ManyToOne(targetEntity="Operation")
+     * @ORM\JoinColumn(name="operation_id", referencedColumnName="id", nullable=false)
+     * @ORM\Id
+     */
+    protected $parentOperation;
+
+    /**
      * @var string $id
      *
      * @ORM\Column(type="string", length=100, nullable=false)
      */
     protected $value;
 
+    /**
+     * Get parent
+     *
+     * @return integer 
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
 
     /**
      * Set value
@@ -61,51 +70,11 @@ class InterventionCheck
     /**
      * Get value
      *
-     * @return string
+     * @return string 
      */
     public function getValue()
     {
         return $this->value;
-    }
-
-    /**
-     * Set parent
-     *
-     * @param Boilr\BoilrBundle\Entity\InterventionDetail $parent
-     */
-    public function setParent(\Boilr\BoilrBundle\Entity\InterventionDetail $parent)
-    {
-        $this->parent = $parent;
-    }
-
-    /**
-     * Get parent
-     *
-     * @return Boilr\BoilrBundle\Entity\InterventionDetail
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * Set templateItem
-     *
-     * @param Boilr\BoilrBundle\Entity\TemplateItem $templateItem
-     */
-    public function setTemplateItem(\Boilr\BoilrBundle\Entity\TemplateItem $templateItem)
-    {
-        $this->templateItem = $templateItem;
-    }
-
-    /**
-     * Get templateItem
-     *
-     * @return Boilr\BoilrBundle\Entity\TemplateItem
-     */
-    public function getTemplateItem()
-    {
-        return $this->templateItem;
     }
 
     /**
@@ -121,10 +90,30 @@ class InterventionCheck
     /**
      * Get parentDetail
      *
-     * @return Boilr\BoilrBundle\Entity\InterventionDetail
+     * @return Boilr\BoilrBundle\Entity\InterventionDetail 
      */
     public function getParentDetail()
     {
         return $this->parentDetail;
+    }
+
+    /**
+     * Set parentOperation
+     *
+     * @param Boilr\BoilrBundle\Entity\Operation $parentOperation
+     */
+    public function setParentOperation(\Boilr\BoilrBundle\Entity\Operation $parentOperation)
+    {
+        $this->parentOperation = $parentOperation;
+    }
+
+    /**
+     * Get parentOperation
+     *
+     * @return Boilr\BoilrBundle\Entity\Operation 
+     */
+    public function getParentOperation()
+    {
+        return $this->parentOperation;
     }
 }

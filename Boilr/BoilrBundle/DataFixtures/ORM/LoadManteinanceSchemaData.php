@@ -14,7 +14,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
     function load(ObjectManager $manager)
     {
         $ops1 = $manager->merge($this->getReference('ops1'));
-        $ops1and2 = $manager->merge($this->getReference('ops1+2'));
+        $ops2 = $manager->merge($this->getReference('ops2'));
 
         // Impianti termici con combustibile liquido: ogni 12 mesi, OPS1
         $st = $manager->merge($this->getReference('systemtype-termico-comb-liquido'));
@@ -104,7 +104,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $st = $manager->merge($this->getReference('systemtype-gas-lt-35'));
         $ms = new ManteinanceSchema();
         $ms->setSystemType($st);
-        $ms->setOperationGroup($ops1and2);
+        $ms->setOperationGroup($ops2);
         $ms->setIsPeriodic(true);
         $ms->setFreq("24 month");
         $ms->setListOrder(0);

@@ -13,13 +13,15 @@
             <tr>
                 <th>Sigla</th>
                 <th>Descrizione</th>
+                <th># controlli</th>
             </tr>
         </thead>
         <tbody>
             {% for key,group in records %}
             <tr class="{{ cycle(['odd', 'even'], key) }}">
-                <td><a href="{{ url('operation_group_sections', {id: group.id} ) }}">{{ group.name }}</a></td>
+                <td><a href="{{ url('operation_group_operations', {id: group.id} ) }}">{{ group.name }}</a></td>
                 <td>{{ group.descr }}</td>
+                <td>{{ group.operations|length }}</td>
             </tr>
             {% endfor %}
         </tbody>
