@@ -30,6 +30,7 @@ class Builder extends ContainerAware
         if ($token && $securityContext->isGranted($roles)) {
             $item = $menu->addChild('Amministrazione', array('route' => 'admin_homepage'));
             $item->addChild('Schemi Manutenz.', array('route' => 'manteinance_schema_list'));
+            $item->addChild('Gruppi Controlli', array('route' => 'list_operation_group'));
         }
 
         $menu->addChild('logout', array('route' => '_security_logout'))->setLabel('Logout');

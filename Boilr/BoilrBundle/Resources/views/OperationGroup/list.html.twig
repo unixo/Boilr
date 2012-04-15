@@ -1,0 +1,38 @@
+{% set secondaryMenu = 'Amministrazione' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+{% block central_block %}
+<h2>Gruppi di controlli</h2>
+
+<fieldset>
+    <legend>Elenco operazioni</legend>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sigla</th>
+                <th>Descrizione</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key,group in records %}
+            <tr class="{{ cycle(['odd', 'even'], key) }}">
+                <td><a href="{{ url('operation_group_sections', {id: group.id} ) }}">{{ group.name }}</a></td>
+                <td>{{ group.descr }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</fieldset>
+
+<div style="margin-top: 10px;">
+    <ul id="icons" class="ui-widget ui-helper-clearfix">
+        <li class="ui-state-default ui-corner-all">
+            <a href="{{ url('manteinance_schema_add') }}">
+                <span class="ui-icon ui-icon-plusthick" title="Aggiungi schema..."></span>
+            </a>
+        </li>
+    </ul>
+</div>
+{% endblock %}

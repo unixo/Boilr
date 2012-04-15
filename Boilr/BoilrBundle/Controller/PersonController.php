@@ -64,7 +64,8 @@ class PersonController extends BaseController
                 $flow->reset();
                 $this->setNoticeMessage("Operazione completata con successo");
 
-                return $this->redirect($this->generateUrl('show_person', array('id' => $newPerson->getId() )));
+                return $this->redirect($this->generateUrl(
+                        'show_person', array('id' => $newPerson->getId() )));
             } else {
                 $this->setErrorMessage("Si è verificato un'errore durante il salvataggio");
             }
@@ -241,16 +242,17 @@ class PersonController extends BaseController
     public function updateRegistryAction(MyPerson $person)
     {
         // Create the form, fill with data and select proper validation group
-        $form = $this->createForm(new PersonRegistryForm(), $person,
-                             array( 'validation_groups' => array('registry') ));
+        $form = $this->createForm(
+                new PersonRegistryForm(), $person, array( 'validation_groups' => array('registry') )
+                );
 
         if ($this->isPOSTRequest()) {
-            $form->bindRequest( $this->getRequest() );
+            $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
                 try {
-                    $em = $this->getEntityManager();
-                    $em->flush();
+                    $dem = $this->getEntityManager();
+                    $dem->flush();
                     $this->setNoticeMessage('Operazione completata con successo');
 
                     return $this->redirect( $this->generateUrl('show_person', array('id' => $person->getId() )));

@@ -35,7 +35,7 @@
     {{ mymacro.fieldset_row('Email alternativa', person.secondaryMail|default('-')) }}
 </fieldset>
 
-<fieldset>
+<fieldset class="wide">
     <legend>Tipologia contatto</legend>
 
     <div><label>Cliente:</label>{{ mymacro.imgcheck_if_true(person.isCustomer) }}</div>

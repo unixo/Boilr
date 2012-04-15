@@ -38,3 +38,8 @@ manteinance_intervention:
     prefix:   /manteinance-intervention
     resource: "@BoilrBundle/Controller/ManteinanceInterventionController.php"
     type:     annotation
+
+operation_group:
+    prefix:   /operation-group
+    resource: "@BoilrBundle/Controller/OperationGroupController.php"
+    type:     annotation

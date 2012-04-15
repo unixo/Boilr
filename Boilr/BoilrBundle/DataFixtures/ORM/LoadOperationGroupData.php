@@ -22,15 +22,15 @@ class OperationGroupData extends AbstractFixture implements OrderedFixtureInterf
         $og2->setDescr("Gruppo controlli per bollino");
         $manager->persist($og2);
 
-        $og3 = new OperationGroup();
-        $og3->setName("OPS1+OPS2");
-        $og3->setDescr("Tutti i controlli");
-        $manager->persist($og3);
+        //$og3 = new OperationGroup();
+        //$og3->setName("OPS1+OPS2");
+        //$og3->setDescr("Tutti i controlli");
+        //$manager->persist($og3);
 
         $manager->flush();
         $this->addReference('ops1', $og1);
         $this->addReference('ops2', $og2);
-        $this->addReference('ops1+2', $og3);
+        //$this->addReference('ops1+2', $og3);
     }
 
     function getOrder()

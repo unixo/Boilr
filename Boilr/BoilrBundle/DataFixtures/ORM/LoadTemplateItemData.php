@@ -108,6 +108,44 @@ class TemplateItemData extends AbstractFixture implements OrderedFixtureInterfac
         $item->setListOrder(4);
         $manager->persist($item);
 
+        // OPS1 - Section E
+        $s4 = $manager->merge($this->getReference('ops1-sectE'));
+
+        $item = new TemplateItem();
+        $item->setSection($s4);
+        $item->setName("Scarico in camino singolo");
+        $item->setTimeLength(60);
+        $item->setListOrder(0);
+        $manager->persist($item);
+
+        $item = new TemplateItem();
+        $item->setSection($s4);
+        $item->setName("Scarico in canna fumaria collettiva ramificata");
+        $item->setTimeLength(60);
+        $item->setListOrder(1);
+        $manager->persist($item);
+
+        $item = new TemplateItem();
+        $item->setSection($s4);
+        $item->setName("Scarico a parete");
+        $item->setTimeLength(60);
+        $item->setListOrder(2);
+        $manager->persist($item);
+
+        $item = new TemplateItem();
+        $item->setSection($s4);
+        $item->setName("Per apparecchio a tiraggio naturale: non esistono riflussi dei fumi nel locale");
+        $item->setTimeLength(60);
+        $item->setListOrder(3);
+        $manager->persist($item);
+
+        $item = new TemplateItem();
+        $item->setSection($s4);
+        $item->setName("Per apparecchio a tiraggio forzato: assenza di perdite dai condotti di scarico");
+        $item->setTimeLength(60);
+        $item->setListOrder(4);
+        $manager->persist($item);
+
         $manager->flush();
     }
 
