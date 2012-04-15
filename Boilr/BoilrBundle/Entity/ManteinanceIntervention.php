@@ -390,6 +390,11 @@ class ManteinanceIntervention
         return ($this->getStatus() == self::STATUS_TENTATIVE);
     }
 
+    public function isAborted()
+    {
+        return ($this->getStatus() == self::STATUS_ABORTED);
+    }
+
     /**
      * Set scheduledDate
      *
