@@ -20,12 +20,9 @@ class OperationGroupRepository extends EntityRepository
     public function getEstimatedTimeLength(OperationGroup $opGroup)
     {
         $timeLength = 0;
-        $sections   = $this->getEntityManager()->getRepository('BoilrBundle:TemplateSection')
-                           ->findBy(array('group' => $opGroup->getId()));
 
-        foreach ($sections as $section) {
-            /* @var $section \Boilr\BoilrBundle\Entity\TemplateSection */
-            $timeLength += $section->getTimeLength();
+        foreach ($opGroup->getOperations() as $oper) {
+            $timeLength += $oper->getTimeLength();
         }
 
         return $timeLength;

@@ -17,8 +17,6 @@ class LoadCustomData extends AbstractFixture implements OrderedFixtureInterface
 {
     function load(ObjectManager $manager)
     {
-        return;
-        
         // Installer address #1
         $addr0 = new MyAddress();
         $addr0->setStreet('Via Cristoforo Colombo 123');
@@ -89,7 +87,7 @@ class LoadCustomData extends AbstractFixture implements OrderedFixtureInterface
         $detail = new InterventionDetail();
         $detail->setIntervention($mi);
         $detail->setSystem($sys1);
-        $detail->setOperationGroup( $manager->merge($this->getReference('ops1+2')) );
+        $detail->setOperationGroup( $manager->merge($this->getReference('ops1')) );
         $mi->addInterventionDetail($detail);
 
         $manager->persist($cust1);

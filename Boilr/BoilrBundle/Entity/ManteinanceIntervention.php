@@ -385,11 +385,21 @@ class ManteinanceIntervention
         return $this->expectedCloseDate;
     }
 
+    /**
+     * Returns true if intervention is tentative
+     *
+     * @return bool
+     */
     public function isTentative()
     {
         return ($this->getStatus() == self::STATUS_TENTATIVE);
     }
 
+    /**
+     * Returns true if intervention was aborted
+     *
+     * @return bool
+     */
     public function isAborted()
     {
         return ($this->getStatus() == self::STATUS_ABORTED);
