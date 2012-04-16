@@ -40,6 +40,6 @@ class OperationGroupController extends BaseController
                            ->findBy(array('parentGroup' => $group->getId()),
                                     array('listOrder' => 'ASC'));
 
-        return array('operations' => $operations, 'count' => count($operations));
+        return array('operations' => $operations, 'count' => count($operations), 'group' => $group);
     }
 }

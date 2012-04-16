@@ -36,6 +36,8 @@ class Operation
      * @var integer $timeLength
      *
      * @ORM\Column(name="time_length", type="integer", nullable=false)
+     * @Assert\NotBlank
+     * @Assert\Type(type="integer")
      */
     private $timeLength;
 
@@ -43,6 +45,7 @@ class Operation
      * @var integer $listOrder
      *
      * @ORM\Column(name="list_order", type="integer", nullable=false)
+     * @Assert\NotBlank
      */
     protected $listOrder;
 

@@ -6,14 +6,15 @@
 <h2>Gruppi di controlli</h2>
 
 <fieldset>
-    <legend>Elenco operazioni</legend>
+    <legend>Elenco operazioni "{{ group.name }}"</legend>
 
     <table>
         <thead>
             <tr>
-                <th colspan="2"></th>
+                <th colspan="2">Ordine</th>
                 <th>Descrizione</th>
                 <th>Durata (mm)</th>
+                <th>Operazioni</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +32,10 @@
                 </td>
                 <td>{{ oper.name }}</td>
                 <td>{{ oper.timeLength/60 }}</td>
+                <td>
+                    <a href="{{ url('operation_edit', {oid: oper.id}) }}"><span class="ui-icon ui-icon-pencil"></span></a>
+                    <a href="{{ url('operation_delete', {id: oper.id}) }}"><span class="ui-icon ui-icon-trash"></span></a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -40,8 +45,13 @@
 <div style="margin-top: 10px;">
     <ul id="icons" class="ui-widget ui-helper-clearfix">
         <li class="ui-state-default ui-corner-all">
-            <a href="{{ url('manteinance_schema_add') }}">
-                <span class="ui-icon ui-icon-plusthick" title="Aggiungi schema..."></span>
+            <a href="{{ url('list_operation_group') }}">
+                <span class="ui-icon ui-icon-arrowthick-1-w" title="Torna all'elenco"></span>
+            </a>
+        </li>
+        <li class="ui-state-default ui-corner-all">
+            <a href="{{ url('operation_add', {gid: group.id}) }}">
+                <span class="ui-icon ui-icon-plusthick" title="Aggiungi operazione..."></span>
             </a>
         </li>
     </ul>
