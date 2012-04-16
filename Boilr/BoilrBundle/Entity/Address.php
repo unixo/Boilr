@@ -304,4 +304,14 @@ class Address
     {
         return $this->state;
     }
+
+    /**
+     * Returns true if latitude/longitude are not null
+     *
+     * @return boolean
+     */
+    public function isValid()
+    {
+        return (($this->latitude != 0) && ($this->longitude != 0));
+    }
 }

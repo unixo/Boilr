@@ -19,7 +19,12 @@
             <tbody>
                 {% for key,value in person.addresses %}
                     <tr class="{{ cycle(['odd', 'even'], key) }}">
-                        <td>{{ mymacro.address_icon(value) }}</td>
+                        <td>
+                            {% if value.isValid() == false %}
+                                <span title="Indirizzo non valido" class="ui-icon ui-icon-alert"></span>
+                            {% endif %}
+                            {{ mymacro.address_icon(value) }}
+                        </td>
                         <td>{{ value.street}}</td>
                         <td>{{ value.postalCode }}</td>
                         <td>{{ value.city }}</td>
