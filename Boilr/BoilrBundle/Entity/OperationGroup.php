@@ -26,6 +26,7 @@ class OperationGroup
      * @var string $name
      *
      * @ORM\Column(name="name", type="string", length=20, nullable=false)
+     * @Assert\NotBlank
      */
     private $name;
 
@@ -40,7 +41,7 @@ class OperationGroup
     /**
      * @var TemplateItem
      *
-     * @ORM\OneToMany(targetEntity="Operation", mappedBy="parentGroup")
+     * @ORM\OneToMany(targetEntity="Operation", mappedBy="parentGroup", cascade={"persist", "remove"})
      * @ORM\OrderBy({"listOrder" = "ASC"})
      */
     protected $operations;

@@ -2,7 +2,8 @@
 
 namespace Boilr\BoilrBundle\Controller;
 
-use Boilr\BoilrBundle\Entity\OperationGroup;
+use Boilr\BoilrBundle\Entity\OperationGroup,
+    Boilr\BoilrBundle\Form\OperationGroupForm;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
@@ -19,7 +20,7 @@ class OperationGroupController extends BaseController
     }
 
     /**
-     * @Route("/list", name="list_operation_group")
+     * @Route("/list", name="operation_group_list")
      * @Template()
      */
     public function listAction()
@@ -36,10 +37,74 @@ class OperationGroupController extends BaseController
      */
     public function showOperationsAction(OperationGroup $group)
     {
-        $operations = $this->getDoctrine()->getRepository('BoilrBundle:Operation')
-                           ->findBy(array('parentGroup' => $group->getId()),
-                                    array('listOrder' => 'ASC'));
+        $operations = $group->getOperations();
 
         return array('operations' => $operations, 'count' => count($operations), 'group' => $group);
+    }
+
+    /**
+     * @Route("/{id}/delete", name="operation_group_delete")
+     * @ParamConverter("opgroup", class="BoilrBundle:OperationGroup")
+     * @Template()
+     */
+    public function deleteAction(OperationGroup $opgroup)
+    {
+        try {
+            $dem = $this->getDoctrine()->getEntityManager();
+            $dem->remove($opgroup);
+            $dem->flush();
+            $this->setNoticeMessage("Operazione conclusa con successo");
+        } catch (Exception $exc) {
+            $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
+        }
+
+        return $this->redirect($this->generateUrl('operation_group_list'));
+    }
+
+    /**
+     * @Route("/add", name="operation_group_add")
+     * @Route("/{oid}/update", name="operation_group_edit")
+     * @Template()
+     */
+    public function addOrUpdateAction($oid = null)
+    {
+        $opGroup = null;
+        $opType  = null;
+
+        // Guess if I'm adding a new group or updating an existing one
+        if ($oid === null) {
+            $opGroup = new OperationGroup();
+            $opType  = "add";
+        } else {
+            $opGroup = $this->getEntityRepository()->findOneById($oid);
+            if (! $opGroup) {
+                throw new \InvalidArgumentException("Invalid argument");
+            }
+            $opType = "update";
+        }
+
+        $form = $this->createForm(new OperationGroupForm(), $opGroup);
+
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
+
+            if ($form->isValid()) {
+                try {
+                    $dem = $this->getDoctrine()->getEntityManager();
+                    if ($opType == "add") {
+                        $dem->persist($opGroup);
+                    }
+                    $dem->flush();
+                    $this->setNoticeMessage("Operazione conclusa con successo");
+
+                    return $this->redirect($this->generateUrl("operation_group_operations",
+                            array('id' => $opGroup->getId())));
+                } catch (Exception $exc) {
+                    $this->setErrorMessage("Si è verificato un errore durante il salvataggio");
+                }
+            }
+        }
+
+        return array('form' => $form->createView(), "opType" => $opType);
     }
 }

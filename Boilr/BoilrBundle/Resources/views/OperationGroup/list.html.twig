@@ -14,6 +14,7 @@
                 <th>Sigla</th>
                 <th>Descrizione</th>
                 <th># controlli</th>
+                <th>Operaz.</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +23,10 @@
                 <td><a href="{{ url('operation_group_operations', {id: group.id} ) }}">{{ group.name }}</a></td>
                 <td>{{ group.descr }}</td>
                 <td>{{ group.operations|length }}</td>
+                <td>
+                    <a href="{{ url('operation_group_edit', {oid: group.id}) }}"><span class="ui-icon ui-icon-pencil"></span></a>
+                    <a href="{{ url('operation_group_delete', {id: group.id}) }}"><span class="ui-icon ui-icon-trash"></span></a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -31,8 +36,8 @@
 <div style="margin-top: 10px;">
     <ul id="icons" class="ui-widget ui-helper-clearfix">
         <li class="ui-state-default ui-corner-all">
-            <a href="{{ url('manteinance_schema_add') }}">
-                <span class="ui-icon ui-icon-plusthick" title="Aggiungi schema..."></span>
+            <a href="{{ url('operation_group_add') }}">
+                <span class="ui-icon ui-icon-plusthick" title="Aggiungi gruppo..."></span>
             </a>
         </li>
     </ul>
