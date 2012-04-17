@@ -1,0 +1,88 @@
+{% set secondaryMenu = 'Amministrazione' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+{% block central_block %}
+<h2>Elenco sezioni "{{ template.name }}"</h2>
+
+<fieldset>
+    <legend>Corpo del modello</legend>
+
+    {% if template.sections | length > 0 %}
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Descrizione</th>
+                <th>Operazioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key,sect in sections %}
+            <tr class="{{ cycle(['odd', 'even'], key) }}">
+                <td>
+                    {% if key > 0 %}
+                    <a href="{{ url('section_move', {'id': sect.id, 'dir':'up'}) }}">
+                        <span class="ui-icon ui-icon-arrowthick-1-n" title="Sposta su"></span>
+                    </a>
+                    {% endif %}
+
+                    {% if key < count-1 %}
+                    <a href="{{ url('section_move', {'id': sect.id, 'dir':'down'}) }}">
+                        <span class="ui-icon ui-icon-arrowthick-1-s" title="Sposta giù"></span>
+                    </a>
+                    {% endif %}
+                </td>
+                <td>{{ sect.name }}</td>
+                <td>
+                    <a href="{{ url('template_section_edit', {sid: sect.id}) }}">
+                        <span class="ui-icon ui-icon-pencil" title="Modifica..."></span>
+                    </a>
+                    <a href="{{ url('template_section_delete', {id: sect.id}) }}">
+                        <span class="ui-icon ui-icon-trash" title="Elimina"></span>
+                    </a>
+                    <a href="{{ url('template_section_bind', {id: sect.id}) }}">
+                        <span class="ui-icon ui-icon-wrench" title="Associa operazioni..."></span>
+                    </a>
+                </td>
+            </tr>
+            {% if sect.operations|length > 0 %}
+                {% for oper in sect.operations %}
+                <tr>
+                    <td></td>
+                    <td><span class="ui-icon ui-icon-carat-1-e"></span>{{ oper.name }}</td>
+                    <td><a href="{{ url('template_section_unbind', {id: sect.id, pid: oper.id}) }}">
+                            <span class="ui-icon ui-icon-transfer-e-w" title="Elimina operazione"></span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>Non è stata creata alcuna sezione.</p>
+    {% endif %}
+</fieldset>
+
+<div style="margin-top: 10px;">
+    <ul id="icons" class="ui-widget ui-helper-clearfix">
+        <li class="ui-state-default ui-corner-all">
+            <a href="{{ url('template_list') }}">
+                <span class="ui-icon ui-icon-arrowthick-1-w" title="Torna all'elenco"></span>
+            </a>
+        </li>
+        <li class="ui-state-default ui-corner-all">
+            <a href="{{ url('template_section_add', {tid: template.id}) }}">
+                <span class="ui-icon ui-icon-plusthick" title="Aggiungi sezione..."></span>
+            </a>
+        </li>
+        <li class="ui-state-default ui-corner-all">
+            <a href="{{ url('template_preview', {id: template.id}) }}">
+                <span class="ui-icon ui-icon-document" title="Anteprima modello..."></span>
+            </a>
+        </li>
+    </ul>
+</div>
+{% endblock %}

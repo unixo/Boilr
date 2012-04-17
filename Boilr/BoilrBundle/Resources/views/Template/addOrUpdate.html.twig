@@ -1,0 +1,24 @@
+{% set secondaryMenu = 'Amministrazione' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+
+{% block central_block %}
+<h2>{{ (optype == 'add')?"Nuova":"Modifica" }} allegato</h2>
+
+<form id="form_template" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+    <fieldset>
+        <legend>Dettaglio allegato</legend>
+
+        {{ form_row(form.name) }}
+        {{ form_row(form.descr) }}
+    </fieldset>
+
+    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
+        <a href="{{ url('template_list') }}">Torna al dettaglio</a>
+        <input type="submit" value="Salva" />
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+</form>
+{% endblock %}

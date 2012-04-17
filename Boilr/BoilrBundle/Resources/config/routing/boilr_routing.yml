@@ -48,3 +48,13 @@ operation:
     prefix:   /operation
     resource: "@BoilrBundle/Controller/OperationController.php"
     type:     annotation
+
+template:
+    prefix:   /template
+    resource: "@BoilrBundle/Controller/TemplateController.php"
+    type:     annotation
+
+template_section:
+    prefix:   /template-section
+    resource: "@BoilrBundle/Controller/TemplateSectionController.php"
+    type:     annotation

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8" />
+        <style>
+            {% include 'BoilrBundle:Template:pdf.css.twig' %}
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <header id="header">
+                <h3>{{ template.name }}</h3>
+                <h4>{{ template.descr }}</h4>
+                <p>Il rapporto di controllo deve essere compilato dall'operatore incaricato
+                    e consegnato in copia al responsabile dell'impianto, che ne deve confermare
+                    ricevuta per presa visione.
+                </p>
+            </header>
+
+            <div id="wrapper" class="clearfix">
+                <div id="maincol">
+                    <table id="sections">
+                    {% for section in template.sections %}
+                        <tr>
+                            <td class="section_name">{{ section.name }}</td>
+                            <td class="op_header">SI</td>
+                            <td class="op_header">NO</td>
+                            <td class="op_header">N.C.</td>
+                        </tr>
+                        {% for oper in section.operations %}
+                        <tr>
+                            <td class="operation">- {{ oper.name }}</td>
+                            <td class="boxed"></td>
+                            <td class="boxed"></td>
+                            <td class="boxed"></td>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                    </table>
+
+                    <div id="recommendations">
+                        <p>RACCOMANDAZIONI [6] [8] ___________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                        </p>
+                    </div>
+
+                    <div id="precautions">
+                        <p>PRECAUZIONI [7] [8] ________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

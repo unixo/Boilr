@@ -17,7 +17,7 @@ class TemplateSectionData extends AbstractFixture implements OrderedFixtureInter
 
         $s0 = new TemplateSection();
         $s0->setTemplate($templateG);
-        $s0->setName("A. Identificazio dell'impianto");
+        $s0->setName("A. Identificazione dell'impianto");
         $s0->setListOrder(0);
         $manager->persist($s0);
 

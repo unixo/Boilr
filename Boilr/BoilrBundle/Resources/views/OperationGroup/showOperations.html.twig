@@ -22,19 +22,27 @@
             <tr class="{{ cycle(['odd', 'even'], key) }}">
                 <td>
                 {% if key > 0 %}
-                    <a href="{{ url('operation_move', {'id': oper.id, 'dir':'up'}) }}"><img src="/img/arrow_up.gif" /></a>
+                    <a href="{{ url('operation_move', {'id': oper.id, 'dir':'up'}) }}">
+                        <span class="ui-icon ui-icon-arrowthick-1-n" title="Sposta su"></span>
+                    </a>
                 {% endif %}
                 </td>
                 <td>
                 {% if key < count-1 %}
-                    <a href="{{ url('operation_move', {'id': oper.id, 'dir':'down'}) }}"><img src="/img/arrow_down.gif" /></a>
+                    <a href="{{ url('operation_move', {'id': oper.id, 'dir':'down'}) }}">
+                        <span class="ui-icon ui-icon-arrowthick-1-s" title="Sposta giù"></span>
+                    </a>
                 {% endif %}
                 </td>
                 <td>{{ oper.name }}</td>
                 <td>{{ oper.timeLength/60 }}</td>
                 <td>
-                    <a href="{{ url('operation_edit', {oid: oper.id}) }}"><span class="ui-icon ui-icon-pencil"></span></a>
-                    <a href="{{ url('operation_delete', {id: oper.id}) }}"><span class="ui-icon ui-icon-trash"></span></a>
+                    <a href="{{ url('operation_edit', {oid: oper.id}) }}">
+                        <span class="ui-icon ui-icon-pencil" title="Modifica..."></span>
+                    </a>
+                    <a href="{{ url('operation_delete', {id: oper.id}) }}">
+                        <span class="ui-icon ui-icon-trash" title="Elimina"></span>
+                    </a>
                 </td>
             </tr>
             {% endfor %}

@@ -14,6 +14,7 @@ class TemplateData extends AbstractFixture implements OrderedFixtureInterface
     {
         $t = new Template();
         $t->setName('Allegato G');
+        $t->setDescr("Rapporto di controllo tecnico per impianto termico");
         $manager->persist($t);
         $manager->flush();
         $this->addReference('template-g', $t);

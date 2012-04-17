@@ -1,0 +1,45 @@
+{% set secondaryMenu = 'Amministrazione' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+{% block central_block %}
+<h2>Gestione allegati</h2>
+
+<fieldset>
+    <legend>Elengo allegati</legend>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrizione</th>
+                <th># sezioni</th>
+                <th>Operaz.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key,item in templates %}
+            <tr class="{{ cycle(['odd', 'even'], key) }}">
+                <td><a href="{{ url('template_section_list', {id: item.id}) }}">{{ item.name }}</a></td>
+                <td>{{ item.descr }}</td>
+                <td>{{ item.sections|length }}</td>
+                <td>
+                    <a href="{{ url('template_edit', {tid: item.id}) }}"><span class="ui-icon ui-icon-pencil"></span></a>
+                    <a href="{{ url('template_delete', {id: item.id}) }}"><span class="ui-icon ui-icon-trash"></span></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</fieldset>
+
+<div style="margin-top: 10px;">
+    <ul id="icons" class="ui-widget ui-helper-clearfix">
+        <li class="ui-state-default ui-corner-all">
+            <a href="{{ url('template_add') }}">
+                <span class="ui-icon ui-icon-plusthick" title="Aggiungi modello..."></span>
+            </a>
+        </li>
+    </ul>
+</div>
+{% endblock %}

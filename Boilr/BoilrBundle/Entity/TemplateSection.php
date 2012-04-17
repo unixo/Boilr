@@ -53,6 +53,8 @@ class TemplateSection
      * @var integer $listOrder
      *
      * @ORM\Column(name="list_order", type="integer", nullable=false)
+     * @Assert\NotBlank
+     * @Assert\Type(type="integer")
      */
     protected $listOrder;
 

@@ -26,13 +26,23 @@ class Template
      * @var string $name
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
+     * @var string $descr
+     *
+     * @ORM\Column(name="descr", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
+     */
+    private $descr;
+
+    /**
      * @var TemplateItem
      *
-     * @ORM\OneToMany(targetEntity="TemplateSection", mappedBy="template")
+     * @ORM\OneToMany(targetEntity="TemplateSection", mappedBy="template", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"listOrder" = "ASC"})
      */
     protected $sections;
 
@@ -81,6 +91,11 @@ class Template
         $this->sections[] = $sections;
     }
 
+    public function setSections(\Doctrine\ORM\PersistentCollection $sections)
+    {
+        $this->sections[] = $sections;
+    }
+
     /**
      * Get sections
      *
@@ -89,5 +104,15 @@ class Template
     public function getSections()
     {
         return $this->sections;
+    }
+
+    public function getDescr()
+    {
+        return $this->descr;
+    }
+
+    public function setDescr($descr)
+    {
+        $this->descr = $descr;
     }
 }
