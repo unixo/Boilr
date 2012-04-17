@@ -1,63 +1,63 @@
-ops1|Dichiar. di conformità dell'impianto|300|0
-ops1|Libretto di impianto|300|1
-ops1|Libretto d'uso e manutenzione|300|2
-ops1|Idoneità del locale di installazione|300|3
-ops1|Adeguate dimensioni aperture ventilazione|300|4
-ops1|Aperture di ventilazione libere da ostruzioni|300|5
-ops1|Pendenza corretta|300|6
-ops1|Sezioni corrette|300|7
-ops1|Curve corrette|300|8
-ops1|Lunghezza corretta|300|9
-ops1|Buono stato di conservazione|300|10
-ops1|Scarico in camino singolo|300|11
-ops1|Scarico in canna fumaria collettiva ramificata|300|12
-ops1|Scarico a parete|300|13
-ops1|Per apparecchio a tiraggio naturale: non esistono riflussi dei fumi nel locale|300|14
-ops1|Per apparecchio a tiraggio forzato: assenza di perdite dai condotti di scarico|300|15
-ops1|Ugelli dei bruciatore principale e del bruciatore pilota (se esiste) puliti|300|16
-ops1|Dispositivo rompitiraggio-antivento privo di evidenti tracce di deterioramento, ossidazione e/o corrosione|300|17
-ops1|Scambiatore lato fumi pulito|300|18
-ops1|Accensione e funzionamento regolari|300|19
-ops1|Dispositivi di comando e regolazione funzionanti correttamente|300|20
-ops1|Assenza di perdite e ossidazioni dai/sui raccordi|300|21
-ops1|Valvola di sicurezza contro la sovrapressione a scarico libero|300|22
-ops1|Vaso di espansione carico|300|23
-ops1|Dispositivi di sicurezza non manomessi e/o cortocircuitati|300|24
-ops1|Organi soggetti a sollecitazioni termiche integri e senza segni di usura e/o deformazione|300|25
-ops1|Circuito aria pulito e libero da qualsiasi impedimento|300|26
-ops1|Guarnizione di accoppiamento al generatore integra|300|27
-ops1|Controllo assenza fughe di gas|300|28
-ops1|Verifica visiva coibentazioni|300|29
-ops1|Verifica efficienza evacuazione fumi|300|30
-ops2|Dichiar. di conformità dell'impianto|300|0
-ops2|Libretto di impianto|300|1
-ops2|Libretto d'uso e manutenzione|300|2
-ops2|Idoneità del locale di installazione|300|3
-ops2|Adeguate dimensioni aperture ventilazione|300|4
-ops2|Aperture di ventilazione libere da ostruzioni|300|5
-ops2|Pendenza corretta|300|6
-ops2|Sezioni corrette|300|7
-ops2|Curve corrette|300|8
-ops2|Lunghezza corretta|300|9
-ops2|Buono stato di conservazione|300|10
-ops2|Scarico in camino singolo|300|11
-ops2|Scarico in canna fumaria collettiva ramificata|300|12
-ops2|Scarico a parete|300|13
-ops2|Per apparecchio a tiraggio naturale: non esistono riflussi dei fumi nel locale|300|14
-ops2|Per apparecchio a tiraggio forzato: assenza di perdite dai condotti di scarico|300|15
-ops2|Ugelli dei bruciatore principale e del bruciatore pilota (se esiste) puliti|300|16
-ops2|Dispositivo rompitiraggio-antivento privo di evidenti tracce di deterioramento, ossidazione e/o corrosione|300|17
-ops2|Scambiatore lato fumi pulito|300|18
-ops2|Accensione e funzionamento regolari|300|19
-ops2|Dispositivi di comando e regolazione funzionanti correttamente|300|20
-ops2|Assenza di perdite e ossidazioni dai/sui raccordi|300|21
-ops2|Valvola di sicurezza contro la sovrapressione a scarico libero|300|22
-ops2|Vaso di espansione carico|300|23
-ops2|Dispositivi di sicurezza non manomessi e/o cortocircuitati|300|24
-ops2|Organi soggetti a sollecitazioni termiche integri e senza segni di usura e/o deformazione|300|25
-ops2|Circuito aria pulito e libero da qualsiasi impedimento|300|26
-ops2|Guarnizione di accoppiamento al generatore integra|300|27
-ops2|Controllo assenza fughe di gas|300|28
-ops2|Verifica visiva coibentazioni|300|29
-ops2|Verifica efficienza evacuazione fumi|300|30
-ops2|Controllo del rendimento di combustione|300|31
+ops1|Dichiar. di conformità dell'impianto|300|0|oper-b1
+ops1|Libretto di impianto|300|1|oper-b2
+ops1|Libretto d'uso e manutenzione|300|2|oper-b3
+ops1|Idoneità del locale di installazione|300|3|oper-c1
+ops1|Adeguate dimensioni aperture ventilazione|300|4|oper-c2
+ops1|Aperture di ventilazione libere da ostruzioni|300|5|oper-c3
+ops1|Pendenza corretta|300|6|oper-d1
+ops1|Sezioni corrette|300|7|oper-d2
+ops1|Curve corrette|300|8|oper-d3
+ops1|Lunghezza corretta|300|9|oper-d4
+ops1|Buono stato di conservazione|300|10|oper-d5
+ops1|Scarico in camino singolo|300|11|oper-e1
+ops1|Scarico in canna fumaria collettiva ramificata|300|12|oper-e2
+ops1|Scarico a parete|300|13|oper-e3
+ops1|Per apparecchio a tiraggio naturale: non esistono riflussi dei fumi nel locale|300|14|oper-e4
+ops1|Per apparecchio a tiraggio forzato: assenza di perdite dai condotti di scarico|300|15|oper-e5
+ops1|Ugelli dei bruciatore principale e del bruciatore pilota (se esiste) puliti|300|16|oper-f1
+ops1|Dispositivo rompitiraggio-antivento privo di evidenti tracce di deterioramento, ossidazione e/o corrosione|300|17|oper-f2
+ops1|Scambiatore lato fumi pulito|300|18|oper-f3
+ops1|Accensione e funzionamento regolari|300|19|oper-f4
+ops1|Dispositivi di comando e regolazione funzionanti correttamente|300|20|oper-f5
+ops1|Assenza di perdite e ossidazioni dai/sui raccordi|300|21|oper-f6
+ops1|Valvola di sicurezza contro la sovrapressione a scarico libero|300|22|oper-f7
+ops1|Vaso di espansione carico|300|23|oper-f8
+ops1|Dispositivi di sicurezza non manomessi e/o cortocircuitati|300|24|oper-f9
+ops1|Organi soggetti a sollecitazioni termiche integri e senza segni di usura e/o deformazione|300|25|oper-f10
+ops1|Circuito aria pulito e libero da qualsiasi impedimento|300|26|oper-f11
+ops1|Guarnizione di accoppiamento al generatore integra|300|27|oper-f12
+ops1|Controllo assenza fughe di gas|300|28|oper-g1
+ops1|Verifica visiva coibentazioni|300|29|oper-g2
+ops1|Verifica efficienza evacuazione fumi|300|30|oper-g3
+ops2|Dichiar. di conformità dell'impianto|300|0|oper-ops2-b1
+ops2|Libretto di impianto|300|1|oper-ops2-b2
+ops2|Libretto d'uso e manutenzione|300|2|oper-ops2-b3
+ops2|Idoneità del locale di installazione|300|3|oper-ops2-c1
+ops2|Adeguate dimensioni aperture ventilazione|300|4|oper-ops2-c2
+ops2|Aperture di ventilazione libere da ostruzioni|300|5|oper-ops2-c3
+ops2|Pendenza corretta|300|6|oper-ops2-d1
+ops2|Sezioni corrette|300|7|oper-ops2-d2
+ops2|Curve corrette|300|8|oper-ops2-d3
+ops2|Lunghezza corretta|300|9|oper-ops2-d4
+ops2|Buono stato di conservazione|300|10|oper-ops2-d5
+ops2|Scarico in camino singolo|300|11|oper-ops2-e1
+ops2|Scarico in canna fumaria collettiva ramificata|300|12|oper-ops2-e2
+ops2|Scarico a parete|300|13|oper-ops2-e3
+ops2|Per apparecchio a tiraggio naturale: non esistono riflussi dei fumi nel locale|300|14|oper-ops2-e4
+ops2|Per apparecchio a tiraggio forzato: assenza di perdite dai condotti di scarico|300|15|oper-ops2-e5
+ops2|Ugelli dei bruciatore principale e del bruciatore pilota (se esiste) puliti|300|16|oper-ops2-f1
+ops2|Dispositivo rompitiraggio-antivento privo di evidenti tracce di deterioramento, ossidazione e/o corrosione|300|17|oper-ops2-f2
+ops2|Scambiatore lato fumi pulito|300|18|oper-ops2-f3
+ops2|Accensione e funzionamento regolari|300|19|oper-ops2-f4
+ops2|Dispositivi di comando e regolazione funzionanti correttamente|300|20|oper-ops2-f5
+ops2|Assenza di perdite e ossidazioni dai/sui raccordi|300|21|oper-ops2-f6
+ops2|Valvola di sicurezza contro la sovrapressione a scarico libero|300|22|oper-ops2-f7
+ops2|Vaso di espansione carico|300|23|oper-ops2-f8
+ops2|Dispositivi di sicurezza non manomessi e/o cortocircuitati|300|24|oper-ops2-f9
+ops2|Organi soggetti a sollecitazioni termiche integri e senza segni di usura e/o deformazione|300|25|oper-ops2-f10
+ops2|Circuito aria pulito e libero da qualsiasi impedimento|300|26|oper-ops2-f11
+ops2|Guarnizione di accoppiamento al generatore integra|300|27|oper-ops2-f12
+ops2|Controllo assenza fughe di gas|300|28|oper-ops2-g1
+ops2|Verifica visiva coibentazioni|300|29|oper-ops2-g2
+ops2|Verifica efficienza evacuazione fumi|300|30|oper-ops2-g3
+ops2|Controllo del rendimento di combustione|300|31|oper-ops2-h1

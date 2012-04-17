@@ -21,13 +21,14 @@ class LoadOperationData extends AbstractFixture implements OrderedFixtureInterfa
         $fhandle  = fopen($filename, "r");
 
         while ( ($record = fgetcsv($fhandle, 1000, '|')) !== FALSE ) {
-            // group|name|time_length|order
+            // group|name|time_length|order|placeholder
             $op = new Operation();
             $op->setParentGroup($manager->merge($this->getReference($record[0])));
             $op->setName($record[1]);
             $op->setTimeLength($record[2]);
             $op->setListOrder($record[3]);
             $manager->persist($op);
+            $this->addReference($record[4], $op);
         }
         fclose($fhandle);
 
