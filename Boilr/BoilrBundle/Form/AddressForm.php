@@ -20,7 +20,7 @@ class AddressForm extends AbstractType
                 ->add('street',     'text', array('required' => true))
                 ->add('postalCode', 'text', array('required' => true))
                 ->add('city',       'text', array('required' => true))
-                ->add('state',      'text', array('required' => true))
+                ->add('state',      'country', array('required' => true))
                 ->add('province',   'province', array('required' => true));
     }
 
