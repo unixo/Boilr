@@ -18,20 +18,27 @@ class LoadGroupData extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($g);
         $manager->flush();
         $this->addReference('group-operator', $g);
-        
+
         $g = new Group();
         $g->setName('Amministratore');
         $g->setRole('ROLE_ADMIN');
         $manager->persist($g);
         $manager->flush();
         $this->addReference('group-admin', $g);
-        
+
         $g = new Group();
         $g->setName('Super-User');
         $g->setRole('ROLE_SUPERUSER');
         $manager->persist($g);
         $manager->flush();
         $this->addReference('group-super', $g);
+
+        $g = new Group();
+        $g->setName('Installatore');
+        $g->setRole('ROLE_INSTALLER');
+        $manager->persist($g);
+        $manager->flush();
+        $this->addReference('group-installer', $g);
     }
 
     function getOrder()
