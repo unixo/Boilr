@@ -2,10 +2,11 @@
 
 namespace Boilr\BoilrBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert,
-    Symfony\Component\Security\Core\User\UserInterface;
-use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM,
+    Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity,
+    Symfony\Component\Validator\Constraints as Assert,
+    Symfony\Component\Security\Core\User\UserInterface,
+    Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Boilr\BoilrBundle\Entity\User
@@ -13,6 +14,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="users", uniqueConstraints={
  * @ORM\UniqueConstraint(name="user_uniq_idx", columns={"name", "surname", "login"})})
  * @ORM\Entity
+ * @UniqueEntity("login")
  */
 class User implements UserInterface
 {
@@ -61,6 +63,7 @@ class User implements UserInterface
      * @var $isActive
      *
      * @ORM\Column(name="active", type="boolean")
+     * @Assert\NotBlank
      * @Assert\Type(type="bool")
      */
     protected $isActive;
@@ -93,19 +96,21 @@ class User implements UserInterface
      */
     protected $groups;
 
-    public function equals(UserInterface $user) {
+    public function equals(UserInterface $user)
+    {
         if (!$user instanceof AppUser) {
             return false;
         }
 
-        return ( $this->getLogin() == $user->getUsername() );
+        return ($this->getLogin() == $user->getUsername());
     }
 
-    public function eraseCredentials() {
-
+    public function eraseCredentials()
+    {
     }
 
-    public function getRoles() {
+    public function getRoles()
+    {
         $roles = array();
 
         foreach ($this->getGroups() as $group) {
@@ -116,11 +121,13 @@ class User implements UserInterface
         return $roles;
     }
 
-    public function getSalt() {
+    public function getSalt()
+    {
         return null;
     }
 
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->getLogin();
     }
 
@@ -307,5 +314,19 @@ class User implements UserInterface
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Returns a description of user privs
+     *
+     * @return string
+     */
+    public function getGroupsDescr()
+    {
+        $descr = array();
+        foreach ($this->getGroups() as $group) {
+            $descr[] = $group->getName();
+        }
+        return implode(', ', $descr);
     }
 }
