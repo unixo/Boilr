@@ -63,3 +63,8 @@ user:
     prefix:   /user
     resource: "@BoilrBundle/Controller/UserController.php"
     type:     annotation
+
+company:
+    prefix:   /company
+    resource: "@BoilrBundle/Controller/CompanyController.php"
+    type:     annotation

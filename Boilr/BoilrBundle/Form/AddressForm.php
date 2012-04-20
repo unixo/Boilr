@@ -22,7 +22,8 @@ class AddressForm extends AbstractType
                 ->add('postalCode', 'text', array('required' => true, 'label' => 'CAP'))
                 ->add('city',       'text', array('required' => true, 'label' => 'Città'))
                 ->add('state',      'country', array('required' => true, 'label' => 'Stato'))
-                ->add('province',   'province', array('required' => true, 'label' => 'Provincia'));
+                ->add('province',   'province', array('required' => true, 'label' => 'Provincia'))
+            ;
     }
 
     public function getDefaultOptions(array $options) {

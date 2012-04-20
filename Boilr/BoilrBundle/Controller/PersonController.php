@@ -243,7 +243,7 @@ class PersonController extends BaseController
     {
         // Create the form, fill with data and select proper validation group
         $form = $this->createForm(
-                new PersonRegistryForm(), $person, array( 'validation_groups' => array('registry') )
+                new PersonRegistryForm(), $person, array('validation_groups' => array('registry'))
                 );
 
         if ($this->isPOSTRequest()) {

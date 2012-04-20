@@ -35,6 +35,14 @@ class Person
     protected $id;
 
     /**
+     * @var Company
+     *
+     * @ORM\ManyToOne(targetEntity="Company", inversedBy="employees")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id", nullable=true)
+     */
+    protected $company;
+
+    /**
      * @var string $type
      *
      * @ORM\Column(type="integer", nullable=false)
@@ -648,5 +656,25 @@ class Person
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    /**
+     * Set company
+     *
+     * @param Boilr\BoilrBundle\Entity\Company $company
+     */
+    public function setCompany(\Boilr\BoilrBundle\Entity\Company $company)
+    {
+        $this->company = $company;
+    }
+
+    /**
+     * Get company
+     *
+     * @return Boilr\BoilrBundle\Entity\Company 
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

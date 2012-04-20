@@ -1,0 +1,37 @@
+{% extends 'BoilrBundle:Person:person-base.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+
+{% block inner_block %}
+<div class="span9">
+  <h2>Creazione nuovo schema di manutenzione</h2>
+
+  <form id="form_schema" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+    <fieldset>
+      <legend>Dettagli</legend>
+
+        {{ form_row(form.name) }}
+        {{ form_row(form.vatCode) }}
+    </fieldset>
+
+    <fieldset>
+      <legend>Indirizzo</legend>
+
+      {{ form_row(form.street) }}
+      {{ form_row(form.city) }}
+      {{ form_row(form.province) }}
+      {{ form_row(form.postalCode) }}
+      {{ form_row(form.state) }}
+    </fieldset>
+
+    <div class="form-actions">
+        <a class="btn" href="{{ url('manteinance_schema_list') }}">
+            <i class="icon-arrow-left"></i> Torna al dettaglio
+        </a>
+        <input class="btn btn-primary" type="submit" value="Salva" />
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+  </form>
+</div>
+{% endblock %}
