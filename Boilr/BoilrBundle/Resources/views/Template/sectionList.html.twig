@@ -1,15 +1,15 @@
-{% set secondaryMenu = 'Amministrazione' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
-{% block central_block %}
-<h2>Elenco sezioni "{{ template.name }}"</h2>
+{% block inner_block %}
+<div class="span9">
+  <h2>Elenco sezioni "{{ template.name }}"</h2>
 
 <fieldset>
     <legend>Corpo del modello</legend>
 
     {% if template.sections | length > 0 %}
-    <table>
+    <table class="table table-condensed table-striped">
         <thead>
             <tr>
                 <th></th>
@@ -23,26 +23,26 @@
                 <td>
                     {% if key > 0 %}
                     <a href="{{ url('section_move', {'id': sect.id, 'dir':'up'}) }}">
-                        <span class="ui-icon ui-icon-arrowthick-1-n" title="Sposta su"></span>
+                        <i class="icon-arrow-up" title="Sposta su"></i>
                     </a>
                     {% endif %}
 
                     {% if key < count-1 %}
                     <a href="{{ url('section_move', {'id': sect.id, 'dir':'down'}) }}">
-                        <span class="ui-icon ui-icon-arrowthick-1-s" title="Sposta giù"></span>
+                        <i class="icon-arrow-down" title="Sposta giù"></i>
                     </a>
                     {% endif %}
                 </td>
                 <td>{{ sect.name }}</td>
                 <td>
                     <a href="{{ url('template_section_edit', {sid: sect.id}) }}">
-                        <span class="ui-icon ui-icon-pencil" title="Modifica..."></span>
+                        <i class="icon-pencil" title="Modifica..."></i>
                     </a>
                     <a href="{{ url('template_section_delete', {id: sect.id}) }}">
-                        <span class="ui-icon ui-icon-trash" title="Elimina"></span>
+                        <i class="icon-trash" title="Elimina"></i>
                     </a>
                     <a href="{{ url('template_section_bind', {id: sect.id}) }}">
-                        <span class="ui-icon ui-icon-wrench" title="Associa operazioni..."></span>
+                        <i class="icon-plus" title="Associa operazioni..."></i>
                     </a>
                 </td>
             </tr>
@@ -50,9 +50,9 @@
                 {% for oper in sect.operations %}
                 <tr>
                     <td></td>
-                    <td><span class="ui-icon ui-icon-carat-1-e"></span>{{ oper.name }}</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ oper.name }}</td>
                     <td><a href="{{ url('template_section_unbind', {id: sect.id, pid: oper.id}) }}">
-                            <span class="ui-icon ui-icon-transfer-e-w" title="Elimina operazione"></span>
+                            <i class="icon-remove" title="Elimina operazione"></i>
                         </a>
                     </td>
                 </tr>
@@ -62,27 +62,20 @@
         </tbody>
     </table>
     {% else %}
-        <p>Non è stata creata alcuna sezione.</p>
+      <div class="alert alert-info">Non è stata creata alcuna sezione.</div>
     {% endif %}
 </fieldset>
 
-<div style="margin-top: 10px;">
-    <ul id="icons" class="ui-widget ui-helper-clearfix">
-        <li class="ui-state-default ui-corner-all">
-            <a href="{{ url('template_list') }}">
-                <span class="ui-icon ui-icon-arrowthick-1-w" title="Torna all'elenco"></span>
-            </a>
-        </li>
-        <li class="ui-state-default ui-corner-all">
-            <a href="{{ url('template_section_add', {tid: template.id}) }}">
-                <span class="ui-icon ui-icon-plusthick" title="Aggiungi sezione..."></span>
-            </a>
-        </li>
-        <li class="ui-state-default ui-corner-all">
-            <a href="{{ url('template_preview', {id: template.id}) }}">
-                <span class="ui-icon ui-icon-document" title="Anteprima modello..."></span>
-            </a>
-        </li>
-    </ul>
+  <div style="margin-top: 10px;">
+    <a class="btn btn-small" href="{{ url('template_list') }}">
+      <i class="icon-arrow-left"></i> Torna all'elenco
+    </a>
+    <a class="btn btn-small" href="{{ url('template_section_add', {tid: template.id}) }}">
+      <i class="icon-plus"></i> Aggiungi
+    </a>
+    <a class="btn btn-small" href="{{ url('template_preview', {id: template.id}) }}">
+     <i class="icon-list-alt"></i> Anteprima
+    </a>
+  </div>
 </div>
 {% endblock %}

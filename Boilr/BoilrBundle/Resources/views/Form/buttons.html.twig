@@ -1,7 +1,28 @@
-<div class="div_buttons">
-    <button type="submit">
-            {{- 'Inserisci' | trans({}, 'CraueFormFlowBundle') -}}
-    </button>   
+{% set renderBackButton = flow.getCurrentStep() in (flow.getFirstStep() + 1) .. flow.getLastStep() %}
+<div class="craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
+{% spaceless %}
+	{#
+		Default button (the one trigged by pressing the enter/return key) must be defined first.
+		Thus, all buttons are defined in reverse order and will be reversed again via CSS.
+		See http://stackoverflow.com/questions/1963245/multiple-submit-buttons-specifying-default-button
+	#}
+	<button type="submit" class="craue_formflow_button_last btn btn-primary">
+		{%- if flow.getCurrentStep() < flow.getLastStep() -%}
+			{{- 'button.next' | trans({}, 'CraueFormFlowBundle') -}}
+		{%- else -%}
+			{{- 'button.finish' | trans({}, 'CraueFormFlowBundle') -}}
+		{%- endif -%}
+	</button>
 
-    <input type="reset" value="Reimposta"/>
+	{% if renderBackButton %}
+		{# see http://www.html5rocks.com/en/tutorials/forms/html5forms/ #}
+		<button type="submit" name="{{ flow.getFormTransitionKey() }}" value="back" formnovalidate="formnovalidate" class="btn">
+			{{- 'button.back' | trans({}, 'CraueFormFlowBundle') -}}
+		</button>
+	{% endif %}
+
+	<button type="submit" class="btn btncraue_formflow_button_first" name="{{ flow.getFormTransitionKey() }}" value="reset" formnovalidate="formnovalidate">
+		{{- 'button.reset' | trans({}, 'CraueFormFlowBundle') -}}
+	</button>
+{% endspaceless %}
 </div>

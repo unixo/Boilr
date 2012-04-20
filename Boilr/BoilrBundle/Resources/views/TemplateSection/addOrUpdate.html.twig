@@ -1,23 +1,26 @@
-{% set secondaryMenu = 'Amministrazione' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 
-{% block central_block %}
-<h2>{{ (opType == 'add')?"Nuova":"Modifica" }} sezione</h2>
+{% block inner_block %}
+<div class="span9">
+  <h2>{{ (opType == 'add')?"Nuova":"Modifica" }} sezione</h2>
 
-<form id="form_template" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+  <form id="form_template" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     <fieldset>
         <legend>Dettaglio sezione</legend>
 
         {{ form_row(form.name) }}
     </fieldset>
 
-    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
-        <a href="{{ url('template_section_list', {id: template.id}) }}">Torna al dettaglio</a>
-        <input type="submit" value="Salva" />
+    <div class="form-actions">
+      <a class="btn" href="{{ url('template_section_list', {id: template.id}) }}">
+        <i class="icon-arrow-left"></i> Torna al dettaglio
+      </a>
+      <input class="craue_formflow_button_last btn btn-primary" type="submit" value="Salva" />
     </div>
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
-</form>
+  </form>
+</div>
 {% endblock %}

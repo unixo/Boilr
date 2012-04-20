@@ -1,11 +1,11 @@
-{% set secondaryMenu = 'Anagrafica' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Person:person-base.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>Registrazione contratto d'assistenza programmata</h2>
 
-<form id="form_contract" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+<form id="form_contract" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
 
     {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': system.owner, 'allFields': false} %}
 
@@ -19,14 +19,17 @@
         <div><label>Data termine:</label>{{ form_widget(form.endDate, {'attr': {'class': 'jdate'}}) }}</div>
     </fieldset>
 
-    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
-        <a href="{{ url('show_person', {'id': system.owner.id}) }}">Torna al dettaglio</a>
-        <input type="submit" value="Salva" />
+    <div class="form-actions">
+        <a class="btn" href="{{ url('show_person', {'id': system.owner.id}) }}">
+            <i class="icon-arrow-left"></i> Torna al dettaglio
+        </a>
+        <input class="btn btn-primary" type="submit" value="Salva" />
     </div>
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
 </form>
+</div>
 {% endblock %}
 
 

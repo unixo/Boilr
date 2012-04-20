@@ -35,15 +35,17 @@
         <!-- End of Geo-map -->
 
         <!-- Custom menu renderer -->
-        <service id="boilr.menu_renderer" class="Boilr\BoilrBundle\Menu\MenuRenderer">
+        <service id="boilr.menu_renderer" class="Boilr\BoilrBundle\Menu\SidebarRenderer">
             <tag name="knp_menu.renderer" alias="boilr_menu_renderer" />
         </service>
         <!-- End of Custom menu render -->
 
-        <!-- Custom date validator -->
-        <service id="validator.custom.date" class="Boilr\BoilrBundle\Validator\Constraints\CustomDateValidator">
-            <tag name="validator.constraint_validator" alias="boilr.validator.date" />
-        </service>
+        <!-- Custom validators -->
+            <!-- Custom date validator -->
+            <service id="validator.custom.date" class="Boilr\BoilrBundle\Validator\Constraints\CustomDateValidator">
+                <tag name="validator.constraint_validator" alias="boilr.validator.date" />
+            </service>
+        <!-- End of Custom validators -->
 
         <!-- Form types -->
         <service id="form.type.province" class="Boilr\BoilrBundle\Form\Extension\Type\ProvinceType">

@@ -32,9 +32,44 @@ class Builder extends ContainerAware
             $item->addChild('Schemi Manutenz.', array('route' => 'manteinance_schema_list'));
             $item->addChild('Gruppi Controlli', array('route' => 'operation_group_list'));
             $item->addChild('Allegati', array('route' => 'template_list'));
+            $item->addChild('Gest. Utenze', array('route' => 'user_list'));
         }
 
         $menu->addChild('logout', array('route' => '_security_logout'))->setLabel('Logout');
+
+        return $menu;
+    }
+
+    public function personMenu(FactoryInterface $factory)
+    {
+        $menu = $factory->createItem('root');
+        $menu->setCurrentUri($this->container->get('request')->getRequestUri());
+
+        $menu->addChild('Nuovo',   array('route' => 'new_person'));
+        $menu->addChild('Ricerca', array('route' => 'search_person'));
+
+        return $menu;
+    }
+
+    public function interventionMenu(FactoryInterface $factory)
+    {
+        $menu = $factory->createItem('root');
+        $menu->setCurrentUri($this->container->get('request')->getRequestUri());
+
+        $menu->addChild('Mese corrente',   array('route' => 'current_month_interventions'));
+        $menu->addChild('Ricerca', array('route' => 'search_intervention'));
+
+        return $menu;
+    }
+
+    public function adminMenu(FactoryInterface $factory)
+    {
+        $menu = $factory->createItem('root');
+        $menu->setCurrentUri($this->container->get('request')->getRequestUri());
+
+        $menu->addChild('Schemi manutenzione',   array('route' => 'manteinance_schema_list'));
+        $menu->addChild('Gruppi controlli', array('route' => 'operation_group_list'));
+        $menu->addChild('Allegati', array('route' => 'template_list'));
 
         return $menu;
     }

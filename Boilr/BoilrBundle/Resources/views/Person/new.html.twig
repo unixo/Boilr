@@ -1,13 +1,14 @@
-{% set secondaryMenu = 'Anagrafica' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Person:person-base.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 
-{% block central_block %}
-<div id="formnav">
+{% block inner_block %}
+<div class="span10">
+  <h2>Nuova anagrafica</h2>
+  <div id="formnav">
     {% include 'CraueFormFlowBundle:FormFlow:stepList.html.twig' %}
-</div>
+  </div>
 
-<form id="form_newpersonn" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+  <form id="form_newpersonn" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     {% include 'CraueFormFlowBundle:FormFlow:stepField.html.twig' %}
 
     {% include 'BoilrBundle:Person:new_step' ~ flow.getCurrentStep() ~ '.html.twig' with {'form': form } %}
@@ -15,8 +16,11 @@
     <div style="display: none">{{ form_rest(form) }}</div>
     {{ form_errors(form) }}
 
-    {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' %}
-</form>
+    <div class="form-actions">
+      {% include 'BoilrBundle:Form:buttons.html.twig' %}
+    </div>
+  </form>
+</div>
 {% endblock %}
 
 

@@ -1,5 +1,4 @@
-{% set secondaryMenu = 'Amministrazione' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 
 {% block extra_header %}
@@ -11,14 +10,15 @@
 </style>
 {% endblock %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>Associazione controlli alla sezione "{{ section.name }}" del modello "{{ section.template.name }}"</h2>
 
-<form id="form_operation" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+<form id="form_operation" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     <fieldset>
         <legend>Elenco dei controlli disponibili</legend>
 
-        <table id="table_bind_operations">
+        <table id="table_bind_operations" class="table table-condensed table-striped">
         {% for key,oper in form.operations %}
             <tr class="{{ cycle(['odd', 'even'], key) }}">
                 <td>{{ form_widget(oper) }}</td>
@@ -28,12 +28,15 @@
         </table>
     </fieldset>
 
-    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
-        <a href="{{ url('template_section_list', {id: section.template.id}) }}">Torna al dettaglio</a>
-        <input type="submit" value="Salva" />
+    <div class="form-actions">
+        <a class="btn" href="{{ url('template_section_list', {id: section.template.id}) }}">
+          <i class="icon-arrow-left"></i> Torna al dettaglio
+        </a>
+        <input class="btn btn-primary" type="submit" value="Salva" />
     </div>
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
 </form>
+</div>
 {% endblock %}

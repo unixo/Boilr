@@ -39,7 +39,7 @@ class DefaultController extends Controller
     /**
      * @Route("/admin", name="admin_homepage")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
-     * @Template()
+     * @Template("BoilrBundle:Default:template5-admin.html.twig")
      */
     public function adminHomeAction()
     {

@@ -1,17 +1,19 @@
-{% set secondaryMenu = 'Amministrazione' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>{{ (opType == 'add')?"Nuova":"Modifica" }} operazione</h2>
 
-<form id="form_operation" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+<form id="form_operation" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     <fieldset>
         <legend>Dettagli gruppo d'appartenenza</legend>
 
-        {{ mymacro.fieldset_row('Nome', parentGroup.name) }}
-        {{ mymacro.fieldset_row('Descrizione', parentGroup.descr) }}
+        <dl class="dl-horizontal">
+          {{ mymacro.fieldset_row('Nome', parentGroup.name) }}
+          {{ mymacro.fieldset_row('Descrizione', parentGroup.descr) }}
+        </dl>
     </fieldset>
 
     <fieldset>
@@ -21,12 +23,13 @@
         {{ form_row(form.timeLength) }}
     </fieldset>
 
-    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
-        <a href="{{ url('operation_group_operations', {'id': parentGroup.id}) }}">Torna al dettaglio</a>
-        <input type="submit" value="Salva" />
+    <div class="form-actions">
+        <a class="btn" href="{{ url('operation_group_operations', {'id': parentGroup.id}) }}">Torna al dettaglio</a>
+        <input class="btn btn-primary" type="submit" value="Salva" />
     </div>
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
-</form>
+  </form>
+</div>
 {% endblock %}

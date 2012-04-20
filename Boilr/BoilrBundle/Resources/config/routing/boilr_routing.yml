@@ -58,3 +58,8 @@ template_section:
     prefix:   /template-section
     resource: "@BoilrBundle/Controller/TemplateSectionController.php"
     type:     annotation
+
+user:
+    prefix:   /user
+    resource: "@BoilrBundle/Controller/UserController.php"
+    type:     annotation

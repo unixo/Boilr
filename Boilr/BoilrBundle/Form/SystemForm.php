@@ -18,28 +18,33 @@ class SystemForm extends AbstractType
         }
 
         $builder->add('systemType', 'entity', array(
+                                     'label'       => 'Tipo',
                                      'class'       => 'BoilrBundle:SystemType',
                                      'property'    => 'name',
                                      'empty_value' => ''))
                 ->add('product', 'entity', array(
+                                     'label'       => 'Prodotto',
                                      'class'       => 'BoilrBundle:Product',
                                      'property'    => 'name',
                                      'empty_value' => ''))
                 ->add('address', 'entity', array(
+                                     'label'       => 'Indirizzo',
                                      'class'       => 'BoilrBundle:Address',
                                      'property'    => 'address',
                                      'choices'     => $addresses,
                                      'empty_value' => ''
                      ))
                 ->add('installDate', 'date', array(
+                                     'label'       => 'Data installazione',
                                      'required'    => true,
                                      'format'      => 'dd/MM/yyyy',
                                      'widget'      => 'single_text'))
                 ->add('lastManteinance', 'date', array(
+                                     'label'       => 'Ultima manutenzione',
                                      'format'      => 'dd/MM/yyyy',
                                      'widget'      => 'single_text'))
-                ->add('code',  'text', array('required' => true))
-                ->add('descr', 'text', array('required' => true));
+                ->add('code',  'text', array('required' => true, 'label' => 'Seriale'))
+                ->add('descr', 'text', array('required' => true, 'label' => 'Descrizione'));
     }
 
     public function getDefaultOptions(array $options) {

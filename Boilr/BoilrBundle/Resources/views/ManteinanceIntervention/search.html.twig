@@ -1,9 +1,9 @@
-{% set secondaryMenu = 'Interventi' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:ManteinanceIntervention:intervention-base.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>Inserimento intervento di manutenzione non programmato</h2>
 
 <form id="form_search_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
@@ -27,32 +27,33 @@
 
 {% if results|length > 0 %}
 <fieldset>
-    <legend>Interventi trovati</legend>
+  <legend>Interventi trovati</legend>
 
-    <table id="tblResults">
-        <thead>
-            <tr>
-                <th>Stato</th>
-                <th>Progr.</th>
-                <th>Data/Ora</th>
-                <th>Cliente</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for interv in results %}
-            <tr>
-                <td>&nbsp;</td>
-                <td>{{ mymacro.imgcheck_if_true(interv.isPlanned) }}</td>
-                <td>{{ interv.originalDate | date('d-m-Y H:i') }}</td>
-                <td><a onclick="fnShowPersonDetail({{ interv.customer.id }})">{{ interv.customer.fullName }}</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+  <table id="tblResults" class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Stato</th>
+        <th>Progr.</th>
+        <th>Data/Ora</th>
+        <th>Cliente</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for interv in results %}
+      <tr>
+        <td>&nbsp;</td>
+        <td>{{ mymacro.imgcheck_if_true(interv.isPlanned) }}</td>
+        <td>{{ interv.originalDate | date('d-m-Y H:i') }}</td>
+        <td><a onclick="fnShowPersonDetail({{ interv.customer.id }})">{{ interv.customer.fullName }}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 </fieldset>
 
 {% include 'BoilrBundle:Person:_details.html.twig' %}
 {% endif %}
+</div>
 {% endblock %}
 
 

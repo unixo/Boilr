@@ -1,29 +1,30 @@
 <fieldset>
-    <legend>Dati anagrafici</legend>
+  <legend>Dati anagrafici</legend>
 
-    {{ form_row(form.type) }}
-    {{ form_row(form.title) }}
-    {{ form_row(form.name) }}
-    {{ form_row(form.surname) }}
-    {{ form_row(form.fiscalCode) }}
-    {{ form_row(form.vatCode) }}
+  <div class="control-group">
+    <label class="control-label">Tipologia contatto</label>
+
+    <div class="controls">
+      <label class="checkbox inline">{{ form_widget(form.isCustomer, {simple: true}) }} Cliente</label>
+      <label class="checkbox inline">{{ form_widget(form.isInstaller, {simple: true}) }} Installatore</label>
+      <label class="checkbox inline">{{ form_widget(form.isAdministrator, {simple: true}) }} Amministratore di condominio</label>
+    </div>
+  </div>
+  {{ form_row(form.type) }}
+  {{ form_row(form.title) }}
+  {{ form_row(form.name) }}
+  {{ form_row(form.surname) }}
+  {{ form_row(form.fiscalCode) }}
+  {{ form_row(form.vatCode) }}
 </fieldset>
 
 <fieldset>
-    <legend>Recapiti</legend>
+  <legend>Recapiti</legend>
 
-    {{ form_row(form.homePhone) }}
-    {{ form_row(form.officePhone) }}
-    {{ form_row(form.cellularPhone) }}
-    {{ form_row(form.faxNumber) }}
-    {{ form_row(form.primaryMail) }}
-    {{ form_row(form.secondaryMail) }}
-</fieldset>
-
-<fieldset>
-    <legend>Tipologia contatto</legend>
-
-    {{ form_row(form.isCustomer) }}
-    {{ form_row(form.isInstaller) }}
-    {{ form_row(form.isAdministrator) }}
+  {{ form_row(form.homePhone) }}
+  {{ form_row(form.officePhone) }}
+  {{ form_row(form.cellularPhone) }}
+  {{ form_row(form.faxNumber) }}
+  {{ form_row(form.primaryMail, {prepend: '@'}) }}
+  {{ form_row(form.secondaryMail, {prepend: '@'}) }}
 </fieldset>

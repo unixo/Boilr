@@ -1,0 +1,7 @@
+<ul class="nav">
+  <li class="active"><a href="{{ url('homepage') }}">Home</a></li>
+  <li><a href="{{ url('main_person') }}">Anagrafica</a></li>
+  <li><a href="{{ url('main_intervention') }}">Interventi</a></li>
+  <li><a href="{{ url('admin_homepage') }}">Amministrazione</a></li>
+</ul>
+<p class="navbar-text pull-right">Connesso come <a href="#">{{ app.security.getToken().getUser().login }}</a></p>

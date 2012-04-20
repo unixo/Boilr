@@ -27,7 +27,6 @@ class TemplateSectionController extends BaseController
     /**
      * @Route("/{id}/delete", name="template_section_delete")
      * @ParamConverter("section", class="BoilrBundle:TemplateSection")
-     * @Template()
      */
     public function deleteAction(TemplateSection $section)
     {

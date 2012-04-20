@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM,
     Symfony\Component\Security\Core\User\UserInterface,
     Gedmo\Mapping\Annotation as Gedmo;
 
+use Boilr\BoilrBundle\Validator\Constraints as MyAssert;
+
 /**
  * Boilr\BoilrBundle\Entity\User
  *
@@ -56,6 +58,7 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", length=40, nullable=false)
      * @Assert\NotBlank
+     * @MyAssert\EqualsField(field="name", negate=true, message="La password non può essere uguale al nome")
      */
     protected $password;
 
@@ -327,6 +330,23 @@ class User implements UserInterface
         foreach ($this->getGroups() as $group) {
             $descr[] = $group->getName();
         }
+
         return implode(', ', $descr);
     }
+
+    public function getFullName()
+    {
+        return $this->name . " " . $this->surname;
+    }
+
+    /**
+     * rue(message = "The password cannot match your first name")
+
+    public function isPasswordLegal()
+    {
+        $tokens = array(strtolower($this->name), strtolower($this->surname));
+
+        return (!in_array($this->password, $tokens));
+    }
+    */
 }

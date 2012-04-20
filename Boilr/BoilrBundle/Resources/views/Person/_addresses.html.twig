@@ -1,64 +1,58 @@
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
-<fieldset class="wide">
-    <legend>Indirizzi</legend>
+<div>
+{% if person.addresses | length > 0 %}
+  <table id="addresses" class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th width="3%">Tipo</th>
+        <th>Indirizzo</th>
+        <th width="8%">CAP</th>
+        <th width="15%">Città</th>
+        <th width="5%">Provincia</th>
+        <th>Nazione</th>
+        {% if toolbar is defined and toolbar == true %}<th>Operaz.</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+    {% for key,value in person.addresses %}
+      <tr class="{{ cycle(['odd', 'even'], key) }}">
+        <td>
+          {% if toolbar is defined and toolbar == true %}
+            {% if value.isValid() == false %}
+            <i title="Indirizzo non valido" class="icon-warning-sign"></i>
+            {% endif %}
+          {% endif %}
+          {{ mymacro.address_icon(value) }}
+        </td>
+        <td>{{ value.street}}</td>
+        <td>{{ value.postalCode }}</td>
+        <td>{{ value.city }}</td>
+        <td class="center">{{ value.province }}</td>
+        <td>{{ value.state }}</td>
+        {% if toolbar is defined and toolbar == true %}
+        <td>
+          <a class="btn btn-small" href="{{ url('address_edit', {'aid': value.id} ) }}">
+            <i class="icon-pencil" title="Modifica"></i>
+         </a>
+         <a class="btn btn-small" href="{{ url('address_delete', {'id': value.id} ) }}">
+           <i class="icon-trash" title="Elimina"></i>
+         </a>
+        </td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <div class="alert alert-info">Nessun indirizzo.</div>
+  {% endif %}
 
-    {% if person.addresses | length > 0 %}
-        <table id="addresses" class="views-table">
-            <thead>
-                <tr>
-                    <th width="3%">Tipo</th>
-                    <th>Indirizzo</th>
-                    <th width="8%">CAP</th>
-                    <th width="15%">Città</th>
-                    <th width="5%">Provincia</th>
-                    <th>Nazione</th>
-                    {% if toolbar is defined and toolbar == true %}<th>Operaz.</th>{% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for key,value in person.addresses %}
-                    <tr class="{{ cycle(['odd', 'even'], key) }}">
-                        <td>
-                            {% if toolbar is defined and toolbar == true %}
-                                {% if value.isValid() == false %}
-                                <span title="Indirizzo non valido" class="ui-icon ui-icon-alert"></span>
-                                {% endif %}
-                            {% endif %}
-                            {{ mymacro.address_icon(value) }}
-                        </td>
-                        <td>{{ value.street}}</td>
-                        <td>{{ value.postalCode }}</td>
-                        <td>{{ value.city }}</td>
-                        <td class="center">{{ value.province }}</td>
-                        <td>{{ value.state }}</td>
-                        {% if toolbar is defined and toolbar == true %}
-                        <td>
-                            <a href="{{ url('address_edit', {'aid': value.id} ) }}">
-                                <span class="ui-icon ui-icon-pencil" title="Modifica"></span>
-                            </a>
-                            <a href="{{ url('address_delete', {'id': value.id} ) }}">
-                                <span class="ui-icon ui-icon-trash" title="Elimina"></span>
-                            </a>
-                        </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Nessun indirizzo.</p>
-    {% endif %}
-
-    {% if toolbar is defined and toolbar == true %}
-        <div style="margin-top: 10px;">
-            <ul id="icons" class="ui-widget ui-helper-clearfix">
-                <li class="ui-state-default ui-corner-all">
-                    <a href="{{ url('address_add', {'pid': person.id}) }}">
-                        <span class="ui-icon ui-icon-plusthick" title="Aggiungi indirizzo..."></span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    {% endif %}
-</fieldset>
+  {% if toolbar is defined and toolbar == true %}
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+      <a class="btn btn-small" href="{{ url('address_add', {'pid': person.id}) }}">
+        <i class="icon-plus"></i> Aggiungi
+      </a>
+    </div>
+  {% endif %}
+</div>

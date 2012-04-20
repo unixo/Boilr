@@ -1,35 +1,31 @@
-{% set secondaryMenu = 'Anagrafica' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Person:person-base.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 
-{% block central_block %}
-
-<form id="form_address" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+{% block inner_block %}
+<div class="span9">
+  <form id="form_address" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
 
     {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': person, 'allFields': false} %}
 
     <fieldset>
-        <legend>Dettagli indirizzo</legend>
+      <legend>Dettagli indirizzo</legend>
 
-        <div><label>Tipo:</label>{{ form_widget(form.type) }}</div>
-        <div><label>Indirizzo:</label>{{ form_widget(form.street) }}</div>
-        <div><label>Città:</label>{{ form_widget(form.city) }}</div>
-        <div><label>Provincia:</label>{{ form_widget(form.province) }}</div>
-        <div><label>CAP:</label>{{ form_widget(form.postalCode) }}</div>
-        <div><label>Stato:</label>{{ form_widget(form.state) }}</div>
+      {{ form_row(form.type) }}
+      {{ form_row(form.street) }}
+      {{ form_row(form.city) }}
+      {{ form_row(form.province) }}
+      {{ form_row(form.postalCode) }}
+      {{ form_row(form.state) }}
     </fieldset>
 
-    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
-        <a href="{{ url('show_person', {'id': person.id}) }}">Torna al dettaglio</a>
-        <input type="submit" value="Salva" />
+    <div class="form-actions">
+        <a class="btn" href="{{ url('show_person', {'id': person.id}) }}">Torna al dettaglio</a>
+        <input class="btn btn-primary" type="submit" value="Salva" />
     </div>
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
-</form>
+  </form>
+</div>
 {% endblock %}
 
-
-{% block javascripts %}
-
-{% endblock %}

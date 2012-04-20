@@ -1,5 +1,4 @@
-{% set secondaryMenu = 'Anagrafica' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Person:person-base.html.twig' %}
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
 {% block extra_header %}
@@ -9,22 +8,25 @@
     {% endif %}
 {% endblock %}
 
-{% block central_block %}
-<h2>Scheda anagrafica "{{ person.fullName }}"</h2>
+{% block inner_block %}
+<div class="span10">
+  <h2>Scheda anagrafica "{{ person.fullName }}"</h2>
 
-<div id="tabs">
+  <div id="tabs">
     <ul>
-        <li><a href="#fragment-1"><span>Anagrafica</span></a></li>
-        <li><a href="#tabAddresses"><span>Indirizzi</span></a></li>
-        <li><a href="#fragment-3"><span>Impianti</span></a></li>
-        <li><a href="#tabContracts"><span>Assistenza</span></a></li>
+      <li><a href="#fragment-1"><span>Anagrafica</span></a></li>
+      <li><a href="#tabAddresses"><span>Indirizzi</span></a></li>
+      <li><a href="#fragment-3"><span>Impianti</span></a></li>
+      <li><a href="#tabContracts"><span>Assistenza</span></a></li>
     </ul>
     <div id="fragment-1">
-        {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': person, 'allFields': true } %}
+      {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': person, 'allFields': true } %}
 
-        <div style="margin-top: 10px;">
-            <button id="btnRegistry" title="Modifica anagrafica">Modifica</button>
-        </div>
+      <div style="margin-top: 10px;">
+        <a id="btnRegistry" class="btn btn-small" title="Modifica anagrafica">
+          <i class="icon-pencil"></i> Modifica
+        </a>
+      </div>
     </div>
     <div id="tabAddresses">
         {% include 'BoilrBundle:Person:_addresses.html.twig' with { 'person': person, 'toolbar': true } %}
@@ -46,50 +48,50 @@
         <fieldset>
             <legend>Calendario prossimi interventi</legend>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Stato</th>
-                        <th>Impianto</th>
-                        <th>Programmato</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for key,mi in interventions %}
-                    <tr class="{{ cycle(['odd', 'even'], key) }}">
-                        <td>
-                            <a href="{{ url('list_all_interventions', { year : mi.scheduledDate|date('Y'), month: mi.scheduledDate|date('m')} ) }}">
-                                {{ mi.scheduledDate | date('d-m-Y H:i') }}
-                            </a>
-                        </td>
-                        <td>{{ mi.getStatusDescr() }}</td>
-                        <td>
-                        {% spaceless %}
-                            {% if mi.details|length == 1 %}
-                                {{ mi.details[0].system.descr }}
-                            {% else %}
-                                {{ mi.details | length }} impianti
-                            {% endif %}
-                        {% endspaceless %}
-                        </td>
-                        <td>{{ mymacro.imgcheck_if_true(mi.isPlanned) }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+            <table class="table table-condensed table-striped">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Stato</th>
+                  <th>Impianto</th>
+                  <th>Programmato</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for key,mi in interventions %}
+                <tr class="{{ cycle(['odd', 'even'], key) }}">
+                  <td>
+                    <a href="{{ url('list_all_interventions', { year : mi.scheduledDate|date('Y'), month: mi.scheduledDate|date('m')} ) }}">
+                      {{ mi.scheduledDate | date('d-m-Y H:i') }}
+                    </a>
+                  </td>
+                  <td>{{ mi.getStatusDescr() }}</td>
+                  <td>
+                    {% spaceless %}
+                      {% if mi.details|length == 1 %}
+                        {{ mi.details[0].system.descr }}
+                      {% else %}
+                        {{ mi.details | length }} impianti
+                      {% endif %}
+                    {% endspaceless %}
+                  </td>
+                  <td>{{ mymacro.imgcheck_if_true(mi.isPlanned) }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
             </table>
         {% endif %}
 
         {% if person.systems | length > 0 %}
         <div style="margin-top: 10px;">
-            <button id="btnAddUnplanned" title="Intervento non programmato">
-                Aggiungi intervento non programmato
-            </button>
+            <a class="btn btn-small" id="btnAddUnplanned" title="Intervento non programmato">
+              <i class="icon-time"></i> Aggiungi intervento non programmato
+            </a>
         </div>
         {% endif %}
     </div>
 </div>
-<br/>
+</div>
 {% endblock %}
 
 
@@ -113,13 +115,11 @@
                       }
          });
 
-         $('#btnRegistry').button({ icons: { primary: "ui-icon-pencil" }, text: false })
-                          .click(function(event) {
+         $('#btnRegistry').click(function(event) {
                                     window.location.href = '{{ url('person_registry_edit', {id: person.id}) }}';
                                 });
          $('#btnCenterMap').button({ icons: { primary: "ui-icon-arrow-4-diag" }, text: false });
-         $('#btnAddUnplanned').button({ icons: { primary: "ui-icon-clock" }, text: false })
-                              .click(function(event) {
+         $('#btnAddUnplanned').click(function(event) {
                                     window.location.href = '{{ url('unplanned_intervention_add', {id: person.id}) }}';
                               });
     });

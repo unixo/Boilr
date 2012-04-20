@@ -1,8 +1,8 @@
-{% set secondaryMenu = 'Anagrafica' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:ManteinanceIntervention:intervention-base.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>Inserimento intervento di manutenzione non programmato</h2>
 
 <form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
@@ -52,6 +52,7 @@
     {{ form_rest(form) }}
     {{ form_errors(form) }}
 </form>
+</div>
 {% endblock %}
 
 

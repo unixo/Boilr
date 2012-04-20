@@ -1,66 +1,62 @@
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
-<fieldset class="wide">
-    <legend>Impianti</legend>
+<div>
+{% if person.systems | length > 0 %}
+  <table id="userSystems" class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Prodotto</th>
+        <th>Install.</th>
+        <th>Ultima manut.</th>
+        <th>Seriale</th>
+        <th>Descr.</th>
+        {% if toolbar is defined and toolbar == true %}
+          <th title="In assistenza?">A</th>
+          <th>Operaz.</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+    {% for key,value in person.systems %}
+      {% set hasContract = value.isUnderAssistance() %}
+      <tr class="{{ cycle(['odd', 'even'], key) }}">
+        <td>{{ value.systemType.name }}</td>
+        <td>{{ value.product.name }}</td>
+        <td>{{ value.installDate | date ('d-m-Y') }}</td>
+        <td>{{ value.lastManteinance | date ('d-m-Y') }}</td>
+        <td>{{ value.code }}</td>
+        <td>{{ value.descr }}</td>
+        {% if toolbar is defined and toolbar == true %}
+          <td>{{ mymacro.imgcheck_if_true(hasContract) }}</td>
+          <td>
+            <a class="btn btn-small" href="{{ url('system_edit', {'sid': value.id} ) }}">
+              <i class="icon-pencil" title="Modifica"></i>
+            </a>
+            <a class="btn btn-small" href="{{ url('system_delete', {'id': value.id} ) }}">
+              <i class="icon-trash" title="Elimina"></i>
+            </a>
+            {% if hasContract == false %}
+              <a class="btn btn-small" href="{{ url('add_contract', {'id': value.id} ) }}">
+                <i class="icon-shopping-cart" title="Aggiungi contratto"></i>
+              </a>
+            {% endif %}
+          </td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">Nessun impianto.</div>
+{% endif %}
 
-    {% if person.systems | length > 0 %}
-        <table id="userSystems" class="views-table">
-            <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Prodotto</th>
-                    <th>Install.</th>
-                    <th>Ultima manut.</th>
-                    <th>Seriale</th>
-                    <th>Descr.</th>
-                    {% if toolbar is defined and toolbar == true %}
-                    <th title="In assistenza?">A</th>
-                    <th>Operaz.</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for key,value in person.systems %}
-                    {% set hasContract = value.isUnderAssistance() %}
-                    <tr class="{{ cycle(['odd', 'even'], key) }}">
-                        <td>{{ value.systemType.name }}</td>
-                        <td>{{ value.product.name }}</td>
-                        <td>{{ value.installDate | date ('d-m-Y') }}</td>
-                        <td>{{ value.lastManteinance | date ('d-m-Y') }}</td>
-                        <td>{{ value.code }}</td>
-                        <td>{{ value.descr }}</td>
-                        {% if toolbar is defined and toolbar == true %}
-                        <td>{{ mymacro.imgcheck_if_true(hasContract) }}</td>
-                        <td>
-                            <a href="{{ url('system_edit', {'sid': value.id} ) }}">
-                                <span class="ui-icon ui-icon-pencil" title="Modifica"></span>
-                            </a>
-                            <a href="{{ url('system_delete', {'id': value.id} ) }}">
-                                <span class="ui-icon ui-icon-trash" title="Elimina"></span>
-                            </a>
-                            {% if hasContract == false %}
-                                <a href="{{ url('add_contract', {'id': value.id} ) }}">
-                                    <span class="ui-icon ui-icon-wrench" title="Aggiungi contratto"></span>
-                                </a>
-                            {% endif %}
-                        </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Nessun impianto.</p>
-    {% endif %}
-
-    {% if toolbar is defined and toolbar == true %}
-        <div style="margin-top: 10px;">
-            <ul id="icons" class="ui-widget ui-helper-clearfix">
-                <li class="ui-state-default ui-corner-all">
-                    <a href="{{ url('system_add', {'pid': person.id}) }}"><span class="ui-icon ui-icon-plusthick" title="Aggiungi impianto..."></span></a>
-                </li>
-            </ul>
-        </div>
-    {% endif %}
-</fieldset>
+  {% if toolbar is defined and toolbar == true %}
+  <div style="margin-top: 10px;">
+    <a class="btn btn-small" href="{{ url('system_add', {'pid': person.id}) }}">
+      <i class="icon-plus"></i> Aggiungi
+    </a>
+  </div>
+  {% endif %}
+</div>
 

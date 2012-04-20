@@ -1,36 +1,36 @@
-{% set secondaryMenu = 'Amministrazione' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>Gruppi di controlli</h2>
 
 <fieldset>
     <legend>Elenco operazioni "{{ group.name }}"</legend>
 
-    <table>
-        <thead>
-            <tr>
-                <th colspan="2">Ordine</th>
-                <th>Descrizione</th>
-                <th>Durata (mm)</th>
-                <th>Operazioni</th>
-            </tr>
-        </thead>
-        <tbody>
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th colspan="2">Ordine</th>
+          <th>Descrizione</th>
+          <th>Durata (mm)</th>
+          <th>Operazioni</th>
+        </tr>
+      </thead>
+      <tbody>
             {% for key,oper in operations %}
             <tr class="{{ cycle(['odd', 'even'], key) }}">
                 <td>
                 {% if key > 0 %}
                     <a href="{{ url('operation_move', {'id': oper.id, 'dir':'up'}) }}">
-                        <span class="ui-icon ui-icon-arrowthick-1-n" title="Sposta su"></span>
+                        <i class="icon-arrow-up" title="Sposta su"></i>
                     </a>
                 {% endif %}
                 </td>
                 <td>
                 {% if key < count-1 %}
                     <a href="{{ url('operation_move', {'id': oper.id, 'dir':'down'}) }}">
-                        <span class="ui-icon ui-icon-arrowthick-1-s" title="Sposta giù"></span>
+                        <i class="icon-arrow-down" title="Sposta giù"></i>
                     </a>
                 {% endif %}
                 </td>
@@ -38,30 +38,25 @@
                 <td>{{ oper.timeLength/60 }}</td>
                 <td>
                     <a href="{{ url('operation_edit', {oid: oper.id}) }}">
-                        <span class="ui-icon ui-icon-pencil" title="Modifica..."></span>
+                        <i class="icon-pencil" title="Modifica..."></i>
                     </a>
                     <a href="{{ url('operation_delete', {id: oper.id}) }}">
-                        <span class="ui-icon ui-icon-trash" title="Elimina"></span>
+                        <i class="icon-trash" title="Elimina"></i>
                     </a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-</fieldset>
+  </fieldset>
 
-<div style="margin-top: 10px;">
-    <ul id="icons" class="ui-widget ui-helper-clearfix">
-        <li class="ui-state-default ui-corner-all">
-            <a href="{{ url('operation_group_list') }}">
-                <span class="ui-icon ui-icon-arrowthick-1-w" title="Torna all'elenco"></span>
-            </a>
-        </li>
-        <li class="ui-state-default ui-corner-all">
-            <a href="{{ url('operation_add', {gid: group.id}) }}">
-                <span class="ui-icon ui-icon-plusthick" title="Aggiungi operazione..."></span>
-            </a>
-        </li>
-    </ul>
+  <div style="margin-top: 10px;">
+    <a class="btn btn-small" href="{{ url('operation_group_list') }}">
+      <i class="icon-arrow-left"></i> Torna all'elenco
+    </a>
+    <a class="btn btn-small" href="{{ url('operation_add', {gid: group.id}) }}">
+      <i class="icon-plus"></i> Aggiungi operazione...
+    </a>
+  </div>
 </div>
 {% endblock %}

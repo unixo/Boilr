@@ -1,12 +1,12 @@
-{% set secondaryMenu = 'Amministrazione' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
-{% block central_block %}
-<h2>Elenco schemi di manutenzione</h2>
+{% block inner_block %}
+<div class="span9">
+  <h2>Elenco schemi di manutenzione</h2>
 
-<fieldset>
-    <table>
+  <fieldset>
+    <table class="table table-condensed table-striped">
         <thead>
             <tr>
                 <th>Tipologia impianto</th>
@@ -37,13 +37,11 @@
     </table>
 </fieldset>
 
-<div style="margin-top: 10px;">
-    <ul id="icons" class="ui-widget ui-helper-clearfix">
-        <li class="ui-state-default ui-corner-all">
-            <a href="{{ url('manteinance_schema_add') }}">
-                <span class="ui-icon ui-icon-plusthick" title="Aggiungi schema..."></span>
-            </a>
-        </li>
-    </ul>
+  <div style="margin-top: 10px;">
+    <a class="btn btn-small" href="{{ url('manteinance_schema_add') }}">
+      <i class="icon-plus"></i> Aggiungi
+    </a>
 </div>
+</div>
+
 {% endblock %}

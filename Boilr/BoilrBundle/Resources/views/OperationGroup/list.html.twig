@@ -1,14 +1,14 @@
-{% set secondaryMenu = 'Amministrazione' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>Gruppi di controlli</h2>
 
 <fieldset>
     <legend>Elenco operazioni</legend>
 
-    <table>
+    <table class="table table-condensed table-striped">
         <thead>
             <tr>
                 <th>Sigla</th>
@@ -24,8 +24,8 @@
                 <td>{{ group.descr }}</td>
                 <td>{{ group.operations|length }}</td>
                 <td>
-                    <a href="{{ url('operation_group_edit', {oid: group.id}) }}"><span class="ui-icon ui-icon-pencil"></span></a>
-                    <a href="{{ url('operation_group_delete', {id: group.id}) }}"><span class="ui-icon ui-icon-trash"></span></a>
+                    <a href="{{ url('operation_group_edit', {oid: group.id}) }}"><i class="icon-pencil"></i></a>
+                    <a href="{{ url('operation_group_delete', {id: group.id}) }}"><i class="icon-trash"></i></a>
                 </td>
             </tr>
             {% endfor %}
@@ -33,13 +33,10 @@
     </table>
 </fieldset>
 
-<div style="margin-top: 10px;">
-    <ul id="icons" class="ui-widget ui-helper-clearfix">
-        <li class="ui-state-default ui-corner-all">
-            <a href="{{ url('operation_group_add') }}">
-                <span class="ui-icon ui-icon-plusthick" title="Aggiungi gruppo..."></span>
-            </a>
-        </li>
-    </ul>
+  <div style="margin-top: 10px;">
+    <a class="btn btn-small" href="{{ url('operation_group_add') }}">
+        <i class="icon-plus"></i> Aggiungi
+    </a>
+  </div>
 </div>
 {% endblock %}

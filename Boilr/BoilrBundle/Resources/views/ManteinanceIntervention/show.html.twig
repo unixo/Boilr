@@ -1,8 +1,8 @@
-{% set secondaryMenu = 'Interventi' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:ManteinanceIntervention:intervention-base.html.twig' %}
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>Dettaglio intervento {{ interv.isPlanned?"programmato":"non programmato" }}</h2>
 
 <fieldset>
@@ -69,6 +69,7 @@
     <legend>Operazioni disponibili</legend>
     <button id="btnCancel">Annulla intervento</button>
 </fieldset>
+</div>
 {% endblock %}
 
 {% block javascripts %}

@@ -1,46 +1,41 @@
-{% set secondaryMenu = 'Anagrafica' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Person:person-base.html.twig' %}
 
-{% block central_block %}
-<h2>Ricerca anagrafica</h2>
+{% block inner_block %}
+<div class="span10">
+  <h2>Ricerca anagrafica</h2>
 
-<form>
+  <div class="row-fluid">
+    <div>
+      <h3>Filtra per tipologia</h3>
+      <p>Togliendo il segno di spunta ad una tipologia non verranno mostrati i record corrispondenti.</p>
+      <dl class="dl-horizontal">
+          <dt>Cliente?</dt><dd><input id="is_customer" type="checkbox" class="jcheck" checked name="is_customer" /></dd>
+          <dt>Installatore?</dt><dd><input id="is_installer" type="checkbox" class="jcheck" checked name="is_installer" /></dd>
+          <dt>Amministratore?</dt><dd><input id="is_admin" type="checkbox" class="jcheck" checked name="is_admin" />
+      </dl>
+    </div>
+  </div> <!-- end of row -->
+
+  <div class="row-fluid">
     <fieldset>
-        <legend>Anagrafica</legend>
+      <legend>Risultati</legend>
 
-        <div><label>Cliente?</label>
-             <input id="is_customer" type="checkbox" class="jcheck" checked name="is_customer" />
-             <span class="comment">Marcare la casella di spunta per visualizzare i clienti</span>
-        </div>
-        <div><label>Installatore?</label>
-             <input id="is_installer" type="checkbox" class="jcheck" checked name="is_installer" />
-             <span class="comment">Marcare la casella di spunta per visualizzare gli installatori</span>
-         </div>
-        <div><label>Amministratore?</label>
-             <input id="is_admin" type="checkbox" class="jcheck" checked name="is_admin" />
-             <span class="comment">Marcare la casella di spunta per visualizzare gli amministratori di condominio</span>
-        </div>
+      <table id="people" class="table table-condensed table-striped">
+        <thead>
+          <tr>
+            <th width="5%">Cl.</th>
+            <th width="5%">Amm.</th>
+            <th width="5%">Inst.</th>
+            <th>Nominativo</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
     </fieldset>
-
-    <fieldset>
-        <legend>Risultati</legend>
-
-        <table id="people" class="views-table">
-            <thead>
-                <tr>
-                    <th width="5%">Cl.</th>
-                    <th width="5%">Amm.</th>
-                    <th width="5%">Inst.</th>
-                    <th>Nominativo</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </fieldset>
-</form>
+  </div> <!-- end of row -->
+</div>
 {% endblock %}
-
 
 {% block javascripts %}
 <script type="text/javascript">

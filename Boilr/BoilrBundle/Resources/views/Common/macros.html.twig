@@ -1,47 +1,41 @@
 {% macro address_icon(item) %}
 {% spaceless %}
-        {% if item.type == constant('\\Boilr\\BoilrBundle\\Entity\\Address::TYPE_HOME') %}
-            {% set icon = "ui-icon-home" %}
-            {% set title = "Abitazione"  %}
-        {% elseif item.type == constant('\\Boilr\\BoilrBundle\\Entity\\Address::TYPE_OFFICE') %}
-            {% set icon = "ui-icon-clock" %}
-            {% set title = "Ufficio"  %}
-        {% else %}
-            {% set icon = "ui-icon-help" %}
-            {% set title = "Altra abitazione"  %}
-        {% endif %}
+    {% if item.type == constant('\\Boilr\\BoilrBundle\\Entity\\Address::TYPE_HOME') %}
+        {% set icon = "icon-home" %}
+        {% set title = "Abitazione"  %}
+    {% elseif item.type == constant('\\Boilr\\BoilrBundle\\Entity\\Address::TYPE_OFFICE') %}
+        {% set icon = "icon-clock" %}
+        {% set title = "Ufficio"  %}
+    {% else %}
+        {% set icon = "icon-help" %}
+        {% set title = "Altra abitazione"  %}
+    {% endif %}
 
-        <span class="ui-icon {{ icon }}" title="{{ title }}"></span>
+    <i class="{{ icon }}" title="{{ title }}"></i>
 {% endspaceless %}
 {% endmacro %}
 
 
 {% macro person_type(item) %}
 {% spaceless %}
-        {% if item.type == constant('\\Boilr\\BoilrBundle\\Entity\\Person::TYPE_PHYSICAL') %}
-            {% set icon = "ui-icon-person" %}
-        {% elseif item.type == constant('\\Boilr\\BoilrBundle\\Entity\\Person::TYPE_GIURIDICAL') %}
-            {% set icon = "ui-icon-pencil" %}
-        {% else %}
-            {% set icon = "ui-icon-home" %}
-        {% endif %}
+  {% if item.type == constant('\\Boilr\\BoilrBundle\\Entity\\Person::TYPE_PHYSICAL') %}
+    {% set icon = "icon-user" %}
+  {% elseif item.type == constant('\\Boilr\\BoilrBundle\\Entity\\Person::TYPE_GIURIDICAL') %}
+    {% set icon = "icon-lock" %}
+  {% else %}
+    {% set icon = "icon-home" %}
+  {% endif %}
 
-        <span class="ui-icon {{ icon }}"></span>
+  <i class="{{ icon }}"></i>
 {% endspaceless %}
 {% endmacro %}
 
 
 {% macro imgcheck_if_true(item) %}
-{% spaceless %}
-    <span class="ui-icon {{ item?"ui-icon-check":"ui-icon-radio-on" }}"
-          title="{{ item?"Si":"No" }}">
-    </span>
-{% endspaceless %}
+<i class="{{ item?"icon-ok":"icon-white" }}" title="{{ item?"Si":"No" }}"></i>
 {% endmacro %}
 
 
 {% macro fieldset_row(label, value) %}
-{% spaceless %}
-    <div><label>{{ label }}:</label><span>{{ value|default('-') }}</span></div>
-{% endspaceless %}
+<dt>{{ label }}:</dt><dd>{{ value|default('-') }}</dd>
 {% endmacro %}

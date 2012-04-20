@@ -1,7 +1,7 @@
-{% set secondaryMenu = 'Interventi' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:ManteinanceIntervention:intervention-base.html.twig' %}
 
 {% block extra_header %}
+<link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/calendar.css') }}"/>
 <style>
 #btnPrev {
     float: left;
@@ -13,7 +13,8 @@
 </style>
 {% endblock %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>Elenco interventi mensili</h2>
 
 <div>
@@ -22,7 +23,7 @@
 
     {{ calendar(year, month, records) }}
 </div>
-
+</div>
 {% endblock %}
 
 {% block javascripts %}

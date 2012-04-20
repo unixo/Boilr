@@ -1,0 +1,49 @@
+{% set secondaryMenu = 'Amministrazione' %}
+{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+{% block central_block %}
+<h2>Gestione accesso al sistema</h2>
+
+<fieldset>
+    <legend>Elenco utenti registrati</legend>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Login</th>
+                <th>Attivo</th>
+                <th>Ruolo/i</th>
+                <th>Operaz.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key,item in users %}
+            <tr class="{{ cycle(['odd', 'even'], key) }}">
+                <td>{{ item.surname }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.login }}</td>
+                <td>{{ mymacro.imgcheck_if_true(item.isActive) }}</td>
+                <td>{{ item.getGroupsDescr() }}</td>
+                <td>
+                    <a href="{{ url('user_edit', {pid: item.id}) }}"><span class="ui-icon ui-icon-pencil"></span></a>
+                    <a href="{{ url('user_delete', {id: item.id}) }}"><span class="ui-icon ui-icon-trash"></span></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</fieldset>
+
+<div style="margin-top: 10px;">
+    <ul id="icons" class="ui-widget ui-helper-clearfix">
+        <li class="ui-state-default ui-corner-all">
+            <a href="{{ url('user_add') }}">
+                <span class="ui-icon ui-icon-plusthick" title="Aggiungi un utenza..."></span>
+            </a>
+        </li>
+    </ul>
+</div>
+{% endblock %}

@@ -1,11 +1,11 @@
-{% set secondaryMenu = 'Amministrazione' %}
-{% extends 'BoilrBundle:Default:template5.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 
-{% block central_block %}
+{% block inner_block %}
+<div class="span9">
 <h2>{{ (opType == 'add')?"Nuova":"Modifica" }} operazione</h2>
 
-<form id="form_operationgroup" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+<form id="form_operationgroup" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     <fieldset>
         <legend>Dettaglio gruppo di controlli</legend>
 
@@ -13,12 +13,13 @@
         {{ form_row(form.descr) }}
     </fieldset>
 
-    <div style="background-color: white; opacity: 1; width: 100%; padding: 10px;">
-        <a href="{{ url('operation_group_list') }}">Torna al dettaglio</a>
-        <input type="submit" value="Salva" />
+    <div class="form-actions">
+        <a class="btn" href="{{ url('operation_group_list') }}">Torna al dettaglio</a>
+        <input class="btn btn-primary" type="submit" value="Salva" />
     </div>
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
 </form>
+</div>
 {% endblock %}

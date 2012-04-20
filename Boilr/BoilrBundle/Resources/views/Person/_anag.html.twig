@@ -1,45 +1,43 @@
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
-{% if allFields == true %}
-    {% set firstClass  = "half_left" %}
-    {% set secondClass = "half_right" %}
-{% else %}
-    {% set firstClass  = "wide" %}
-    {% set secondClass = "wide" %}
-{% endif %}
-
 {% if title is not defined %}
-    {% set title = "Dati anagrafici" %}
+  {% set title = "Dati anagrafici" %}
 {% endif %}
 
-<fieldset class="{{ firstClass }}">
-    <legend>{{ title }}</legend>
+<div>
+  <h3>{{ title }}</h3>
 
+  <dl class="dl-horizontal">
     {{ mymacro.fieldset_row('Tipo', person.getTypeAsString()) }}
     {{ mymacro.fieldset_row('Titolo', person.title|default('-')) }}
     {{ mymacro.fieldset_row('Nome', person.name) }}
     {{ mymacro.fieldset_row('Cognome', person.surname) }}
     {{ mymacro.fieldset_row('Codice fiscale', person.fiscalCode|default('-')) }}
     {{ mymacro.fieldset_row('Partita IVA', person.vatCode|default('-')) }}
-</fieldset>
+  </dl>
+</div>
 
 {% if allFields %}
-<fieldset class="{{ secondClass }}">
-    <legend>Recapiti</legend>
+<div>
+  <h3>Recapiti</h3>
 
+  <dl class="dl-horizontal">
     {{ mymacro.fieldset_row('Casa', person.homePhone|default('-')) }}
     {{ mymacro.fieldset_row('Ufficio', person.officePhone|default('-')) }}
     {{ mymacro.fieldset_row('Cellulare', person.cellularPhone|default('-')) }}
     {{ mymacro.fieldset_row('FAX', person.faxNumber|default('-')) }}
     {{ mymacro.fieldset_row('Email primaria', person.primaryMail|default('-')) }}
     {{ mymacro.fieldset_row('Email alternativa', person.secondaryMail|default('-')) }}
-</fieldset>
+  </dl>
+</div>
 
-<fieldset class="wide">
-    <legend>Tipologia contatto</legend>
+<div>
+  <h3>Tipologia contatto</h3>
 
-    <div><label>Cliente:</label>{{ mymacro.imgcheck_if_true(person.isCustomer) }}</div>
-    <div><label>Installatore:</label>{{ mymacro.imgcheck_if_true(person.isInstaller) }}</div>
-    <div><label>Amministratore:</label>{{ mymacro.imgcheck_if_true(person.isAdministrator) }}</div>
-</fieldset>
+  <dl class="dl-horizontal">
+    <dt>Cliente:</dt><dd>{{ mymacro.imgcheck_if_true(person.isCustomer) }}</dd>
+    <dt>Installatore:</dt><dd>{{ mymacro.imgcheck_if_true(person.isInstaller) }}</dd>
+    <dt>Amministratore:</dt><dd>{{ mymacro.imgcheck_if_true(person.isAdministrator) }}</dd>
+  </dl>
+</div>
 {% endif %}

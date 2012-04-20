@@ -1,30 +1,28 @@
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
-<fieldset>
-    <legend>Contratti d'assistenza</legend>
-
-    {% if person.contracts | length > 0 %}
-        <table id="userContracts" class="views-table">
-            <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Impianto</th>
-                    <th>Data Inizio</th>
-                    <th>Data Termine</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for key,value in person.contracts %}
-                    <tr class="{{ cycle(['odd', 'even'], key) }}">
-                        <td>{{ value.system.systemType.name }}</td>
-                        <td>{{ value.system.descr }}</td>
-                        <td>{{ value.startDate | date('d-m-Y') }}</td>
-                        <td>{{ value.endDate | date('d-m-Y')  }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Nessun contratto d'assistenza.</p>
-    {% endif %}
-</fieldset>
+<div>
+  {% if person.contracts | length > 0 %}
+  <table id="userContracts" class="table table-condensed table-striped">
+    <thead>
+      <tr>
+         <th>Tipo</th>
+         <th>Impianto</th>
+         <th>Data Inizio</th>
+         <th>Data Termine</th>
+       </tr>
+     </thead>
+     <tbody>
+     {% for key,value in person.contracts %}
+       <tr class="{{ cycle(['odd', 'even'], key) }}">
+         <td>{{ value.system.systemType.name }}</td>
+         <td>{{ value.system.descr }}</td>
+         <td>{{ value.startDate | date('d-m-Y') }}</td>
+         <td>{{ value.endDate | date('d-m-Y')  }}</td>
+       </tr>
+     {% endfor %}
+     </tbody>
+   </table>
+  {% else %}
+    <div class="alert alert-info">Nessun contratto d'assistenza.</div>
+  {% endif %}
+</div>
