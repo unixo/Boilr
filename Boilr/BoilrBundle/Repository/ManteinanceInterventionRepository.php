@@ -6,7 +6,6 @@ use Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Boilr\BoilrBundle\Entity\OperationGroup,
     Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter;
-
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -14,6 +13,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class ManteinanceInterventionRepository extends EntityRepository
 {
+
     /**
      * Returns list of manteinance interventions for given customer
      *
@@ -23,12 +23,12 @@ class ManteinanceInterventionRepository extends EntityRepository
     public function interventionsForCustomer(MyPerson $person)
     {
         $interventions = $this->getEntityManager()->createQueryBuilder()
-                              ->select('mi')
-                              ->from('BoilrBundle:ManteinanceIntervention', 'mi')
-                              ->where('mi.customer = :owner')
-                              ->orderBy('mi.scheduledDate')
-                              ->setParameter('owner', $person)
-                              ->getQuery()->getResult();
+                        ->select('mi')
+                        ->from('BoilrBundle:ManteinanceIntervention', 'mi')
+                        ->where('mi.customer = :owner')
+                        ->orderBy('mi.scheduledDate')
+                        ->setParameter('owner', $person)
+                        ->getQuery()->getResult();
 
         return $interventions;
     }
@@ -43,11 +43,11 @@ class ManteinanceInterventionRepository extends EntityRepository
     public function interventionsBetweenDates($start, $end)
     {
         $records = $this->getEntityManager()->createQuery(
-                            "SELECT si FROM BoilrBundle:ManteinanceIntervention si ".
-                            "WHERE si.scheduledDate >= :date1 AND si.scheduledDate <= :date2 ".
-                            "ORDER BY si.scheduledDate")
-                        ->setParameters(array('date1' => $start, 'date2' => $end))
-                        ->getResult();
+                        "SELECT si FROM BoilrBundle:ManteinanceIntervention si " .
+                        "WHERE si.scheduledDate >= :date1 AND si.scheduledDate <= :date2 " .
+                        "ORDER BY si.scheduledDate")
+                ->setParameters(array('date1' => $start, 'date2' => $end))
+                ->getResult();
 
         return $records;
     }
@@ -60,10 +60,10 @@ class ManteinanceInterventionRepository extends EntityRepository
      */
     public function doesInterventionOverlaps(ManteinanceIntervention $interv)
     {
-        $aDate   = $interv->getScheduledDate();
+        $aDate = $interv->getScheduledDate();
         $miCount = $this->getEntityManager()->createQuery(
-                "SELECT COUNT(mi) FROM BoilrBundle:ManteinanceIntervention mi ".
-                "WHERE :date >= mi.scheduledDate AND :date <= mi.expectedCloseDate")
+                                "SELECT COUNT(mi) FROM BoilrBundle:ManteinanceIntervention mi " .
+                                "WHERE :date >= mi.scheduledDate AND :date <= mi.expectedCloseDate")
                         ->setParameter('date', $aDate)->getSingleScalarResult();
 
         return ($miCount > 0);
@@ -76,21 +76,21 @@ class ManteinanceInterventionRepository extends EntityRepository
      */
     public function evalExpectedCloseDate(ManteinanceIntervention $interv)
     {
-        if (! $interv->getScheduledDate()) {
+        if (!$interv->getScheduledDate()) {
             return;
         }
 
-        $repo  = $this->getEntityManager()->getRepository('BoilrBundle:OperationGroup');
+        $repo = $this->getEntityManager()->getRepository('BoilrBundle:OperationGroup');
         $aDate = new \DateTime();
-        $aDate->setTimestamp( $interv->getScheduledDate()->format('U') );
+        $aDate->setTimestamp($interv->getScheduledDate()->format('U'));
 
         // For each system belonging to this intervention, evaluate work time
         foreach ($interv->getDetails() as $detail) {
             /* @var $detail \Boilr\BoilrBundle\Entity\InterventionDetail */
 
             if ($detail->getChecked()) {
-                $timeLength = $repo->getEstimatedTimeLength( $detail->getOperationGroup() );
-                $interval   = \DateInterval::createFromDateString("+". $timeLength ." second");
+                $timeLength = $repo->getEstimatedTimeLength($detail->getOperationGroup());
+                $interval = \DateInterval::createFromDateString("+" . $timeLength . " second");
                 $aDate->add($interval);
             }
         }
@@ -101,13 +101,13 @@ class ManteinanceInterventionRepository extends EntityRepository
     public function searchInterventions(ManteinanceInterventionFilter $filter)
     {
         $params = array();
-        $qb     = $this->getEntityManager()->createQueryBuilder()->select('mi')
-                       ->from('BoilrBundle:ManteinanceIntervention', 'mi')
-                       ->orderBy('mi.scheduledDate');
+        $qb = $this->getEntityManager()->createQueryBuilder()->select('mi')
+                ->from('BoilrBundle:ManteinanceIntervention', 'mi')
+                ->orderBy('mi.scheduledDate');
 
         // Date interval
         if ($filter->getSearchByDate()) {
-            $qb->andWhere('mi.scheduledDate >= :date1 AND mi.originalDate <= :date2');
+            $qb->andWhere('mi.scheduledDate >= :date1 AND mi.scheduledDate <= :date2');
             $params += array('date1' => $filter->getStartDate(), 'date2' => $filter->getEndDate());
         }
 
@@ -119,7 +119,7 @@ class ManteinanceInterventionRepository extends EntityRepository
         // Status
         if (count($filter->getStatus()) > 0) {
             $qb->andWhere('mi.status in (:statuses)');
-            $params += array('statuses' => $filter->getStatus() );
+            $params += array('statuses' => $filter->getStatus());
         }
 
         if (count($params)) {
@@ -139,7 +139,7 @@ class ManteinanceInterventionRepository extends EntityRepository
         // purge any unchecked system
         $detailsToRemove = array();
         foreach ($interv->getDetails() as $detail) {
-            if (! $detail->getChecked()) {
+            if (!$detail->getChecked()) {
                 $detailsToRemove[] = $detail;
             }
         }
@@ -150,7 +150,7 @@ class ManteinanceInterventionRepository extends EntityRepository
         // evaluate close date based on system types
         $this->evalExpectedCloseDate($interv);
 
-        $em  = $this->getEntityManager();
+        $em = $this->getEntityManager();
         $em->beginTransaction();
         try {
             $em->persist($interv);
@@ -163,4 +163,5 @@ class ManteinanceInterventionRepository extends EntityRepository
 
         return array('success' => true);
     }
+
 }
