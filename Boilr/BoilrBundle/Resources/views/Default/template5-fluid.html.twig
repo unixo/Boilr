@@ -19,17 +19,37 @@
 
 <div class="container-fluid">
   <div class="row-fluid">
-    <div class="span2">
+    <div class="span3">
       <div class="well sidebar-nav">
         {% block sidebar %}
         {% endblock %}
       </div><!--/.well -->
-    </div><!--/span2 -->
+    </div><!--/span3 -->
+
+    {% if app.session.hasFlash('error') %}
+    <div class="span9">
+      <div class="alert alert-error">
+        <a class="close" data-dismiss="alert">×</a>
+        <strong>Errore</strong> {{ app.session.flash('error') }}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if app.session.hasFlash('notice') %}
+    <div class="span9">
+      <div class="alert alert-success">
+        <a class="close" data-dismiss="alert">×</a>
+        <strong>Informazione</strong> {{ app.session.flash('notice') }}
+      </div>
+    </div>
+    {% endif %}
 
     {% block inner_block %}
     {% endblock %}
   </div><!--/row-->
 
+  {% block rows %}
+  {% endblock %}
   <hr>
 
   {% include 'BoilrBundle:Default:footer.html.twig' %}
