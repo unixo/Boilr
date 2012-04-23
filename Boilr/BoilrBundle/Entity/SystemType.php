@@ -31,6 +31,13 @@ class SystemType
     protected $name;
 
     /**
+     * @var Installer
+     *
+     * @ORM\ManyToMany(targetEntity="Installer", mappedBy="abilities")
+     */
+    protected $installers;
+
+    /**
      * Get id
      *
      * @return integer
@@ -58,5 +65,30 @@ class SystemType
     public function getName()
     {
         return $this->name;
+    }
+
+    public function __construct()
+    {
+        $this->installers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add installers
+     *
+     * @param Boilr\BoilrBundle\Entity\Installer $installers
+     */
+    public function addInstaller(\Boilr\BoilrBundle\Entity\Installer $installers)
+    {
+        $this->installers[] = $installers;
+    }
+
+    /**
+     * Get installers
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getInstallers()
+    {
+        return $this->installers;
     }
 }
