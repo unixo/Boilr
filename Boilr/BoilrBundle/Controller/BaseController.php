@@ -97,4 +97,14 @@ abstract class BaseController extends Controller
     {
         return $this->getDoctrine()->getRepository($this->entityName);
     }
+
+    /**
+     * Returns current logged user
+     *
+     * @return \Boilr\BoilrBundle\Entity\User
+     */
+    public function getCurrentUser()
+    {
+        return $this->get('security.context')->getToken()->getUser();
+    }
 }
