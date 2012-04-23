@@ -94,6 +94,14 @@ class System
     protected $owner;
 
     /**
+     * @var defaultInstaller
+     *
+     * @ORM\ManyToOne(targetEntity="Installer")
+     * @ORM\JoinColumn(name="installer_id", referencedColumnName="id", nullable=false)
+     */
+    protected $defaultInstaller;
+
+    /**
      * Get id
      *
      * @return integer
@@ -313,5 +321,25 @@ class System
             $context->setPropertyPath($property_path);
             $context->addViolation("La data d'installazione è successiva all'ultima manutenzione", array(), null);
         }
+    }
+
+    /**
+     * Set defaultInstaller
+     *
+     * @param Boilr\BoilrBundle\Entity\Installer $defaultInstaller
+     */
+    public function setDefaultInstaller(\Boilr\BoilrBundle\Entity\Installer $defaultInstaller)
+    {
+        $this->defaultInstaller = $defaultInstaller;
+    }
+
+    /**
+     * Get defaultInstaller
+     *
+     * @return Boilr\BoilrBundle\Entity\Installer
+     */
+    public function getDefaultInstaller()
+    {
+        return $this->defaultInstaller;
     }
 }
