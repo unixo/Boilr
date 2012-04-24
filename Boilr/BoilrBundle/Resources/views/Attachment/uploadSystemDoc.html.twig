@@ -1,0 +1,40 @@
+{% extends 'BoilrBundle:Person:person-base.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+{% block inner_block %}
+<div class="span9">
+  <h2>Inserimento nuovo documento</h2>
+  <br>
+  <form id="form_contract" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+
+    <div class="well">
+      <h3>Impianto di riferimento</h3>
+
+      <dl class="dl-horizontal">
+        {{ mymacro.fieldset_row('Matricola', system.code) }}
+        {{ mymacro.fieldset_row('Impianto', system.descr) }}
+        {{ mymacro.fieldset_row('Tipo', system.systemType.name) }}
+        {{ mymacro.fieldset_row('Cliente', system.owner.getFullName()) }}
+      </dl>
+    </div>
+
+    <fieldset>
+      <legend>Dettagli allegato</legend>
+
+      {{ form_row(form.name) }}
+      {{ form_row(form.document, {'attr': {'class': 'input-file'}}) }}
+    </fieldset>
+
+    <div class="form-actions">
+        <input class="btn btn-primary" type="submit" value="Salva" />
+        <a class="btn" href="{{ url('show_person', {'id': system.owner.id }) }}">
+          Annulla
+        </a>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+  </form>
+</div>
+{% endblock %}
