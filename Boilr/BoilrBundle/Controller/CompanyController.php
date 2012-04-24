@@ -8,7 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
     JMS\SecurityExtraBundle\Annotation\Secure;
-
 use Boilr\BoilrBundle\Entity\Company,
     Boilr\BoilrBundle\Form\CompanyForm;
 
@@ -19,6 +18,7 @@ use Boilr\BoilrBundle\Entity\Company,
  */
 class CompanyController extends BaseController
 {
+
     function __construct()
     {
         $this->entityName = 'BoilrBundle:Company';
@@ -36,20 +36,34 @@ class CompanyController extends BaseController
     }
 
     /**
+     * @Route("/{id}/list-employees", name="company_employee_list")
+     * @ParamConverter("company", class="BoilrBundle:Company")
+     * @Template()
+     */
+    public function listEmployeesAction(Company $company)
+    {
+        $employees = $this->getEntityRepository()->getEmployees($company);
+
+        return array('company' => $company, 'employees' => $employees);
+    }
+
+    /**
      * @Route("/{id}/delete", name="company_delete")
-     * @ParamConverter("comapny", class="BoilrBundle:Company")
+     * @ParamConverter("company", class="BoilrBundle:Company")
      * @Template()
      */
     public function deleteAction(Company $company)
     {
         try {
-            $this->getEntityManager()->remove($company);
+            $dem = $this->getEntityManager();
+            $dem->remove($company);
+            $dem->flush();
             $this->setNoticeMessage("Impianto eliminato con successo");
         } catch (Exception $exc) {
             $this->setErrorMessage("Si è verificato un errore durante l'eliminazione.");
         }
 
-        return $this->redirect($this->generateUrl('company_list'));
+        return $this->getLastRoute();
     }
 
     /**
@@ -65,7 +79,7 @@ class CompanyController extends BaseController
             $company = new Company();
         } else {
             $company = $this->getEntityRepository()->findOneById($cid);
-            if (! $company) {
+            if (!$company) {
                 throw new \InvalidArgumentException("Invalid argument");
             }
         }
@@ -93,4 +107,5 @@ class CompanyController extends BaseController
 
         return array('form' => $form->createView());
     }
+
 }

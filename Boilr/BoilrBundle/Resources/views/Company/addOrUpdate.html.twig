@@ -3,7 +3,7 @@
 
 {% block inner_block %}
 <div class="span9">
-  <h2>Creazione nuovo schema di manutenzione</h2>
+  <h2>Creazione nuova società</h2>
 
   <form id="form_schema" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     <fieldset>
@@ -11,6 +11,9 @@
 
         {{ form_row(form.name) }}
         {{ form_row(form.vatCode) }}
+        {{ form_row(form.officePhone) }}
+        {{ form_row(form.faxNumber) }}
+        {{ form_row(form.cellularPhone) }}
     </fieldset>
 
     <fieldset>
@@ -24,10 +27,8 @@
     </fieldset>
 
     <div class="form-actions">
-        <a class="btn" href="{{ url('manteinance_schema_list') }}">
-            <i class="icon-arrow-left"></i> Torna al dettaglio
-        </a>
         <input class="btn btn-primary" type="submit" value="Salva" />
+        <a class="btn" href="{{ url(app.session.get('last_route').name) }}">Annulla</a>
     </div>
 
     {{ form_rest(form) }}

@@ -22,8 +22,9 @@
           <td>{{ item.street }}</td>
           <td>{{ item.city }}</td>
           <td>
-            <a href="{{ url('company_edit', {cid: item.id}) }}"><i class="icon-pencil"></i></a>
-            <a href="{{ url('company_delete', {id: item.id}) }}"><i class="icon-trash"></i></a>
+            <a class="btn btn-mini" href="{{ url('company_edit', {cid: item.id}) }}" title="Modifica"><i class="icon-pencil"></i></a>
+            <a class="btn btn-mini" href="{{ url('company_delete', {id: item.id}) }}" title="Elimina"><i class="icon-trash"></i></a>
+            <a class="btn btn-mini" href="{{ url('company_employee_list', {id: item.id}) }}" title="Mostra dipendenti"><i class="icon-user"></i></a>
           </td>
         </tr>
         {% endfor %}

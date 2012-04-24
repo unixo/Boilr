@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM,
 /**
  * Boilr\BoilrBundle\Entity\Company
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\CompanyRepository")
  * @ORM\Table(name="companies")
  * @Vich\Geographical(on="update")
  */
@@ -34,6 +34,27 @@ class Company
      * @ORM\Column(name="vat_code", type="string", length=20, nullable=true)
      */
     protected $vatCode;
+
+    /**
+     * @var string $officePhone
+     *
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    protected $officePhone;
+
+    /**
+     * @var string $cellularPhone
+     *
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    protected $cellularPhone;
+
+    /**
+     * @var string $faxNumber
+     *
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    protected $faxNumber;
 
     /**
      * @ORM\Column(type="string", length=250, nullable=false)
@@ -80,9 +101,9 @@ class Company
     private $latitude;
 
     /**
-     * @var Person
+     * @var Installer
      *
-     * @ORM\OneToMany(targetEntity="Person", mappedBy="company", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Installer", mappedBy="company", cascade={"persist", "remove"})
      */
     protected $employees;
 
@@ -131,26 +152,6 @@ class Company
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Add employees
-     *
-     * @param Boilr\BoilrBundle\Entity\Person $employees
-     */
-    public function addPerson(\Boilr\BoilrBundle\Entity\Person $employees)
-    {
-        $this->employees[] = $employees;
-    }
-
-    /**
-     * Get employees
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getEmployees()
-    {
-        return $this->employees;
     }
 
     /**
@@ -311,5 +312,85 @@ class Company
     public function getLatitude()
     {
         return $this->latitude;
+    }
+
+    /**
+     * Add employees
+     *
+     * @param Boilr\BoilrBundle\Entity\Installer $employees
+     */
+    public function addInstaller(\Boilr\BoilrBundle\Entity\Installer $employees)
+    {
+        $this->employees[] = $employees;
+    }
+
+    /**
+     * Get employees
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getEmployees()
+    {
+        return $this->employees;
+    }
+
+    /**
+     * Set officePhone
+     *
+     * @param string $officePhone
+     */
+    public function setOfficePhone($officePhone)
+    {
+        $this->officePhone = $officePhone;
+    }
+
+    /**
+     * Get officePhone
+     *
+     * @return string 
+     */
+    public function getOfficePhone()
+    {
+        return $this->officePhone;
+    }
+
+    /**
+     * Set cellularPhone
+     *
+     * @param string $cellularPhone
+     */
+    public function setCellularPhone($cellularPhone)
+    {
+        $this->cellularPhone = $cellularPhone;
+    }
+
+    /**
+     * Get cellularPhone
+     *
+     * @return string 
+     */
+    public function getCellularPhone()
+    {
+        return $this->cellularPhone;
+    }
+
+    /**
+     * Set faxNumber
+     *
+     * @param string $faxNumber
+     */
+    public function setFaxNumber($faxNumber)
+    {
+        $this->faxNumber = $faxNumber;
+    }
+
+    /**
+     * Get faxNumber
+     *
+     * @return string 
+     */
+    public function getFaxNumber()
+    {
+        return $this->faxNumber;
     }
 }

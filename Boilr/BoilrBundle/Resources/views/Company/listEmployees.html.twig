@@ -1,0 +1,37 @@
+{% extends 'BoilrBundle:Person:person-base.html.twig' %}
+
+{% block inner_block %}
+<div class="span9">
+  <h2>Elenco dipendenti azienda "{{ company.name }}"</h2>
+  <br>
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Cognome</th>
+        <th>Nome</th>
+        <th>Recapito</th>
+        <th>Abilità</th>
+        <th>Operaz.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for person in employees %}
+      <tr>
+        <td>{{ person.surname }}</td>
+        <td>{{ person.name }}</td>
+        <td>{{ person.officePhone }}</td>
+        <td></td>
+        <td>
+          <a class="btn btn-mini" href="" title="Documentazione"><i class="icon-list-alt"></i></a>
+          <a class="btn btn-mini" href="{{ url('installer_show', {id: person.id}) }}" title="Dettaglio"><i class="icon-folder-open"></i></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a class="btn btn-small" href="{{ url('installer_add') }}">
+    <i class="icon-plus"></i> Aggiungi tecnico
+  </a>
+</div>
+{% endblock %}
