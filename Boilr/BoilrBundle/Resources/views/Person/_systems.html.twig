@@ -30,14 +30,17 @@
         {% if toolbar is defined and toolbar == true %}
           <td>{{ mymacro.imgcheck_if_true(hasContract) }}</td>
           <td>
-            <a class="btn btn-small" href="{{ url('system_edit', {'sid': value.id} ) }}">
+            <a class="btn btn-mini" href="{{ url('system_edit', {'sid': value.id} ) }}">
               <i class="icon-pencil" title="Modifica"></i>
             </a>
-            <a class="btn btn-small" href="{{ url('system_delete', {'id': value.id} ) }}">
+            <a class="btn btn-mini" href="{{ url('system_delete', {'id': value.id} ) }}">
               <i class="icon-trash" title="Elimina"></i>
             </a>
+            <a class="btn btn-mini" href="{{ url('system_upload_doc', {'id': value.id} ) }}">
+              <i class="icon-folder-open" title="Documentazione allegata"></i>
+            </a>
             {% if hasContract == false %}
-              <a class="btn btn-small" href="{{ url('add_contract', {'id': value.id} ) }}">
+              <a class="btn btn-mini" href="{{ url('add_contract', {'id': value.id} ) }}">
                 <i class="icon-shopping-cart" title="Aggiungi contratto"></i>
               </a>
             {% endif %}
