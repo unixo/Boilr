@@ -1,0 +1,18 @@
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+{% if title is not defined %}
+  {% set title = "Dati installatore" %}
+{% endif %}
+
+<div class="well-small">
+  <h3>{{ title }}</h3>
+
+  <dl class="dl-horizontal">
+    {{ mymacro.fieldset_row('Società', installer.company.name) }}
+    {{ mymacro.fieldset_row('Nome', installer.name) }}
+    {{ mymacro.fieldset_row('Cognome', installer.surname) }}
+    {{ mymacro.fieldset_row('Partita IVA', installer.vatCode|default('-')) }}
+    {{ mymacro.fieldset_row('Ufficio', installer.officePhone|default('-')) }}
+    {{ mymacro.fieldset_row('Cellulare', installer.cellularPhone|default('-')) }}
+  </dl>
+</div>

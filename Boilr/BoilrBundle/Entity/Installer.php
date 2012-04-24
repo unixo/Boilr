@@ -74,6 +74,14 @@ class Installer
     protected $email;
 
     /**
+     * @var $account
+     *
+     * @ORM\OneToOne(targetEntity="User", cascade={"persist"})
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
+     */
+    protected $account;
+
+    /**
      * @var SystemType
      *
      * @ORM\ManyToMany(targetEntity="SystemType", inversedBy="installers")
@@ -259,5 +267,25 @@ class Installer
     public function getFullName()
     {
         return $this->surname. ' ' .$this->name;
+    }
+
+    /**
+     * Set account
+     *
+     * @param Boilr\BoilrBundle\Entity\User $account
+     */
+    public function setAccount(\Boilr\BoilrBundle\Entity\User $account)
+    {
+        $this->account = $account;
+    }
+
+    /**
+     * Get account
+     *
+     * @return Boilr\BoilrBundle\Entity\User 
+     */
+    public function getAccount()
+    {
+        return $this->account;
     }
 }

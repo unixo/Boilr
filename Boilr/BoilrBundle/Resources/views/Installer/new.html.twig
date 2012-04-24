@@ -1,0 +1,38 @@
+{% extends 'BoilrBundle:Person:person-base.html.twig' %}
+{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+
+{% block inner_block %}
+<div class="span9">
+  <h2>Nuovo installatore</h2>
+  <br>
+  <form id="form_installer" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+    <fieldset>
+      <legend>Dati installatore</legend>
+
+      {{ form_row(form.company) }}
+      {{ form_row(form.surname) }}
+      {{ form_row(form.name) }}
+      {{ form_row(form.officePhone) }}
+      {{ form_row(form.vatCode) }}
+    </fieldset>
+
+    <fieldset>
+      <legend>Impianti capace di manutenere</legend>
+
+      {% for type in form.abilities %}
+      <label class="checkbox">
+        {{ form_widget(type) }} {{ type.vars.label }}
+      </label>
+      {% endfor %}
+    </fieldset>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+
+    <div class="form-actions">
+      <input class="btn btn-primary" type="submit" value="Salva" />
+      <a class="btn" href="">Annulla</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'BoilrBundle:Default:template5-installer.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+
+{% block inner_block %}
+<div class="span9">
+  <h2>Elenco documentazione</h2>
+  <br>
+  {% if attachments|length > 0 %}
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Impianto</th>
+        <th>Tipo</th>
+        <th>Ultima manutenz.</th>
+        <th>Operaz.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for system in systems %}
+      <tr>
+        <td>{{ sys.customer.getFullName() }}</td>
+        <td>{{ sys.descr }}</td>
+        <td>{{ sys.systemType.name }}</td>
+        <td>{{ sys.lastManteinance | date('d/m/Y H:i') }}</td>
+        <td>
+          <a class="btn btn-mini" href="" title="Apri"><i class="icon-folder-open"></i></a>
+          <a class="btn btn-mini" href="" title="Elimina"><i class="icon-trash"></i></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <div class="alert alert-info">Al momento non è stata caricata alcuna documentazione.</div>
+  {% endif %}
+</div>
+{% endblock %}

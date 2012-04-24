@@ -1,0 +1,38 @@
+{% extends 'BoilrBundle:Default:template5-installer.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+
+{% block inner_block %}
+<div class="span9">
+  <h2>Elenco impianti associati</h2>
+  <br>
+  {% if systems|length > 0 %}
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Impianto</th>
+        <th>Tipo</th>
+        <th>Ultima manutenz.</th>
+        <th>Operaz.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for system in systems %}
+      <tr>
+        <td>{{ system.owner.getFullName() }}</td>
+        <td>{{ system.descr }}</td>
+        <td>{{ system.systemType.name }}</td>
+        <td>{{ system.lastManteinance | date('d/m/Y H:i') }}</td>
+        <td>
+          <a class="btn btn-mini" href="{{ url('system_list_doc', {id: system.id}) }}" title="Apri..."><i class="icon-folder-open"></i></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <div class="alert alert-info">Al momento non è stato associato alcun impianto.</div>
+  {% endif %}
+</div>
+{% endblock %}
