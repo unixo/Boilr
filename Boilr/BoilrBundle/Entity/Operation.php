@@ -15,6 +15,9 @@ use Boilr\BoilrBundle\Entity\OperationGroup;
  */
 class Operation
 {
+    const RESULT_CHECKBOX = 1;
+    const RESULT_NOTE = 2;
+
     /**
      * @var integer $id
      *
@@ -40,6 +43,14 @@ class Operation
      * @Assert\Type(type="integer")
      */
     private $timeLength;
+
+    /**
+     * @var integer $resultType
+     *
+     * @ORM\Column(name="result_type", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $resultType;
 
     /**
      * @var integer $listOrder
@@ -148,5 +159,25 @@ class Operation
     public function getTimeLength()
     {
         return $this->timeLength;
+    }
+
+    /**
+     * Set resultType
+     *
+     * @param integer $resultType
+     */
+    public function setResultType($resultType)
+    {
+        $this->resultType = $resultType;
+    }
+
+    /**
+     * Get resultType
+     *
+     * @return integer
+     */
+    public function getResultType()
+    {
+        return $this->resultType;
     }
 }

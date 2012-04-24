@@ -21,11 +21,12 @@
 
         {{ form_row(form.name) }}
         {{ form_row(form.timeLength) }}
+        {{ form_row(form.resultType) }}
     </fieldset>
 
     <div class="form-actions">
-        <a class="btn" href="{{ url('operation_group_operations', {'id': parentGroup.id}) }}">Torna al dettaglio</a>
         <input class="btn btn-primary" type="submit" value="Salva" />
+        <a class="btn" href="{{ url('operation_group_operations', {'id': parentGroup.id}) }}">Annulla</a>
     </div>
 
     {{ form_rest(form) }}
