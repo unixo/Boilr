@@ -6,7 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert,
     Symfony\Component\Validator\ExecutionContext,
     Doctrine\ORM\Mapping as ORM,
     Gedmo\Mapping\Annotation as Gedmo;
-
 use Boilr\BoilrBundle\Validator\Constraints as MyAssert,
     Boilr\BoilrBundle\Entity\InterventionDetail,
     Boilr\BoilrBundle\Entity\System as MySystem,
@@ -23,17 +22,18 @@ use Boilr\BoilrBundle\Validator\Constraints as MyAssert,
  */
 class ManteinanceIntervention
 {
+
     const STATUS_TENTATIVE = 0;
     const STATUS_CONFIRMED = 1;
-    const STATUS_CLOSED    = 2;
-    const STATUS_ABORTED   = 3;
+    const STATUS_CLOSED = 2;
+    const STATUS_ABORTED = 3;
     const STATUS_SUSPENDED = 4;
 
     public static $statusDescr = array(
         self::STATUS_TENTATIVE => "Da confermare",
         self::STATUS_CONFIRMED => "Confermato",
-        self::STATUS_CLOSED    => 'Concluso',
-        self::STATUS_ABORTED   => 'Annullato',
+        self::STATUS_CLOSED => 'Concluso',
+        self::STATUS_ABORTED => 'Annullato',
         self::STATUS_SUSPENDED => 'Sospeso'
     );
 
@@ -108,7 +108,7 @@ class ManteinanceIntervention
     /**
      * @var Installer
      *
-     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\ManyToOne(targetEntity="Installer")
      * @ORM\JoinColumn(name="installer_id", referencedColumnName="id", nullable=true)
      * @Assert\NotBlank(groups={"flow_interventionInstallerForm_step1"})
      */
@@ -177,7 +177,7 @@ class ManteinanceIntervention
                 break;
             }
         }
-        if (! $oneAtLeast) {
+        if (!$oneAtLeast) {
             $property_path = $context->getPropertyPath() . ".details";
             $context->setPropertyPath($property_path);
             $context->addViolation("Selezionare almeno un sistema da revisionare", array(), null);
@@ -191,7 +191,7 @@ class ManteinanceIntervention
      */
     public function getStatusDescr()
     {
-        return self::$statusDescr[ $this->getStatus() ];
+        return self::$statusDescr[$this->getStatus()];
     }
 
     public static function interventionForCustomer(MyPerson $customer)
@@ -308,9 +308,9 @@ class ManteinanceIntervention
     /**
      * Set installer
      *
-     * @param Boilr\BoilrBundle\Entity\Person $installer
+     * @param Boilr\BoilrBundle\Entity\Installer $installer
      */
-    public function setInstaller(\Boilr\BoilrBundle\Entity\Person $installer)
+    public function setInstaller(\Boilr\BoilrBundle\Entity\Installer $installer)
     {
         $this->installer = $installer;
     }
@@ -318,7 +318,7 @@ class ManteinanceIntervention
     /**
      * Get installer
      *
-     * @return Boilr\BoilrBundle\Entity\Person
+     * @return Boilr\BoilrBundle\Entity\Installer
      */
     public function getInstaller()
     {
@@ -424,4 +424,5 @@ class ManteinanceIntervention
     {
         return $this->scheduledDate;
     }
+
 }
