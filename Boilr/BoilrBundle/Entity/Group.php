@@ -13,6 +13,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Group
 {
+    const ROLE_OPERATOR = 'ROLE_OPERATOR';
+    const ROLE_INSTALLER = 'ROLE_INSTALLER';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_SUPERUSER = 'ROLE_SUPERUSER';
+
     /**
      * @var integer $id
      *
