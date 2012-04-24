@@ -5,13 +5,14 @@ namespace Boilr\BoilrBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\AbstractFixture,
     \Doctrine\Common\Persistence\ObjectManager,
     Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-
 use Boilr\BoilrBundle\Entity\Company,
     Boilr\BoilrBundle\Entity\Installer,
-    Boilr\BoilrBundle\Entity\Person as MyPerson;
+    Boilr\BoilrBundle\Entity\Person as MyPerson,
+    Boilr\BoilrBundle\Entity\User as MyUser;
 
 class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
 {
+
     function load(ObjectManager $manager)
     {
         // Abilities
@@ -49,14 +50,23 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
 
         $manager->persist($c);
 
-        $filename   = __DIR__.'/../SampleData/installers.csv';
-        $fhandle    = fopen($filename, "r");
+        $filename = __DIR__ . '/../SampleData/installers.csv';
+        $fhandle = fopen($filename, "r");
+        $count = 1;
 
-        while ( ($record = fgetcsv($fhandle, 1000, '|')) !== FALSE ) {
+        while (($record = fgetcsv($fhandle, 1000, '|')) !== FALSE) {
             // name|surname|email|homePhone|fax
             if (count($record) < 5) {
                 continue;
             }
+
+            $u = new MyUser();
+            $u->setName($record[0]);
+            $u->setSurname($record[1]);
+            $u->setLogin("installer$count");
+            $u->setPassword('2fc42d37fee2c81d767e09fb298b70c748940f86');
+            $u->setIsActive(true);
+            $u->addGroup($manager->merge($this->getReference('group-installer')));
 
             $i = new Installer();
             $i->setCompany($c);
@@ -64,9 +74,10 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
             $i->setSurname($record[1]);
             $i->setEmail($record[2]);
             $i->setOfficePhone($record[3]);
+            $i->setAccount($u);
             $c->addInstaller($i);
 
-            $index = rand()%3;
+            $index = rand() % 3;
             $abilities = null;
             if ($index == 0) {
                 $abilities = array($st1, $st2, $st3);
@@ -80,6 +91,7 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
             }
 
             $manager->persist($i);
+            $count++;
         }
         fclose($fhandle);
 
@@ -90,4 +102,5 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
     {
         return 300;
     }
+
 }
