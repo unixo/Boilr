@@ -5,6 +5,7 @@ namespace Boilr\BoilrBundle\Repository;
 use Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Boilr\BoilrBundle\Entity\OperationGroup,
+    Boilr\BoilrBundle\Entity\Installer,
     Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter;
 use Doctrine\ORM\EntityRepository;
 
@@ -28,6 +29,25 @@ class ManteinanceInterventionRepository extends EntityRepository
                         ->where('mi.customer = :owner')
                         ->orderBy('mi.scheduledDate')
                         ->setParameter('owner', $person)
+                        ->getQuery()->getResult();
+
+        return $interventions;
+    }
+
+    /**
+     * Returns list of manteinance interventions linked to given installer
+     *
+     * @param Installer $installer
+     * @return array
+     */
+    public function interventionsForInstaller(Installer $installer)
+    {
+        $interventions = $this->getEntityManager()->createQueryBuilder()
+                        ->select('mi')
+                        ->from('BoilrBundle:ManteinanceIntervention', 'mi')
+                        ->where('mi.installer = :installer')
+                        ->orderBy('mi.scheduledDate')
+                        ->setParameter('installer', $installer)
                         ->getQuery()->getResult();
 
         return $interventions;
@@ -145,6 +165,13 @@ class ManteinanceInterventionRepository extends EntityRepository
         }
         foreach ($detailsToRemove as $detail) {
             $interv->getDetails()->removeElement($detail);
+        }
+
+        // set default installer, if any
+        $details = $interv->getDetails();
+        $defaultInstaller = $details[0]->getSystem()->getDefaultInstaller();
+        if ($defaultInstaller) {
+            $interv->setInstaller($defaultInstaller);
         }
 
         // evaluate close date based on system types
