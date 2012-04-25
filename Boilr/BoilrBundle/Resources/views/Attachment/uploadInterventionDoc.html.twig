@@ -5,20 +5,15 @@
 {% block inner_block %}
 <div class="span9">
   <div class="page-header">
-    <h1>Inserimento nuovo allegato <small>{{ system.descr }}</small></h1>
+    <h1>Inserimento nuovo allegato <small>intervento</small></h1>
   </div>
-    
+
   <form id="form_contract" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
 
     <div class="well">
-      <h3>Impianto di riferimento</h3>
+      <h3>Intervento di riferimento</h3>
 
-      <dl class="dl-horizontal">
-        {{ mymacro.fieldset_row('Matricola', system.code) }}
-        {{ mymacro.fieldset_row('Impianto', system.descr) }}
-        {{ mymacro.fieldset_row('Tipo', system.systemType.name) }}
-        {{ mymacro.fieldset_row('Cliente', system.owner.getFullName()) }}
-      </dl>
+      {% include 'BoilrBundle:ManteinanceIntervention:_detail.html.twig' with {'interv': interv} %}
     </div>
 
     <fieldset>
@@ -30,7 +25,7 @@
 
     <div class="form-actions">
         <input class="btn btn-primary" type="submit" value="Salva" />
-        <a class="btn" href="{{ url('show_person', {'id': system.owner.id }) }}">
+        <a class="btn" href="{{ url('intervention_detail_for_installer', {'id': interv.id }) }}">
           Annulla
         </a>
     </div>

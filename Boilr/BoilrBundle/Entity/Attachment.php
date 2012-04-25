@@ -227,4 +227,13 @@ class Attachment
     {
         return $this->parentIntervention;
     }
+
+    public function getTypeDescr()
+    {
+        if ($this->type == self::TYPE_INTERVENTION) {
+            return "Intervento";
+        } else {
+            return "Impianto";
+        }
+    }
 }

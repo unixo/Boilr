@@ -57,7 +57,7 @@ class AttachmentController extends BaseController
 
 
     /**
-     * @Route("/{id}/upload", name="system_upload_doc")
+     * @Route("/{id}/attach-to-system", name="system_upload_doc")
      * @ParamConverter("system", class="BoilrBundle:System")
      * @Template()
      */
@@ -94,7 +94,7 @@ class AttachmentController extends BaseController
     }
 
     /**
-     * @Route("/{id}/upload", name="intervention_upload_doc")
+     * @Route("/{id}/attach-to-intervention", name="intervention_upload_doc")
      * @ParamConverter("intervention", class="BoilrBundle:ManteinanceIntervention")
      * @Template()
      */
@@ -127,6 +127,6 @@ class AttachmentController extends BaseController
             }
         }
 
-        return array('form' => $form->createView(), 'system' => $system);
+        return array('form' => $form->createView(), 'interv' => $intervention);
     }
 }
