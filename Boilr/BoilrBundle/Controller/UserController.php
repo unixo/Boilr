@@ -4,7 +4,6 @@ namespace Boilr\BoilrBundle\Controller;
 
 use Boilr\BoilrBundle\Entity\User as MyUser,
     Boilr\BoilrBundle\Form\UserForm;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
@@ -27,6 +26,7 @@ class UserController extends BaseController
 
     /**
      * @Route("/list", name="user_list")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
     public function listAction()
@@ -52,7 +52,7 @@ class UserController extends BaseController
         } else {
             $user = $this->getEntityRepository()->findOneById($pid);
             if (!$user) {
-                throw new NotFoundHttpException("Invalid user");
+                throw new \InvalidArgumentException("Invalid argument");
             }
         }
 

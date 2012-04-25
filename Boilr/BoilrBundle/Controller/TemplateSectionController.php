@@ -10,7 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
-    Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
+    JMS\SecurityExtraBundle\Annotation\Secure;
 
 /**
  * Description of TemplateSectionController
@@ -27,11 +28,10 @@ class TemplateSectionController extends BaseController
     /**
      * @Route("/{id}/delete", name="template_section_delete")
      * @ParamConverter("section", class="BoilrBundle:TemplateSection")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      */
     public function deleteAction(TemplateSection $section)
     {
-        $template = $section->getTemplate();
-
         try {
             $dem = $this->getEntityManager();
             $dem->remove($section);
@@ -41,13 +41,13 @@ class TemplateSectionController extends BaseController
             $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
         }
 
-        return $this->redirect($this->generateUrl('template_section_list',
-                            array('id' => $template->getId())));
+        return $this->getLastRoute();
     }
 
     /**
      * @Route("/{tid}/add", name="template_section_add")
      * @Route("/{sid}/update", name="template_section_edit")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
     public function addOrUpdateAction($tid = null, $sid = null)
@@ -105,6 +105,7 @@ class TemplateSectionController extends BaseController
     /**
      * @Route("/{id}/move/{dir}", name="section_move")
      * @ParamConverter("section", class="BoilrBundle:TemplateSection")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      */
     public function moveAction(TemplateSection $section, $dir = "down")
     {
@@ -138,6 +139,7 @@ class TemplateSectionController extends BaseController
     /**
      * @Route("/{id}/bind-operations", name="template_section_bind")
      * @ParamConverter("section", class="BoilrBundle:TemplateSection")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
     public function bindOperationsAction(TemplateSection $section)
@@ -165,6 +167,7 @@ class TemplateSectionController extends BaseController
     /**
      * @Route("/{id}/unbind-operation/{pid}", name="template_section_unbind")
      * @ParamConverter("section", class="BoilrBundle:TemplateSection")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      */
     public function unbindOperationAction(TemplateSection $section, $pid)
     {

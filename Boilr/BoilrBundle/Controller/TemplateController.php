@@ -5,17 +5,17 @@ namespace Boilr\BoilrBundle\Controller;
 use Boilr\BoilrBundle\Entity\Template as MyTemplate,
     Boilr\BoilrBundle\Entity\TemplateSection,
     Boilr\BoilrBundle\Form\TemplateForm;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Symfony\Component\HttpFoundation\Response,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
-    Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
+    JMS\SecurityExtraBundle\Annotation\Secure;
 
 class TemplateController extends BaseController
 {
+
     function __construct()
     {
         $this->entityName = 'BoilrBundle:Template';
@@ -47,6 +47,7 @@ class TemplateController extends BaseController
     /**
      * @Route("/delete/{id}", name="template_delete")
      * @ParamConverter("template", class="BoilrBundle:Template")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
     public function deleteAction(MyTemplate $template)
@@ -66,15 +67,16 @@ class TemplateController extends BaseController
     /**
      * @Route("/add", name="template_add")
      * @Route("{tid}/update", name="template_edit")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
     public function addOrUpdateAction($tid = null)
     {
-        $opType   = null;
+        $opType = null;
         $template = null;
 
         if ($tid === null) {
-            $opType   = "add";
+            $opType = "add";
             $template = new MyTemplate();
         } else {
             $opType = "update";
@@ -96,8 +98,7 @@ class TemplateController extends BaseController
                     $dem->flush();
                     $this->setNoticeMessage('Operazione completata con successo');
 
-                    return $this->redirect( $this->generateUrl('template_section_list',
-                                        array('id' => $template->getId() )));
+                    return $this->redirect($this->generateUrl('template_section_list', array('id' => $template->getId())));
                 } catch (Exception $exc) {
                     $this->setErrorMessage("Si è verificato un errore durante il salvataggio");
                 }
@@ -114,28 +115,15 @@ class TemplateController extends BaseController
      */
     public function previewAction(MyTemplate $template)
     {
-        $html = $this->renderView('BoilrBundle:Template:pdf.html.twig',
-                                  array('template' => $template));
+        $html = $this->renderView('BoilrBundle:Template:pdf.html.twig', array('template' => $template));
 
         return new Response(
-                    $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-                    200, array(
-                        'Content-Type'        => 'application/pdf',
-                        'Content-Disposition' => 'inline; filename="file.pdf"'
+                        $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+                        200, array(
+                            'Content-Type' => 'application/pdf',
+                            'Content-Disposition' => 'inline; filename="file.pdf"'
                         )
-                );
+        );
     }
 
-    /**
-     * @Route("/{id}/preview2", name="template_preview2")
-     * @ParamConverter("template", class="BoilrBundle:Template")
-     * @Template()
-     */
-    public function preview2Action(MyTemplate $template)
-    {
-        $html = $this->renderView('BoilrBundle:Template:pdf.html.twig',
-                                  array('template' => $template));
-
-        return new Response($html);
-    }
 }
