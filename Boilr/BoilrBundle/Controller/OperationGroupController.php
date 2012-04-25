@@ -4,16 +4,16 @@ namespace Boilr\BoilrBundle\Controller;
 
 use Boilr\BoilrBundle\Entity\OperationGroup,
     Boilr\BoilrBundle\Form\OperationGroupForm;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
-    Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
+    JMS\SecurityExtraBundle\Annotation\Secure;
 
 class OperationGroupController extends BaseController
 {
+
     function __construct()
     {
         $this->entityName = 'BoilrBundle:OperationGroup';
@@ -69,15 +69,15 @@ class OperationGroupController extends BaseController
     public function addOrUpdateAction($oid = null)
     {
         $opGroup = null;
-        $opType  = null;
+        $opType = null;
 
         // Guess if I'm adding a new group or updating an existing one
         if ($oid === null) {
             $opGroup = new OperationGroup();
-            $opType  = "add";
+            $opType = "add";
         } else {
             $opGroup = $this->getEntityRepository()->findOneById($oid);
-            if (! $opGroup) {
+            if (!$opGroup) {
                 throw new \InvalidArgumentException("Invalid argument");
             }
             $opType = "update";
@@ -97,8 +97,7 @@ class OperationGroupController extends BaseController
                     $dem->flush();
                     $this->setNoticeMessage("Operazione conclusa con successo");
 
-                    return $this->redirect($this->generateUrl("operation_group_operations",
-                            array('id' => $opGroup->getId())));
+                    return $this->redirect($this->generateUrl("operation_group_operations", array('id' => $opGroup->getId())));
                 } catch (Exception $exc) {
                     $this->setErrorMessage("Si è verificato un errore durante il salvataggio");
                 }
@@ -107,4 +106,5 @@ class OperationGroupController extends BaseController
 
         return array('form' => $form->createView(), "opType" => $opType);
     }
+
 }
