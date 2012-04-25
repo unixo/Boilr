@@ -19,6 +19,11 @@
     -->
 
     <services>
+        <service id="boilr.type.installer_selector" class="Boilr\BoilrBundle\Form\Type\InstallerSelectorType">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <tag name="form.type" alias="installer_selector" />
+        </service>
+
         <!-- Request listener -->
         <service id="boilr.referer.listener" class="Boilr\BoilrBundle\Listener\RefererListener">
               <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />

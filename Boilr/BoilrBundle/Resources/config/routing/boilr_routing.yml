@@ -19,6 +19,11 @@ person:
     resource: "@BoilrBundle/Controller/PersonController.php"
     type:     annotation
 
+installer:
+    prefix:   /installer
+    resource: "@BoilrBundle/Controller/InstallerController.php"
+    type:     annotation
+
 contract:
     prefix:   /contract
     resource: "@BoilrBundle/Controller/ContractController.php"
@@ -67,4 +72,9 @@ user:
 company:
     prefix:   /company
     resource: "@BoilrBundle/Controller/CompanyController.php"
+    type:     annotation
+
+attachment:
+    prefix:   /attachment
+    resource: "@BoilrBundle/Controller/AttachmentController.php"
     type:     annotation
