@@ -31,6 +31,7 @@ class Builder extends ContainerAware
         $menu = $factory->createItem('root');
         $menu->setCurrentUri($this->container->get('request')->getRequestUri());
 
+        $menu->addChild('I miei impianti', array('route' => 'installer_list_systems'))->setExtra('icon', 'icon-fire');
         $menu->addChild('I miei interventi', array('route' => 'installer_list_interventions'))->setExtra('icon', 'icon-wrench');
         $menu->addChild('I miei allegati', array('route' => 'installer_list_docs'))->setExtra('icon', 'icon-book');
         $menu->addChild('Ditte di manutenzione', array('route' => 'company_list'))->setExtra('icon', 'icon-cog');
