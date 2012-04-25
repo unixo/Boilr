@@ -7,15 +7,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
     JMS\SecurityExtraBundle\Annotation\Secure;
+use Boilr\BoilrBundle\Entity\User as MyUser,
+    Boilr\BoilrBundle\Entity\Group as MyGroup;
 
-class DefaultController extends Controller
+class DefaultController extends BaseController
 {
+
     /**
      * @Route("/", name="homepage")
      * @Template()
      */
     public function indexAction()
     {
+        $user = $this->getCurrentUser();
+        if ($user->hasRole(MyGroup::ROLE_INSTALLER)) {
+            return $this->redirect($this->generateUrl('installer_homepage'));
+        }
+
         return array();
     }
 
@@ -33,7 +41,7 @@ class DefaultController extends Controller
 
         return array(
             'last_username' => $this->get('request')->getSession()->get(SecurityContext::LAST_USERNAME),
-            'error'         => $error);
+            'error' => $error);
     }
 
     /**
@@ -45,4 +53,15 @@ class DefaultController extends Controller
     {
         return array();
     }
+
+    /**
+     * @Route("/installer", name="installer_homepage")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_INSTALLER")
+     * @Template("BoilrBundle:Default:template5-installer.html.twig")
+     */
+    public function installerHomeAction()
+    {
+        return array();
+    }
+
 }
