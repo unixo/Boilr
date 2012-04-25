@@ -1,33 +1,28 @@
-{% extends 'BoilrBundle:Default:template5-fixed.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 
 {% block inner_block %}
-<div class="hero-unit">
-  <h1>Benvenuto, {{ app.security.getToken().getUser().getFullName() }}!</h1>
-</div>
+<div class="span9">
+  <div class="hero-unit">
+    <h1>Benvenuto, {{ app.security.getToken().getUser().getFullName() }}!</h1>
+  </div>
 
-<div class="row">
-  <div class="span4">
-      <h2>Requisiti</h2>
-      <p>Il progetto è stato realizzato usando le seguenti componenti:</p>
-      <ul>
-        <li>PHP 5.3.x</li>
-        <li>mySQL 5.x</li>
-        <li>Symfony2 2.0.12 or later</li>
-        <li>wkhtmltopdf</li>
-        <li>Java JRE (per YUI compressor)</li>
-      </ul>
-  </div>
-  <div class="span4">
-      <h2>Sorgenti applicativi</h2>
-      <p>I sorgenti applicativi sono disponibili sul repository git su GitHub. </p>
-      <p><a class="btn" href="https://github.com/unixo/Boilr" target="new">Apri &raquo;</a></p>
-  </div>
-  <div class="span4">
-      <h2>Licenza</h2>
-      <p>I sorgenti sono rilascati con la licenza BSD a tre clausole. E' possibile
-         approfondire l'argomento leggendo l'apposita pagina su wikipedia.
-      </p>
-      <p><a class="btn" href="http://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22New_BSD_License.22_or_.22Modified_BSD_License.22.29" target="new">Leggi i dettagli &raquo;</a></p>
+  <div class="row-fluid">
+    <div class="span5">
+        <h2>Requisiti</h2>
+        <p>Il progetto è stato realizzato usando le seguenti componenti:</p>
+        <ul>
+          <li>PHP 5.3.x</li>
+          <li>mySQL 5.x</li>
+          <li>Symfony2 2.0.12 or later</li>
+          <li>wkhtmltopdf</li>
+          <li>Java JRE (per YUI compressor)</li>
+        </ul>
+    </div>
+    <div class="span4">
+        <h2>Sorgenti applicativi</h2>
+        <p>I sorgenti applicativi sono disponibili sul repository git su GitHub. </p>
+        <p><a class="btn" href="https://github.com/unixo/Boilr" target="new">Apri &raquo;</a></p>
+    </div>
   </div>
 </div>
 {% endblock %}

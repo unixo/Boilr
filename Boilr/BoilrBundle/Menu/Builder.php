@@ -2,52 +2,39 @@
 
 namespace Boilr\BoilrBundle\Menu;
 
-use Knp\Menu\FactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Knp\Menu\FactoryInterface,
+    Symfony\Component\DependencyInjection\ContainerAware;
+use Boilr\BoilrBundle\Entity\Group as MyGroup;
 
 class Builder extends ContainerAware
 {
-    public function topMenu(FactoryInterface $factory)
+
+    public function personSubMenu(FactoryInterface $factory)
     {
+        $securityContext = $this->container->get('security.context');
+
         $menu = $factory->createItem('root');
         $menu->setCurrentUri($this->container->get('request')->getRequestUri());
 
-        $menu->addChild('Home', array('route' => 'homepage'));
-
-        $item = $menu->addChild('Anagrafica', array('route' => 'main_person'));
-        $item->addChild('Nuovo',   array('route' => 'new_person'));
-        $item->addChild('Ricerca', array('route' => 'search_person'));
-
-        $item = $menu->addChild('Interventi', array('route' => 'main_intervention'));
-        $item->addChild('Mese corrente', array('route' => 'current_month_interventions'));
-        $item->addChild('Ricerca', array('route' => 'search_intervention'));
-
-
-        // Add link to administration if current user has admin role
-        $securityContext = $this->container->get('security.context');
-        $token = $securityContext->getToken();
-        $roles = array('ROLE_ADMIN', 'ROLE_SUPERUSER');
-        if ($token && $securityContext->isGranted($roles)) {
-            $item = $menu->addChild('Amministrazione', array('route' => 'admin_homepage'));
-            $item->addChild('Schemi Manutenz.', array('route' => 'manteinance_schema_list'));
-            $item->addChild('Gruppi Controlli', array('route' => 'operation_group_list'));
-            $item->addChild('Allegati', array('route' => 'template_list'));
-            $item->addChild('Gest. Utenze', array('route' => 'user_list'));
+        if ($securityContext->isGranted(MyGroup::ROLE_OPERATOR)) {
+            $menu->addChild('Nuovo cliente', array('route' => 'new_person'))->setExtra('icon', 'icon-user');
+            $menu->addChild('Contratti stipulati', array('route' => 'contract_list'))->setExtra('icon', 'icon-list-alt');
         }
 
-        $menu->addChild('logout', array('route' => '_security_logout'))->setLabel('Logout');
+        $menu->addChild('Ricerca', array('route' => 'search_person'))->setExtra('icon', 'icon-search');
 
         return $menu;
     }
 
-    public function personMenu(FactoryInterface $factory)
+    public function installerMenu(FactoryInterface $factory)
     {
         $menu = $factory->createItem('root');
         $menu->setCurrentUri($this->container->get('request')->getRequestUri());
 
-        $menu->addChild('Nuovo cliente',   array('route' => 'new_person'));
-        $menu->addChild('Installatori',   array('route' => 'company_list'));
-        $menu->addChild('Ricerca', array('route' => 'search_person'));
+        $menu->addChild('I miei interventi', array('route' => 'installer_list_interventions'))->setExtra('icon', 'icon-wrench');
+        $menu->addChild('I miei allegati', array('route' => 'installer_list_docs'))->setExtra('icon', 'icon-book');
+        $menu->addChild('Ditte di manutenzione', array('route' => 'company_list'))->setExtra('icon', 'icon-cog');
+        $menu->addChild('Nuovo installatore', array('route' => 'installer_add'))->setExtra('icon', 'icon-user');
 
         return $menu;
     }
@@ -57,8 +44,8 @@ class Builder extends ContainerAware
         $menu = $factory->createItem('root');
         $menu->setCurrentUri($this->container->get('request')->getRequestUri());
 
-        $menu->addChild('Mese corrente',   array('route' => 'current_month_interventions'));
-        $menu->addChild('Ricerca', array('route' => 'search_intervention'));
+        $menu->addChild('Mese corrente', array('route' => 'current_month_interventions'))->setExtra('icon', 'icon-th-list');
+        $menu->addChild('Ricerca', array('route' => 'search_intervention'))->setExtra('icon', 'icon-search');
 
         return $menu;
     }
@@ -68,10 +55,12 @@ class Builder extends ContainerAware
         $menu = $factory->createItem('root');
         $menu->setCurrentUri($this->container->get('request')->getRequestUri());
 
-        $menu->addChild('Schemi manutenzione',   array('route' => 'manteinance_schema_list'));
-        $menu->addChild('Gruppi controlli', array('route' => 'operation_group_list'));
-        $menu->addChild('Allegati', array('route' => 'template_list'));
+        $menu->addChild('Schemi di manutenzione', array('route' => 'manteinance_schema_list'))->setExtra('icon', 'icon-cog');
+        $menu->addChild('Gruppi di controlli', array('route' => 'operation_group_list'))->setExtra('icon', 'icon-eye-open');
+        $menu->addChild('Allegati', array('route' => 'template_list'))->setExtra('icon', 'icon-file');
+        $menu->addChild('Gestione utenti', array('route' => 'user_list'))->setExtra('icon', 'icon-user');
 
         return $menu;
     }
+
 }

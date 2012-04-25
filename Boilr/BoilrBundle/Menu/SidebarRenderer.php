@@ -6,6 +6,8 @@ use Knp\Menu\ItemInterface,
     Knp\Menu\Renderer\Renderer,
     Knp\Menu\Renderer\RendererInterface;
 
+use Boilr\BoilrBundle\Menu\IconMenuItem;
+
 /**
  * Description of SidebarRenderer
  *
@@ -22,7 +24,7 @@ class SidebarRenderer extends Renderer implements RendererInterface
             'ancestorClass' => 'current_ancestor',
             'firstClass' => 'first',
             'lastClass' => 'last',
-            'header' => 'FERRU',
+            'header' => 'section header',
         );
     }
 
@@ -43,9 +45,6 @@ class SidebarRenderer extends Renderer implements RendererInterface
         $attributes = $item->getAttributes();
         $attributes['class'] = 'nav nav-list';
         $html  = $this->format('<ul'.$this->renderHtmlAttributes($attributes).'>', 'ul', $item->getLevel());
-
-        $headerAttr = array('class' => 'nav-header');
-        //$html .= $this->format('<li'.$this->renderHtmlAttributes($headerAttr).'>', 'li', 1);
         $html .= '<li class="nav-header">'.$options['header'].'</li>';
         $html .= $this->renderChildren($item, $options);
         $html .= $this->format('</ul>', 'ul', $item->getLevel());
@@ -88,7 +87,6 @@ class SidebarRenderer extends Renderer implements RendererInterface
         }
         if ($item->isCurrent() || $item->isCurrentAncestor()) {
             $class[] = 'active';
-            $class[] = 'active-trail';
         }
 
         // retrieve the attributes and put the final class string back on it
@@ -128,17 +126,28 @@ class SidebarRenderer extends Renderer implements RendererInterface
     {
         $options = array_merge($this->getDefaultOptions(), $options);
 
-        if ($item->isCurrent())
-            return sprintf('<a href="%s">%s</a>', $item->getUri(), $item->getLabel());
-        else {
-
-        if ($item->getUri() && (!$item->isCurrent() || $options['currentAsLink'])) {
-            $text = sprintf('<a href="%s"%s>%s</a>', $this->escape($item->getUri()), $this->renderHtmlAttributes($item->getLinkAttributes()), $this->escape($item->getLabel()));
-        } else {
-            $text = sprintf('<span%s>%s</span>', $this->renderHtmlAttributes($item->getLabelAttributes()), $this->escape($item->getLabel()));
+        $icon = '';
+        if ($item->getExtra('icon')) {
+            $class = $item->getExtra('icon');
+            if ($item->isCurrent()) {
+                $class .= ' icon-white';
+            }
+            $icon = '<i class="'. $class .'"></i> ';
         }
 
-        return $this->format($text, 'link', $item->getLevel());
+        if ($item->isCurrent()) {
+            return sprintf('<a href="%s">%s%s</a>', $item->getUri(), $icon, $item->getLabel());
+        } else {
+            if ($item->getUri() && (!$item->isCurrent() || $options['currentAsLink'])) {
+                $text = sprintf('<a href="%s"%s>%s%s</a>', $this->escape($item->getUri()),
+                        $this->renderHtmlAttributes($item->getLinkAttributes()),
+                        $icon, $this->escape($item->getLabel()));
+            } else {
+                $text = sprintf('<span%s>%s%s</span>', $this->renderHtmlAttributes($item->getLabelAttributes()),
+                        $icon, $this->escape($item->getLabel()));
+            }
+
+            return $this->format($text, 'link', $item->getLevel());
         }
     }
 

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="it">
   <head>
-    <title>{% block title %}Boilr{% endblock %}</title>
+    <title>Boilr</title>
     <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="description" content="Thesis project" />
@@ -11,9 +11,6 @@
 
     {#
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/boilr_common.css') }}"/>
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/forms.css') }}"/>
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/tipsy.css') }}"/>
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/jquery-ui-1.8.7.custom.css') }}"/>
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/jquery.dataTables.css') }}"/>
     #}
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/tipsy.css') }}"/>
@@ -41,8 +38,89 @@
     <![endif]-->
   </head>
   <body>
-    {% block central_block %}
-    {% endblock  %}
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Boilr</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="{{ url('homepage') }}">Home</a></li>
+            </ul>
+
+            <!-- account dropdown menu -->
+            <ul class="nav pull-right">
+              <li id="fat-menu" class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Connesso come <strong>{{ app.security.getToken().getUser().login }}</strong>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Account</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{ url('_security_logout') }}">Disconnetti</a></li>
+                </ul>
+              </li>
+            </ul>
+            <!-- end of account dropdown menu -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            {% block sidebar %}
+                {{ knp_menu_render('BoilrBundle:Builder:personSubMenu', {'header': 'Anagrafica clienti'}, 'boilr_menu_renderer' ) }}
+                {{ knp_menu_render('BoilrBundle:Builder:interventionMenu', {'header': 'Interventi'}, 'boilr_menu_renderer' ) }}
+                {% if is_granted('ROLE_INSTALLER' ) %}
+                  {{ knp_menu_render('BoilrBundle:Builder:installerMenu', {'header': 'Installatori'}, 'boilr_menu_renderer' ) }}
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN' ) %}
+                  {{ knp_menu_render('BoilrBundle:Builder:adminMenu', {'header': 'Amministrazione'}, 'boilr_menu_renderer' ) }}
+                {% endif %}
+            {% endblock %}
+          </div>
+        </div>
+
+        {# error flash message #}
+        {% if app.session.hasFlash('error') %}
+        <div class="span9">
+          <div class="alert alert-error">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>Errore</strong> {{ app.session.flash('error') }}
+          </div>
+        </div>
+        {% endif %}
+
+        {# notice flash message #}
+        {% if app.session.hasFlash('notice') %}
+        <div class="span9">
+          <div class="alert alert-success">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>Informazione</strong> {{ app.session.flash('notice') }}
+          </div>
+        </div>
+        {% endif %}
+
+        {% block inner_block %}
+        {% endblock %}
+      </div><!--/row-->
+
+      {% block rows %}
+      {% endblock rows %}
+      <hr>
+
+      <footer>
+        <p>&copy; Ferruccio Vitale - Università degli studi "Carlo Bo" - Urbino</p>
+      </footer>
+    </div><!--/.fluid-container-->
 
     {% javascripts
         '@BoilrBundle/Resources/private/js/jquery.js'
@@ -53,7 +131,7 @@
         '@BoilrBundle/Resources/private/js/jquery.dataTables.reloadAjax.js'
         '@BoilrBundle/Resources/private/js/jquery.dynamicTable.js'
         '@BoilrBundle/Resources/private/js/Scroller.js'
-        '@BoilrBundle/Resources/private/js/bootstrap.min.js'
+        '@BoilrBundle/Resources/private/js/bootstrap.js'
         output="js/boilr.js" filter='yui_js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
@@ -63,6 +141,8 @@
         $(function() {
             $.datepicker.setDefaults($.datepicker.regional['it']);
             $(".jdate").datepicker();
+
+            $('.dropdown-toggle').dropdown()
 
             $('.wrong_input').tipsy( {
                 trigger: 'focus',
