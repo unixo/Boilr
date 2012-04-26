@@ -19,6 +19,7 @@ use Boilr\BoilrBundle\Validator\Constraints as MyAssert,
  * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\ManteinanceInterventionRepository")
  * @Gedmo\Timestampable
  * @Assert\Callback(methods={"isUnplannedValid"}, groups={"unplanned"})
+ * @Assert\Callback(methods={"canBeClosed"}, groups={"close"})
  */
 class ManteinanceIntervention
 {
@@ -97,6 +98,14 @@ class ManteinanceIntervention
     protected $closeDate;
 
     /**
+     * @var hasCheckResults
+     *
+     * @ORM\Column(name="has_results", type="boolean")
+     * @Assert\Type(type="bool")
+     */
+    protected $hasCheckResults;
+
+    /**
      * @var Person
      *
      * @ORM\ManyToOne(targetEntity="Person")
@@ -130,6 +139,7 @@ class ManteinanceIntervention
     {
         $int = new ManteinanceIntervention();
         $int->setIsPlanned(false);
+        $int->setHasCheckResults(false);
         $int->setStatus(self::STATUS_TENTATIVE);
 
         return $int;
@@ -396,6 +406,16 @@ class ManteinanceIntervention
     }
 
     /**
+     * Returns true if intervention is confirmed
+     *
+     * @return bool
+     */
+    public function isConfirmed()
+    {
+        return ($this->getStatus() == self::STATUS_CONFIRMED);
+    }
+
+    /**
      * Returns true if intervention was aborted
      *
      * @return bool
@@ -403,6 +423,16 @@ class ManteinanceIntervention
     public function isAborted()
     {
         return ($this->getStatus() == self::STATUS_ABORTED);
+    }
+
+    /**
+     * Returns true if intervention was closed
+     *
+     * @return bool
+     */
+    public function isClosed()
+    {
+        return ($this->getStatus() == self::STATUS_CLOSED);
     }
 
     /**
@@ -425,4 +455,33 @@ class ManteinanceIntervention
         return $this->scheduledDate;
     }
 
+    public function canBeClosed(ExecutionContext $context)
+    {
+        if (!$this->closeDate || $this->closeDate < $this->scheduledDate) {
+            $property_path = $context->getPropertyPath() . ".closeDate";
+            $context->setPropertyPath($property_path);
+            $context->addViolation("La data di chiusura non è valida", array(), null);
+        }
+    }
+
+
+    /**
+     * Set hasCheckResults
+     *
+     * @param boolean $hasCheckResults
+     */
+    public function setHasCheckResults($hasCheckResults)
+    {
+        $this->hasCheckResults = $hasCheckResults;
+    }
+
+    /**
+     * Get hasCheckResults
+     *
+     * @return boolean
+     */
+    public function getHasCheckResults()
+    {
+        return $this->hasCheckResults;
+    }
 }
