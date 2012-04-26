@@ -1,40 +1,40 @@
-{% extends 'BoilrBundle:Person:person-base.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 {% block inner_block %}
 <div class="span9">
-  <h2>Elenco aziende</h2>
+  <div class="page-header">
+    <h1>Elenco ditte manutenzione</h1>
+  </div>
 
-  <fieldset>
-    <table class="table table-condensed table-striped">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Indirizzo</th>
-          <th>Città</th>
-          <th>Operaz.</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for key,item in companies %}
-        <tr class="{{ cycle(['odd', 'even'], key) }}">
-          <td>{{ item.name }}</td>
-          <td>{{ item.street }}</td>
-          <td>{{ item.city }}</td>
-          <td>
-            <a class="btn btn-mini" href="{{ url('company_edit', {cid: item.id}) }}" title="Modifica"><i class="icon-pencil"></i></a>
-            <a class="btn btn-mini" href="{{ url('company_delete', {id: item.id}) }}" title="Elimina"><i class="icon-trash"></i></a>
-            <a class="btn btn-mini" href="{{ url('company_employee_list', {id: item.id}) }}" title="Mostra dipendenti"><i class="icon-user"></i></a>
-          </td>
-        </tr>
-        {% endfor %}
-       </tbody>
-    </table>
-  </fieldset>
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Indirizzo</th>
+        <th>Città</th>
+        <th>Operaz.</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for item in companies %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.street }}</td>
+        <td>{{ item.city }}</td>
+        <td>
+          <a class="btn btn-mini" href="{{ url('company_edit', {cid: item.id}) }}" title="Modifica"><i class="icon-pencil"></i></a>
+          <a class="btn btn-mini" href="{{ url('company_delete', {id: item.id}) }}" title="Elimina"><i class="icon-trash"></i></a>
+          <a class="btn btn-mini" href="{{ url('company_employee_list', {id: item.id}) }}" title="Mostra dipendenti"><i class="icon-user"></i></a>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+  </table>
 
   <div style="margin-top: 10px;">
     <a class="btn btn-small" href="{{ url('company_add') }}">
-        <i class="icon-plus"></i> Aggiungi
+      <i class="icon-plus"></i> Aggiungi
     </a>
   </div>
 </div>

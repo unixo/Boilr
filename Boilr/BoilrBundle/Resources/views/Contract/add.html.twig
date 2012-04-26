@@ -1,46 +1,45 @@
-{% extends 'BoilrBundle:Person:person-base.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 {% block inner_block %}
 <div class="span9">
-<h2>Registrazione contratto d'assistenza programmata</h2>
+  <div class="page-header">
+    <h1>Registrazione contratto <small>assistenza programmata</small></h1>
+  </div>
 
-<form id="form_contract" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+  <form id="form_contract" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
 
     {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': system.owner, 'allFields': false} %}
 
     <fieldset>
         <legend>Dettagli Contratto</legend>
 
-        <div><label>Tipologia impianto:</label><span>{{ system.systemType.name }}</span></div>
-        <div><label>Descriz. impianto:</label><span>{{ system.descr }}</span></div>
-        <div><label>Collocaz. impianto:</label><span>{{ system.address.address }}</span></div>
-        <div><label>Data inizio:</label>{{ form_widget(form.startDate, {'attr': {'class': 'jdate'}}) }}</div>
-        <div><label>Data termine:</label>{{ form_widget(form.endDate, {'attr': {'class': 'jdate'}}) }}</div>
+        <dl class="dl-horizontal well">
+          {{ mymacro.fieldset_row('Tipologia impianto', system.systemType.name) }}
+          {{ mymacro.fieldset_row('Descriz. impianto', system.descr) }}
+          {{ mymacro.fieldset_row('Collocaz. impianto', system.address.address) }}
+        </dl>
+
+        <div class="control-group">
+          <label class="control-label" for="input01">Data inizio:</label>
+          {{ form_widget(form.startDate, {'attr': {'class': 'jdate'}}) }}
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="input01">Data inizio:</label>
+          {{ form_widget(form.endDate, {'attr': {'class': 'jdate'}}) }}
+        </div>
     </fieldset>
 
     <div class="form-actions">
-        <a class="btn" href="{{ url('show_person', {'id': system.owner.id}) }}">
-            <i class="icon-arrow-left"></i> Torna al dettaglio
-        </a>
         <input class="btn btn-primary" type="submit" value="Salva" />
+        <a class="btn" href="{{ url('show_person', {'id': system.owner.id}) }}">
+          Annulla
+        </a>
     </div>
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
 </form>
 </div>
-{% endblock %}
-
-
-{% block javascripts %}
-<script type="text/javascript">
-    /* <![CDATA[ */
-
-    $(function() {
-        $(".jdate").datepicker();
-    });
-
-    /* ]]> */
-</script>
 {% endblock %}
