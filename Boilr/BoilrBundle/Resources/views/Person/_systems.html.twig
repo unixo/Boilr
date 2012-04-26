@@ -18,9 +18,9 @@
       </tr>
     </thead>
     <tbody>
-    {% for key,value in person.systems %}
+    {% for value in person.systems %}
       {% set hasContract = value.isUnderAssistance() %}
-      <tr class="{{ cycle(['odd', 'even'], key) }}">
+      <tr>
         <td>{{ value.systemType.name }}</td>
         <td>{{ value.product.name }}</td>
         <td>{{ value.installDate | date ('d-m-Y') }}</td>
@@ -30,14 +30,8 @@
         {% if toolbar is defined and toolbar == true %}
           <td>{{ mymacro.imgcheck_if_true(hasContract) }}</td>
           <td>
-            <a class="btn btn-mini" href="{{ url('system_edit', {'sid': value.id} ) }}">
-              <i class="icon-pencil" title="Modifica"></i>
-            </a>
-            <a class="btn btn-mini" href="{{ url('system_delete', {'id': value.id} ) }}">
-              <i class="icon-trash" title="Elimina"></i>
-            </a>
-            <a class="btn btn-mini" href="{{ url('system_upload_doc', {'id': value.id} ) }}">
-              <i class="icon-folder-open" title="Documentazione allegata"></i>
+            <a class="btn btn-mini" href="{{ url('system_show', {'id': value.id} ) }}">
+              <i class="icon-folder-open" title="Dettagli"></i>
             </a>
             {% if hasContract == false %}
               <a class="btn btn-mini" href="{{ url('add_contract', {'id': value.id} ) }}">

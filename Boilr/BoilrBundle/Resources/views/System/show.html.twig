@@ -1,0 +1,44 @@
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+{% block inner_block %}
+<div class="span9">
+  <div class="page-header">
+    <h1>Dettaglio impianto</h1>
+  </div>
+
+  <h3>Scheda impianto</h3>
+  <dl class="dl-horizontal">
+    {{ mymacro.fieldset_row('Proprietario', system.owner.getFullName()) }}
+    {{ mymacro.fieldset_row('Tipo', system.systemType.name) }}
+    {{ mymacro.fieldset_row('Seriale', system.code) }}
+    {{ mymacro.fieldset_row('Descrizione', system.descr) }}
+    {{ mymacro.fieldset_row('Data installaz.', system.installDate | date('d-m-Y H:i')) }}
+    {{ mymacro.fieldset_row('Ultima manutenz.', system.lastManteinance | date('d-m-Y H:i')) }}
+  </dl>
+
+  {% if system.defaultInstaller %}
+    {% set inst = system.defaultInstaller %}
+    <h3>Tecnico predefinito</h3>
+    <dl class="dl-horizontal">
+      {{ mymacro.fieldset_row('Società', inst.company.name) }}
+      {{ mymacro.fieldset_row('Indirizzo', inst.company.address) }}
+      {{ mymacro.fieldset_row('Tecnico', inst.getFullName()) }}
+      {{ mymacro.fieldset_row('Codice fiscale', inst.fiscalCode|default('-')) }}
+      {{ mymacro.fieldset_row('Partita IVA', inst.vatCode|default('-')) }}
+    </dl>
+  {% else %}
+    <div class="alert alert-info">Non è stato associato alcun tecnico predefinito.</div>
+  {% endif %}
+
+  <hr>
+  {% if is_granted('ROLE_INSTALLER') == false %}
+    <a class="btn btn-small" href="{{ url('system_delete', {'id': system.id} ) }}">
+      <i class="icon-trash"></i> Elimina
+    </a>
+  {% endif %}
+    <a class="btn btn-small" href="{{ url('system_list_doc', {'id': system.id} ) }}">
+      <i class="icon-book"></i> Documentazione
+    </a>
+</div>
+{% endblock inner_block %}
