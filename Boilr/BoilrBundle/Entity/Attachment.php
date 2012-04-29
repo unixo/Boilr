@@ -40,7 +40,10 @@ class Attachment
     /**
      * @Assert\File(
      *     maxSize="3M",
-     *     mimeTypes={"image/png", "image/jpeg", "image/pjpeg", "application/pdf", "text/plain", "application/msword"}
+     *     mimeTypes={"image/png", "image/jpeg", "image/pjpeg", "application/pdf",
+     *                "text/plain", "application/msword", "application/excel",
+     *                 "application/vnd.openxmlformats", "application/vnd.ms-excel",
+     *                 "application/zip"}
      * )
      * @Vich\UploadableField(mapping="attachment_file", fileNameProperty="name")
      *
