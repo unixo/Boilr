@@ -22,6 +22,7 @@ use Boilr\BoilrBundle\Entity\Attachment as MyAttachment,
  */
 class AttachmentController extends BaseController
 {
+
     function __construct()
     {
         $this->entityName = 'BoilrBundle:Attachment';
@@ -29,16 +30,16 @@ class AttachmentController extends BaseController
 
     /**
      * @Route("/{id}/delete", name="attachment_delete")
-     * @ParamConverter("attachment", class="BoilrBundle:Attachment")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_INSTALLER")
      * @Template()
      */
-    public function deleteAction(MyAttachment $attachment)
+    public function deleteAction()
     {
+        $attachment = $this->paramConverter('id');
         // Check file ownership if current user is an installer
         $currentUser = $this->getCurrentUser();
         if ($currentUser->hasRole(Group::ROLE_INSTALLER)) {
-            if ($this->getCurrentUser()->getLogin() !=  $attachment->getOwner()->getLogin()) {
+            if ($this->getCurrentUser()->getLogin() != $attachment->getOwner()->getLogin()) {
                 throw new AccessDeniedException('permission denied: not owner');
             }
         }
@@ -55,14 +56,13 @@ class AttachmentController extends BaseController
         return $this->getLastRoute();
     }
 
-
     /**
      * @Route("/{id}/attach-to-system", name="system_upload_doc")
-     * @ParamConverter("system", class="BoilrBundle:System")
      * @Template()
      */
-    public function uploadSystemDocAction(System $system)
+    public function uploadSystemDocAction()
     {
+        $system = $this->paramConverter('id', "BoilrBundle:System");
         // create and init attachment
         $attachment = new MyAttachment();
         $attachment->setUploadDate(new \DateTime());
@@ -95,11 +95,11 @@ class AttachmentController extends BaseController
 
     /**
      * @Route("/{id}/attach-to-intervention", name="intervention_upload_doc")
-     * @ParamConverter("intervention", class="BoilrBundle:ManteinanceIntervention")
      * @Template()
      */
-    public function uploadInterventionDocAction(ManteinanceIntervention $intervention)
+    public function uploadInterventionDocAction()
     {
+        $intervention = $this->paramConverter("id", "BoilrBundle:ManteinanceIntervention");
         // create and init attachment
         $attachment = new MyAttachment();
         $attachment->setUploadDate(new \DateTime());
@@ -120,7 +120,8 @@ class AttachmentController extends BaseController
                     $dem->flush();
                     $this->setNoticeMessage('Documento allegato con successo');
 
-                    return $this->redirect($this->generateUrl('intervention_list_doc', array('id' => $intervention->getId())));
+                    return $this->redirect($this->generateUrl('intervention_list_doc',
+                            array('id' => $intervention->getId())));
                 } catch (Exception $exc) {
                     $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
                 }
@@ -129,4 +130,5 @@ class AttachmentController extends BaseController
 
         return array('form' => $form->createView(), 'interv' => $intervention);
     }
+
 }
