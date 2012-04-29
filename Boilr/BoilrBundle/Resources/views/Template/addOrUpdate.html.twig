@@ -1,23 +1,25 @@
-{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
-{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 
 {% block inner_block %}
 <div class="span9">
-  <h2>{{ (optype == 'add')?"Nuova":"Modifica" }} allegato</h2>
+  <div class="page-header">
+    <h1>{{ (optype == 'add')?"Nuova":"Modifica" }} allegato</h1>
+  </div>
 
   <form id="form_template" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     <fieldset>
         <legend>Dettaglio allegato</legend>
 
         {{ form_row(form.name) }}
-        {{ form_row(form.descr) }}
+        <div class="control-group">
+            {{ form_label(form.descr) }}
+            {{ form_widget(form.descr, {attr: {'class': 'span5 input-xlarge'}}) }}
+        </div>
     </fieldset>
 
     <div class="form-actions">
-      <a class="btn btn-small" href="{{ url('template_list') }}">
-        <i class="icon-arrow-left"></i> Torna al dettaglio
-      </a>
-      <input class="craue_formflow_button_last btn btn-primary" type="submit" value="Salva" />
+      <input class="btn btn-primary" type="submit" value="Salva" />
+      <a class="btn btn-small" href="{{ url('template_list') }}">Annulla</a>
     </div>
 
     {{ form_rest(form) }}

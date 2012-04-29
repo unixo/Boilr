@@ -1,54 +1,54 @@
-{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 {% block inner_block %}
 <div class="span9">
-<h2>Gruppi di controlli</h2>
+  <div class="page-header">
+    <h1>Elenco operazioni <small>Gruppo {{ group.name }}</small></h1>
+  </div>
 
-<fieldset>
-    <legend>Elenco operazioni "{{ group.name }}"</legend>
-
-    <table class="table table-condensed table-striped">
-      <thead>
-        <tr>
-          <th colspan="2">Ordine</th>
-          <th>Descrizione</th>
-          <th>Durata (mm)</th>
-          <th>Operazioni</th>
-        </tr>
-      </thead>
-      <tbody>
-            {% for key,oper in operations %}
-            <tr class="{{ cycle(['odd', 'even'], key) }}">
-                <td>
-                {% if key > 0 %}
-                    <a href="{{ url('operation_move', {'id': oper.id, 'dir':'up'}) }}">
-                        <i class="icon-arrow-up" title="Sposta su"></i>
-                    </a>
-                {% endif %}
-                </td>
-                <td>
-                {% if key < count-1 %}
-                    <a href="{{ url('operation_move', {'id': oper.id, 'dir':'down'}) }}">
-                        <i class="icon-arrow-down" title="Sposta giù"></i>
-                    </a>
-                {% endif %}
-                </td>
-                <td>{{ oper.name }}</td>
-                <td>{{ oper.timeLength/60 }}</td>
-                <td>
-                    <a href="{{ url('operation_edit', {oid: oper.id}) }}">
-                        <i class="icon-pencil" title="Modifica..."></i>
-                    </a>
-                    <a href="{{ url('operation_delete', {id: oper.id}) }}">
-                        <i class="icon-trash" title="Elimina"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-  </fieldset>
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th colspan="2">Ordine</th>
+        <th>Descrizione</th>
+        <th>Durata (mm)</th>
+        <th>Esito</th>
+        <th>Operazioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for oper in operations %}
+      <tr>
+        <td>
+          {% if oper.listOrder > 0 %}
+          <a class="btn btn-mini" href="{{ url('operation_move', {'id': oper.id, 'dir':'up'}) }}">
+              <i class="icon-arrow-up" title="Sposta su"></i>
+          </a>
+          {% endif %}
+        </td>
+        <td>
+          {% if oper.listOrder < count-1 %}
+          <a class="btn btn-mini" href="{{ url('operation_move', {'id': oper.id, 'dir':'down'}) }}">
+              <i class="icon-arrow-down" title="Sposta giù"></i>
+          </a>
+          {% endif %}
+        </td>
+        <td>{{ oper.name }}</td>
+        <td>{{ oper.timeLength/60 }}</td>
+        <td>{{ oper.getResultTypeDescr() }}</td>
+        <td>
+          <a class="btn btn-mini" href="{{ url('operation_edit', {oid: oper.id}) }}">
+              <i class="icon-pencil" title="Modifica..."></i>
+          </a>
+          <a class="btn btn-mini" href="{{ url('operation_delete', {id: oper.id}) }}">
+              <i class="icon-trash" title="Elimina"></i>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
   <div style="margin-top: 10px;">
     <a class="btn btn-small" href="{{ url('operation_group_list') }}">

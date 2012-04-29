@@ -16,8 +16,10 @@ use Doctrine\ORM\Mapping as ORM,
 class Company
 {
     /**
+     * @var integer $id
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
@@ -347,7 +349,7 @@ class Company
     /**
      * Get officePhone
      *
-     * @return string 
+     * @return string
      */
     public function getOfficePhone()
     {
@@ -367,7 +369,7 @@ class Company
     /**
      * Get cellularPhone
      *
-     * @return string 
+     * @return string
      */
     public function getCellularPhone()
     {
@@ -387,7 +389,7 @@ class Company
     /**
      * Get faxNumber
      *
-     * @return string 
+     * @return string
      */
     public function getFaxNumber()
     {

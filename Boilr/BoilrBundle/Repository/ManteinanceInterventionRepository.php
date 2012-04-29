@@ -6,7 +6,9 @@ use Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Boilr\BoilrBundle\Entity\OperationGroup,
     Boilr\BoilrBundle\Entity\Installer,
-    Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter;
+    Boilr\BoilrBundle\Entity\Template,
+    Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter,
+    Boilr\BoilrBundle\Form\Model\InterventionDetailResults;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -191,4 +193,97 @@ class ManteinanceInterventionRepository extends EntityRepository
         return array('success' => true);
     }
 
+    public function persistCheckResults(InterventionDetailResults $model)
+    {
+        $result = true;
+        $em = $this->getEntityManager();
+
+        try {
+            $em->beginTransaction();
+            foreach ($model->getChecks() as $check) {
+                $em->persist($check);
+            }
+            $em->flush();
+            $this->markInterventionAsChecked($model->getInterventionDetail()->getIntervention());
+            $em->commit();
+        } catch (Exception $exc) {
+            $em->rollback();
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    /**
+     * If all systems in this intervention were checked and installed stored
+     * inspection results, the intervention is marked as "hasCheckResults"
+     *
+     * @param ManteinanceIntervention $interv
+     */
+    public function markInterventionAsChecked(ManteinanceIntervention $interv)
+    {
+        $success = true;
+        foreach ($interv->getDetails() as $detail) {
+            if ($detail->getChecks()->getCount() == 0) {
+                $success = false;
+            }
+        }
+
+        if ($success) {
+            $interv->setHasCheckResults(true);
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    /**
+     *
+     * @param ManteinanceIntervention $interv
+     * @param Template $template
+     */
+    public function prepareDocument(ManteinanceIntervention $interv, Template $template)
+    {
+        $document = array();
+
+        // for each system in this manteinance intervention
+        foreach ($interv->getDetails() as $interventionDetail) {
+            $sections = array();
+
+            // for each section of given template
+            foreach ($template->getSections() as $templateSection) {
+                $currentSection = array('sectionName' => $templateSection->getName(), 'sectionResults' => array());
+
+                // for each operation in current template section
+                foreach ($templateSection->getOperations() as $sectionOperation) {
+
+                    // find an InterventionCheck instance whose parentOperation is sectionOperation
+                    $intChecks = $interventionDetail->getChecks()->getValues();
+                    $results = array_filter($intChecks, function ($entry) use ($sectionOperation)
+                                                        {
+                                                            if ($entry->getParentOperation()->getId() === $sectionOperation->getId()) {
+                                                                return true;
+                                                            }
+                                                            return false;
+                                                        });
+                    if (count($results) == 1) {
+                        $interventionCheck = array_pop($results);
+                        $textValue = $interventionCheck->getTextValue();
+                        $threewayValue = $interventionCheck->getThreewayValue();
+
+                        $inspection = array(
+                            'checkName' => $sectionOperation->getName(),
+                            'resultType' => $sectionOperation->getResultType(),
+                            'textValue' => $textValue,
+                            'threewayValue' => $threewayValue
+                        );
+                        $currentSection['sectionResults'][] = $inspection;
+                   }
+                }
+                $sections[] = $currentSection;
+            }
+            $detail = array('system' => $interventionDetail->getSystem(), 'sections' => $sections);
+            $document[] = $detail;
+        }
+
+        return $document;
+    }
 }

@@ -12,8 +12,8 @@
     {#
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/boilr_common.css') }}"/>
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/jquery.dataTables.css') }}"/>
-    #}
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/tipsy.css') }}"/>
+    #}
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/jquery-ui-1.8.7.custom.css') }}"/>
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/bootstrap.css') }}"/>
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/boilr-common.css') }}"/>
@@ -132,6 +132,7 @@
         '@BoilrBundle/Resources/private/js/jquery.dynamicTable.js'
         '@BoilrBundle/Resources/private/js/Scroller.js'
         '@BoilrBundle/Resources/private/js/bootstrap.js'
+        '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-collection.js'
         output="js/boilr.js" filter='yui_js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
@@ -144,11 +145,13 @@
 
             $('.dropdown-toggle').dropdown()
 
+{#
             $('.wrong_input').tipsy( {
                 trigger: 'focus',
                 gravity: $.fn.tipsy.autoNS,
                 title: 'data-tips' }
             );
+#}
         });
         /* ]]> */
     </script>

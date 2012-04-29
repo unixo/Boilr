@@ -1,32 +1,32 @@
-{% extends 'BoilrBundle:Default:template5-installer.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 
 {% block inner_block %}
 <div class="span9">
-  <h2>Elenco documentazione</h2>
-  <br>
+  <div class="page-header">
+    <h1>Elenco documentazione</h1>
+  </div>
+
   {% if attachments|length > 0 %}
   <table class="table table-condensed table-striped">
     <thead>
       <tr>
-        <th>Cliente</th>
-        <th>Impianto</th>
+        <th>Nome documento</th>
+        <th>Data</th>
         <th>Tipo</th>
-        <th>Ultima manutenz.</th>
         <th>Operaz.</th>
       </tr>
     </thead>
     <tbody>
-      {% for system in systems %}
+      {% for doc in attachments %}
       <tr>
-        <td>{{ sys.customer.getFullName() }}</td>
-        <td>{{ sys.descr }}</td>
-        <td>{{ sys.systemType.name }}</td>
-        <td>{{ sys.lastManteinance | date('d/m/Y H:i') }}</td>
+        <td>{{ doc.name }}</td>
+        <td>{{ doc.uploadDate|date('d/m/Y H:i') }}</td>
+        <td>{{ doc.getTypeDescr() }}</td>
         <td>
-          <a class="btn btn-mini" href="" title="Apri"><i class="icon-folder-open"></i></a>
-          <a class="btn btn-mini" href="" title="Elimina"><i class="icon-trash"></i></a>
+          <a class="btn btn-mini" href="{{ vich_uploader_asset(doc, 'document') }}" title="Apri"><i class="icon-folder-open"></i></a>
+          <a class="btn btn-mini" href="{{ url('attachment_delete', {'id': doc.id}) }}" title="Elimina"><i class="icon-trash"></i></a>
         </td>
       </tr>
       {% endfor %}

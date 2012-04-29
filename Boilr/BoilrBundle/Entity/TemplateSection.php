@@ -18,7 +18,7 @@ class TemplateSection
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
@@ -37,6 +37,7 @@ class TemplateSection
      *      joinColumns={@ORM\JoinColumn(name="section_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="operation_id", referencedColumnName="id")}
      *      )
+     * @ORM\OrderBy({"listOrder" = "ASC"})
      */
     protected $operations;
 

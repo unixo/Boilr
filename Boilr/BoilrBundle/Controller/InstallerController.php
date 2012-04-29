@@ -123,18 +123,6 @@ class InstallerController extends BaseController
     }
 
     /**
-     * Get installer linked to current logged user
-     *
-     * @return \Boilr\BoilrBundle\Entity\Installer
-     */
-    public function getCurrentInstaller()
-    {
-        $user = $this->getCurrentUser();
-
-        return $this->getEntityRepository()->findOneByAccount($user->getId());
-    }
-
-    /**
      * @Route("/show-my-interventions", name="installer_list_interventions")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_INSTALLER")
      * @Template()
@@ -170,8 +158,9 @@ class InstallerController extends BaseController
     public function showMyDocumentsAction()
     {
         $installer = $this->getCurrentInstaller();
+        $account = $installer->getAccount();
         $attachments = $this->getDoctrine()->getRepository('BoilrBundle:Attachment')
-                        ->findBy(array('owner' => $installer->getId()));
+                        ->findBy(array('owner' => $account->getId()));
 
         return array('attachments' => $attachments);
     }

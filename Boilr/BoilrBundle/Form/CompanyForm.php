@@ -2,8 +2,8 @@
 
 namespace Boilr\BoilrBundle\Form;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\AbstractType,
+    Symfony\Component\Form\FormBuilder;
 
 class CompanyForm extends AbstractType
 {
@@ -13,6 +13,9 @@ class CompanyForm extends AbstractType
         $builder
                 ->add('name', 'text', array('required' => true, 'label' => 'Intestazione'))
                 ->add('vatCode', 'text', array('required' => false, 'label' => 'Partita IVA'))
+                ->add('officePhone', 'text', array('label' => 'Ufficio', 'required' => false))
+                ->add('faxNumber', 'text', array('label' => 'FAX', 'required' => false))
+                ->add('cellularPhone', 'text', array('label' => 'Cellulare', 'required' => false))
                 ->add('street', 'text', array('required' => true, 'label' => 'Indirizzo'))
                 ->add('postalCode', 'text', array('required' => true, 'label' => 'CAP'))
                 ->add('city', 'text', array('required' => true, 'label' => 'Città'))

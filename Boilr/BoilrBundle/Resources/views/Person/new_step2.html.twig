@@ -1,3 +1,4 @@
+{#
 {% macro prototype(item) %}
 {% spaceless %}
     <tr>
@@ -34,7 +35,7 @@
       </tr>
     </thead>
     <tbody>
-    {% for key, item in form.addresses %}
+    {% for item in form.addresses %}
       {{ _self.prototype(item) }}
     {% endfor %}
     </tbody>
@@ -46,3 +47,9 @@
 </fieldset>
 
 {{ form_widget(form.addresses) }}
+#}
+<fieldset>
+  <legend>Indirizzi</legend>
+
+  {{ form_widget(form) }}
+</fieldset>

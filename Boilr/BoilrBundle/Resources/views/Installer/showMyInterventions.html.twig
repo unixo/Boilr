@@ -1,11 +1,13 @@
-{% extends 'BoilrBundle:Default:template5-installer.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 
 {% block inner_block %}
 <div class="span9">
-  <h2>Elenco interventi</h2>
-  <br>
+  <div class="page-header">
+    <h1>Elenco interventi</h1>
+  </div>
+    
   {% if interventions|length > 0 %}
   <table class="table table-condensed table-striped">
     <thead>

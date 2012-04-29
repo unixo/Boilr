@@ -1,0 +1,56 @@
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+
+{% block inner_block %}
+<div class="span9">
+  <div class="page-header">
+    <h1>Dettagli impianto <small>elenco allegati</small></h1>
+  </div>
+
+  <div class="well-small">
+    <dl class="dl-horizontal">
+      {{ mymacro.fieldset_row('Tipo', system.systemType.name) }}
+      {{ mymacro.fieldset_row('Matricola', system.code) }}
+      {{ mymacro.fieldset_row('Impianto', system.descr) }}
+      {{ mymacro.fieldset_row('Data installaz.', system.installDate|date('d/m/Y')) }}
+      {{ mymacro.fieldset_row('Ultima manutenz.', system.lastManteinance|date('d/m/Y')) }}
+      {{ mymacro.fieldset_row('Cliente', system.owner.getFullName()) }}
+    </dl>
+  </div>
+
+  {% if attachments|length > 0 %}
+  <h3>Documenti allegati all'impianto</h3>
+  <br>
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Nome documento</th>
+        <th>Data</th>
+        <th>Proprietario</th>
+        <th>Operaz.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for doc in attachments %}
+      <tr>
+        <td>{{ doc.name }}</td>
+        <td>{{ doc.uploadDate | date('d/m/Y H:i') }}</td>
+        <td>{{ doc.owner.getFullName() }}</td>
+        <td>
+          <a class="btn btn-mini" href="{{ vich_uploader_asset(doc, 'document') }}" title="Apri"><i class="icon-folder-open"></i></a>
+          <a class="btn btn-mini" href="{{ url('attachment_delete', {id: doc.id}) }}" title="Elimina"><i class="icon-trash"></i></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <div class="alert alert-info">Non è stata allegata alcuna documentazione all'impianto.</div>
+  {% endif %}
+
+  <a class="btn btn-small" href="{{ url('system_upload_doc', {id: system.id}) }}">
+    <i class="icon-upload"></i> Aggiungi allegato
+  </a>
+</div>
+{% endblock %}

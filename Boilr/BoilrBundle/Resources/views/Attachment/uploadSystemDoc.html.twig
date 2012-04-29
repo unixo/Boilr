@@ -1,5 +1,4 @@
 {% extends 'BoilrBundle:Default:template5-base.html.twig' %}
-{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
 {% block inner_block %}
@@ -7,7 +6,7 @@
   <div class="page-header">
     <h1>Inserimento nuovo allegato <small>{{ system.descr }}</small></h1>
   </div>
-    
+
   <form id="form_contract" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
 
     <div class="well">

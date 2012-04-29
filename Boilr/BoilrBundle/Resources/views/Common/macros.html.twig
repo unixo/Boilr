@@ -4,7 +4,7 @@
         {% set icon = "icon-home" %}
         {% set title = "Abitazione"  %}
     {% elseif item.type == constant('\\Boilr\\BoilrBundle\\Entity\\Address::TYPE_OFFICE') %}
-        {% set icon = "icon-clock" %}
+        {% set icon = "icon-lock" %}
         {% set title = "Ufficio"  %}
     {% else %}
         {% set icon = "icon-help" %}
@@ -32,7 +32,7 @@
 
 
 {% macro imgcheck_if_true(item) %}
-<i class="{{ item?"icon-ok":"icon-white" }}" title="{{ item?"Si":"No" }}"></i>
+<i class="{{ item?"icon-ok":" icon-ban-circle" }}" title="{{ item?"Si":"No" }}"></i>
 {% endmacro %}
 
 

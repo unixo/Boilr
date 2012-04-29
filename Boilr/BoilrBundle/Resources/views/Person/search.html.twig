@@ -1,39 +1,23 @@
-{% extends 'BoilrBundle:Person:person-base.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 
 {% block inner_block %}
-<div class="span10">
-  <h2>Ricerca anagrafica</h2>
+<div class="span9">
+  <div class="page-header">
+    <h1>Ricerca scheda anagrafica</h1>
+  </div>
 
-  <div class="row-fluid">
-    <div>
-      <h3>Filtra per tipologia</h3>
-      <p>Togliendo il segno di spunta ad una tipologia non verranno mostrati i record corrispondenti.</p>
-      <dl class="dl-horizontal">
-          <dt>Cliente?</dt><dd><input id="is_customer" type="checkbox" class="jcheck" checked name="is_customer" /></dd>
-          <dt>Installatore?</dt><dd><input id="is_installer" type="checkbox" class="jcheck" checked name="is_installer" /></dd>
-          <dt>Amministratore?</dt><dd><input id="is_admin" type="checkbox" class="jcheck" checked name="is_admin" />
-      </dl>
-    </div>
-  </div> <!-- end of row -->
-
-  <div class="row-fluid">
-    <fieldset>
-      <legend>Risultati</legend>
-
-      <table id="people" class="table table-condensed table-striped">
-        <thead>
-          <tr>
-            <th width="5%">Cl.</th>
-            <th width="5%">Amm.</th>
-            <th width="5%">Inst.</th>
-            <th>Nominativo</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </fieldset>
-  </div> <!-- end of row -->
+  <table id="people" class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Nominativo</th>
+        <th>Telef. casa</th>
+        <th>Telef. ufficio</th>
+        <th># impianti</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 </div>
 {% endblock %}
 
@@ -42,16 +26,6 @@
 /* <![CDATA[ */
 
 var oTable;
-
-function renderBoolean( oObj )
-{
-    var prop = oObj.oSettings.aoColumns[ oObj.iDataColumn ].mDataProp;
-    if (oObj.aData[ prop ] == true) {
-        return '<span class="ui-icon ui-icon-check"></span>';
-    }
-
-    return '';
-}
 
 function renderFullname( oObj )
 {
@@ -66,37 +40,15 @@ function renderFullname( oObj )
 
 $(function() {
     oTable = $('#people').dataTable({
-            "sDom": "frtiS", "sScrollY": "300px", "bServerSide": true,
-            "sAjaxSource": "{{ path('json_search_person') }}",
-            "aoColumns": [
-                    { "mDataProp": "is_customer", "fnRender": renderBoolean, "bSortable": false },
-                    { "mDataProp": "is_admin",    "fnRender": renderBoolean, "bSortable": false },
-                    { "mDataProp": "is_installer", "fnRender": renderBoolean, "bSortable": false },
-                    { "mDataProp": "fullname",    "fnRender": renderFullname },
-                ],
-            "fnServerData": function ( sSource, aoData, fnCallback )
-                            {
-                                if ( $('#is_customer').attr('checked') != 'checked' ) {
-                                    aoData.push( { "name": "is_customer", "value": 0 } );
-                                }
-
-                                if ( $('#is_installer').attr('checked') != 'checked' ) {
-                                    aoData.push( { "name": "is_installer", "value": 0 } );
-                                }
-
-                                if ( $('#is_admin').attr('checked') != 'checked' ) {
-                                    aoData.push( { "name": "is_admin", "value": 0 } );
-                                }
-
-                                $.ajax( { "dataType": 'json',
-                                          "url"     : sSource,
-                                          "data"    : aoData,
-                                          "success" : fnCallback } );
-                            },
-                  });
-
-    $('.jcheck').bind('click', function(event) { oTable.fnReloadAjax(); });
-
+              "sDom": "frtiS", "sScrollY": "300px", "bServerSide": true,
+              "sAjaxSource": "{{ path('json_search_person') }}",
+              "aoColumns": [
+                      { "mDataProp": "fullname",    "fnRender": renderFullname },
+                      { "mDataProp": "homePhone",  "bSortable": false },
+                      { "mDataProp": "officePhone",  "bSortable": false },
+                      { "mDataProp": "systems",  "bSortable": false },
+                  ],
+              });
 });
 
 /* ]]> */

@@ -1,5 +1,4 @@
-{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
-{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 
 {% block extra_header %}
 <style>
@@ -12,20 +11,22 @@
 
 {% block inner_block %}
 <div class="span9">
-<h2>Associazione controlli alla sezione "{{ section.name }}" del modello "{{ section.template.name }}"</h2>
+  <div class="page-header">
+    <h1>Associazione controlli <small>sezione "{{ section.name }}" del modello "{{ section.template.name }}"</small></h1>
+  </div>
 
-<form id="form_operation" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+  <form id="form_operation" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     <fieldset>
-        <legend>Elenco dei controlli disponibili</legend>
+      <legend>Elenco dei controlli disponibili</legend>
 
-        <table id="table_bind_operations" class="table table-condensed table-striped">
-        {% for key,oper in form.operations %}
-            <tr class="{{ cycle(['odd', 'even'], key) }}">
-                <td>{{ form_widget(oper) }}</td>
-                <td>{{ form_label(oper) }}</td>
-            </tr>
-        {% endfor %}
-        </table>
+      <table id="table_bind_operations" class="table table-condensed table-striped">
+      {% for oper in form.operations %}
+          <tr>
+              <td>{{ form_widget(oper) }}</td>
+              <td>{{ form_label(oper) }}</td>
+          </tr>
+      {% endfor %}
+      </table>
     </fieldset>
 
     <div class="form-actions">
@@ -37,6 +38,6 @@
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
-</form>
+  </form>
 </div>
 {% endblock %}

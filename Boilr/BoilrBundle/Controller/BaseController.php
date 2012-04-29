@@ -2,11 +2,13 @@
 
 namespace Boilr\BoilrBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller,
+    Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class BaseController extends Controller
 {
-    const FLASH_ERROR  = 'error';
+
+    const FLASH_ERROR = 'error';
     const FLASH_NOTICE = 'notice';
 
     protected $entityName;
@@ -106,5 +108,57 @@ abstract class BaseController extends Controller
     public function getCurrentUser()
     {
         return $this->get('security.context')->getToken()->getUser();
+    }
+
+    /**
+     * Returns a redirect response filled with referer
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function getLastRoute()
+    {
+        $lastRoute = $this->getSession()->get('last_route');
+        $url = $this->generateUrl($lastRoute['name'], $lastRoute['params']);
+        $response = $this->redirect($url);
+
+        return $response;
+    }
+
+    /**
+     * Get installer linked to current logged user, if any
+     *
+     * @return \Boilr\BoilrBundle\Entity\Installer
+     */
+    public function getCurrentInstaller()
+    {
+        $user = $this->getCurrentUser();
+        $installer = $this->getDoctrine()->getRepository('BoilrBundle:Installer')->findOneByAccount($user->getId());
+
+        if (!$installer) {
+            throw new \ErrorException('current user is not an installer');
+        }
+
+        return $installer;
+    }
+
+    public function paramConverter($paramName, $className = null)
+    {
+        $paramValue = $this->getRequest()->get($paramName);
+        if ($paramValue === null) {
+            throw new \InvalidArgumentException("request does not contain $paramName parameter");
+        }
+
+        $class = $className ? $className : $this->entityName;
+        $obj = $this->getDoctrine()->getRepository($class)->findOneById($paramValue);
+        if ($obj === null) {
+            throw new NotFoundHttpException("object not found ($paramValue)");
+        }
+
+        return $obj;
+    }
+
+    protected function _debug($var)
+    {
+         $this->get('ladybug')->log($var);  
     }
 }

@@ -1,11 +1,12 @@
-{% extends 'BoilrBundle:Person:person-base.html.twig' %}
-{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 
 {% block inner_block %}
 <div class="span9">
-<h2>Dettagli impianto</h2>
+  <div class="page-header">
+    <h1>Dettagli impianto</h1>
+  </div>
 
-<form id="form_system" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+  <form id="form_system" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
 
     {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': person, 'allFields': false} %}
 
@@ -13,6 +14,7 @@
         <legend>Dettagli impianto</legend>
 
         {{ form_row(form.systemType) }}
+        {{ form_row(form.defaultInstaller) }}
         {{ form_row(form.product) }}
         {{ form_row(form.address) }}
         {{ form_row(form.installDate, {'attr': {'class': 'jdate'}}) }}
@@ -22,47 +24,54 @@
     </fieldset>
 
     <div class="form-actions">
-        <a class="btn" href="{{ url('show_person', {'id': person.id}) }}">Torna al dettaglio</a>
         <input class="btn btn-primary" id="btnSubmit" type="submit" value="Salva" />
+        <a class="btn" href="{{ url('show_person', {'id': person.id}) }}">Annulla</a>
     </div>
 
     {{ form_rest(form) }}
     {{ form_errors(form) }}
-</form>
-
-  <div id="dlgWarn" style="display: none" title="Attenzione">
-    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-        Non è stato associato l'impianto ad alcun indirizzo. Proseguire ugualmente?
-    </p>
-  </div>
+  </form>
 </div>
 {% endblock %}
 
 
 {% block javascripts %}
 <script type="text/javascript">
-    /* <![CDATA[ */
+/* <![CDATA[ */
 
-    $(function() {
-        $('#dlgWarn').dialog({
-            resizable: false,
-            width    : 460,
-            modal    : true,
-            autoOpen : false,
-            buttons  : {
-                "Annulla": function() { $(this).dialog("close"); },
-                "Procedi": function() { $('#form_system').submit(); }
-            },
-        });
+function fnUpdateInstallers()
+{
+  var sysType = $('#systemForm_systemType').val();
+  var baseUrl = "{{ url('installers_for_systype') }}";
 
-        $('#btnSubmit').click(function(e) {
-                if ($('#systemForm_address').val() == "") {
-                    $('#dlgWarn').dialog('open');
-                    e.preventDefault();
-                }
-            });
-    });
+  if (sysType == "")
+    return;
 
-    /* ]]> */
+  $.getJSON(baseUrl, {'id': sysType}, function(data) {
+      // remove all previous installers and add an empty item
+      $('#systemForm_defaultInstaller').find('option').remove()
+                                       .end().append($("<option></option>"));
+
+      // retrieve installers list for selected system type
+      $.each(data, function(key, val) {
+          $('#systemForm_defaultInstaller').append( $("<option></option>")
+                                           .attr("value", val.id)
+                                           .text(val.fullName) );
+      });
+  });
+}
+
+$(function() {
+    var sel = $('#systemForm_defaultInstaller').val();
+    if (sel != "") {
+      fnUpdateInstallers();
+      $('#systemForm_systemType').val(sel);
+    }
+
+    $('#systemForm_systemType').change( fnUpdateInstallers );
+
+});
+
+/* ]]> */
 </script>
 {% endblock %}

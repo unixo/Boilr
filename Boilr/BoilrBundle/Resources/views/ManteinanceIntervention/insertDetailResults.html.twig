@@ -1,0 +1,45 @@
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+{% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+
+{% block inner_block %}
+<div class="span9">
+  <div class="page-header">
+    <h1>Registrazione risultati ispezione</h1>
+  </div>
+
+  <dl class="dl-horizontal well">
+    {{ mymacro.fieldset_row('Cliente', detail.system.owner.getFullName()) }}
+    {{ mymacro.fieldset_row('Impianto', detail.system.descr) }}
+    {{ mymacro.fieldset_row('Controlli effettuati', detail.operationGroup.name) }}
+  </dl>
+
+  <form id="form_detail_results" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+    <fieldset>
+      {% for check in form.checks %}
+        {# get current parent Operation #}
+        {% set currOp = check.vars.value.parentOperation %}
+        <div class="control-group">
+          <label class="control-label">{{ check.vars.value.parentOperation.name }}</label>
+          <div class="controls">
+            {% if currOp.resultType == constant('\\Boilr\\BoilrBundle\\Entity\\Operation::RESULT_CHECKBOX') %}
+              <div style="display: none">{{ form_widget(check.textValue) }}</div>
+              {{ form_widget(check.threewayValue) }}
+            {% else %}
+              {{ form_widget(check.textValue) }}
+              <div style="display: none">{{ form_widget(check.threewayValue, {simple: true}) }}</div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </fieldset>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+
+    <div class="form-actions">
+      <input class="btn btn-primary" type="submit" value="Salva" />
+      <a class="btn" href="{{ url('intervention_detail_for_installer', {id: detail.intervention.id}) }}">Annulla</a>
+    </div>
+  </form>
+</div>
+{% endblock inner_block %}

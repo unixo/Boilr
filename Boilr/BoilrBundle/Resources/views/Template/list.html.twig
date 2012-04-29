@@ -1,37 +1,35 @@
-{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 {% block inner_block %}
 <div class="span9">
-  <h2>Gestione allegati</h2>
+  <div class="page-header">
+    <h1>Gestione allegati <small>elenco</small></h1>
+  </div>
 
-  <fieldset>
-    <legend>Elenco allegati</legend>
-
-    <table class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Descrizione</th>
-                <th># sezioni</th>
-                <th>Operaz.</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for key,item in templates %}
-            <tr class="{{ cycle(['odd', 'even'], key) }}">
-                <td><a href="{{ url('template_section_list', {id: item.id}) }}">{{ item.name }}</a></td>
-                <td>{{ item.descr }}</td>
-                <td>{{ item.sections|length }}</td>
-                <td>
-                    <a href="{{ url('template_edit', {tid: item.id}) }}"><i class="icon-pencil"></i></a>
-                    <a href="{{ url('template_delete', {id: item.id}) }}"><i class="icon-trash"></i></a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</fieldset>
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Descrizione</th>
+        <th># sezioni</th>
+        <th>Operaz.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in templates %}
+      <tr>
+        <td><a href="{{ url('template_section_list', {id: item.id}) }}">{{ item.name }}</a></td>
+        <td>{{ item.descr }}</td>
+        <td>{{ item.sections|length }}</td>
+        <td>
+          <a class="btn btn-mini" href="{{ url('template_edit', {tid: item.id}) }}"><i class="icon-pencil"></i></a>
+          <a class="btn btn-mini" href="{{ url('template_delete', {id: item.id}) }}"><i class="icon-trash"></i></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
   <div style="margin-top: 10px;">
     <a class="btn btn-small" href="{{ url('template_add') }}">

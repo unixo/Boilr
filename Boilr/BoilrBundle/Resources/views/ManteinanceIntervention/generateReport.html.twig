@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8" />
+        <style>
+            {% include 'BoilrBundle:Template:pdf.css.twig' %}
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <header id="header">
+                <h3>{{ template.name|upper }}</h3>
+                <h4>{{ template.descr }}</h4>
+                <p>IL RAPPORTO DI CONTROLLO DEVE ESSERE COMPILATO DALL'OPERATORE
+                   INCARICATO E CONSEGNATO IN COPIA AL RESPONSABILE DELL'IMPIANTO,
+                   CHE NE DEVE CONFERMARE RICEVUTA PER PRESA VISIONE.
+                </p>
+            </header>
+
+            <div id="wrapper" class="clearfix">
+                <div id="maincol">
+
+                    {% for detail in document %}
+
+                      <div id="customer">
+                        {% set system = detail['system'] %}
+                        <p>Impianto termico sito nel Comune di: {{ system.address.city }} ({{ system.address.province }})</p>
+                        <p>in via/piazza: {{ system.address.street }}, CAP: {{ system.address.postalCode }}</p>
+                        <p>Responsabile dell'impianto: {{ system.owner.getFullName() }}</p>
+                        <p>In qualità di: <span class="checkbox"></span> proprietario <span class="checkbox"></span> occupante <span class="checkbox"></span> terzo responsabile</p>
+                      </div>
+
+                      <table id="sections">
+                      {% for section in detail['sections'] %}
+                          <tr>
+                            <td class="section_name">{{ section['sectionName'] }}</td>
+                            <td colspan="3" class="op_header"></td>
+                          </tr>
+                          {% for check in section['sectionResults'] %}
+                          <tr>
+                            <td>{{ check['checkName'] }}</td>
+                            {% if check['resultType'] == 1 %}
+                                <td class="boxed">{% if check['threewayValue'] == 1 %}X{% endif %}</td>
+                                <td class="boxed">{% if check['threewayValue'] == 0 %}X{% endif %}</td>
+                                <td class="boxed">{% if check['threewayValue'] == 2 %}X{% endif %}</td>
+                            {% else %}
+                                <td colspan="3">{{ check['textValue'] }}</td>
+                            {% endif %}
+                          </tr>
+                          {% endfor %}
+                        {% endfor %}
+                    </table>
+                    {% endfor %}
+
+
+                    <div id="recommendations">
+                        <p>RACCOMANDAZIONI [6] [8] ___________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                        </p>
+                    </div>
+
+                    <div id="precautions">
+                        <p>PRECAUZIONI [7] [8] ________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                           _________________________________________________________________________________________________________________
+                        </p>
+                    </div>
+
+                    <div id="installer">
+                      <h4>TECNICO CHE HA EFFETTUATO IL CONTROLLO:</h4>
+                      <p>Nome e Cognome: {{ intervention.installer.getFullName() }}</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -14,8 +14,10 @@ class Installer
 {
 
     /**
+     * @var integer $id
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
@@ -282,7 +284,7 @@ class Installer
     /**
      * Get account
      *
-     * @return Boilr\BoilrBundle\Entity\User 
+     * @return Boilr\BoilrBundle\Entity\User
      */
     public function getAccount()
     {

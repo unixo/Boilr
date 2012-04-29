@@ -2,14 +2,19 @@
 
 namespace Boilr\BoilrBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM,
+    Symfony\Component\Validator\Constraints as Assert,
+    Symfony\Component\Validator\ExecutionContext;
+use Boilr\BoilrBundle\Entity\Operation as MyOperation;
 
 /**
  * Boilr\BoilrBundle\Entity\InterventionCheck
  *
- * @ORM\Table(name="intervention_check")
+ * @ORM\Table(name="intervention_checks", uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="si_detail_oper", columns={"detail_id", "operation_id"})
+ * })
  * @ORM\Entity
+ * @Assert\Callback(methods={"isCheckValid"})
  */
 class InterventionCheck
 {
@@ -18,16 +23,15 @@ class InterventionCheck
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $parent;
+    protected $id;
 
     /**
      * @var InterventionDetail
      *
      * @ORM\ManyToOne(targetEntity="InterventionDetail")
      * @ORM\JoinColumn(name="detail_id", referencedColumnName="id", nullable=false)
-     * @ORM\Id
      */
     protected $parentDetail;
 
@@ -36,45 +40,90 @@ class InterventionCheck
      *
      * @ORM\ManyToOne(targetEntity="Operation")
      * @ORM\JoinColumn(name="operation_id", referencedColumnName="id", nullable=false)
-     * @ORM\Id
      */
     protected $parentOperation;
 
     /**
-     * @var string $id
+     * @var string $textValue
      *
-     * @ORM\Column(type="string", length=100, nullable=false)
+     * @ORM\Column(name="text_value", type="string", length=255, nullable=true)
      */
-    protected $value;
+    protected $textValue;
 
     /**
-     * Get parent
+     * @var integer $threewayValue
      *
-     * @return integer 
+     * @ORM\Column(name="threeway_value", type="integer", nullable=true)
      */
-    public function getParent()
+    protected $threewayValue;
+
+    public function isCheckValid(ExecutionContext $context)
     {
-        return $this->parent;
+        if ($this->parentOperation->getResultType() == MyOperation::RESULT_CHECKBOX) {
+            if ($this->threewayValue === null || !in_array($this->threewayValue, array(0,1,2))) {
+                $property_path = $context->getPropertyPath() . ".threewayValue";
+                $context->setPropertyPath($property_path);
+                $context->addViolation("Specificare il risultato dell'ispezione", array(), null);
+            }
+        } else {
+            if ($this->textValue === null || strlen($this->textValue) == 0) {
+                $property_path = $context->getPropertyPath() . ".textValue";
+                $context->setPropertyPath($property_path);
+                $context->addViolation("Specificare il risultato dell'ispezione", array(), null);
+            }
+        }
     }
 
     /**
-     * Set value
+     * Get id
      *
-     * @param string $value
+     * @return integer
      */
-    public function setValue($value)
+    public function getId()
     {
-        $this->value = $value;
+        return $this->id;
     }
 
     /**
-     * Get value
+     * Set textValue
      *
-     * @return string 
+     * @param string $textValue
      */
-    public function getValue()
+    public function setTextValue($textValue)
     {
-        return $this->value;
+        $this->textValue = $textValue;
+    }
+
+    /**
+     * Get textValue
+     *
+     * @return string
+     */
+    public function getTextValue()
+    {
+        $str= $this->textValue?$this->textValue:"";
+        // @todo clean up
+        return $str;
+    }
+
+    /**
+     * Set threewayValue
+     *
+     * @param integer $threewayValue
+     */
+    public function setThreewayValue($threewayValue)
+    {
+        $this->threewayValue = $threewayValue;
+    }
+
+    /**
+     * Get threewayValue
+     *
+     * @return integer
+     */
+    public function getThreewayValue()
+    {
+        return $this->threewayValue;
     }
 
     /**
@@ -90,7 +139,7 @@ class InterventionCheck
     /**
      * Get parentDetail
      *
-     * @return Boilr\BoilrBundle\Entity\InterventionDetail 
+     * @return Boilr\BoilrBundle\Entity\InterventionDetail
      */
     public function getParentDetail()
     {
@@ -110,7 +159,7 @@ class InterventionCheck
     /**
      * Get parentOperation
      *
-     * @return Boilr\BoilrBundle\Entity\Operation 
+     * @return Boilr\BoilrBundle\Entity\Operation
      */
     public function getParentOperation()
     {

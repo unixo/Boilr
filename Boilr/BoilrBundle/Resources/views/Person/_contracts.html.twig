@@ -12,8 +12,8 @@
        </tr>
      </thead>
      <tbody>
-     {% for key,value in person.contracts %}
-       <tr class="{{ cycle(['odd', 'even'], key) }}">
+     {% for value in person.contracts %}
+       <tr>
          <td>{{ value.system.systemType.name }}</td>
          <td>{{ value.system.descr }}</td>
          <td>{{ value.startDate | date('d-m-Y') }}</td>

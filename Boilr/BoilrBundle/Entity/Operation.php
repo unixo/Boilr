@@ -18,11 +18,16 @@ class Operation
     const RESULT_CHECKBOX = 1;
     const RESULT_NOTE = 2;
 
+    public static $resultDescr = array(
+        self::RESULT_CHECKBOX   => "Si/No/N.C.",
+        self::RESULT_NOTE => "Campo note",
+    );
+
     /**
      * @var integer $id
      *
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
@@ -179,5 +184,10 @@ class Operation
     public function getResultType()
     {
         return $this->resultType;
+    }
+
+    public function getResultTypeDescr()
+    {
+        return self::$resultDescr[ $this->getResultType() ];
     }
 }

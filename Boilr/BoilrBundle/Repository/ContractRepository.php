@@ -56,9 +56,6 @@ class ContractRepository extends EntityRepository
         try {
             $em->beginTransaction();
 
-            // Make system owner a customer
-            $contract->getCustomer()->setIsCustomer(true);
-
             // Serialize new contract
             $em->persist($contract);
 

@@ -15,14 +15,15 @@ use Doctrine\ORM\Mapping as ORM,
  */
 class Person
 {
-    const TYPE_PHYSICAL   = 1;
+
+    const TYPE_PHYSICAL = 1;
     const TYPE_GIURIDICAL = 2;
-    const TYPE_BUILDING   = 3;
+    const TYPE_BUILDING = 3;
 
     public static $typeDescr = array(
-        self::TYPE_PHYSICAL   => "Persona fisica",
+        self::TYPE_PHYSICAL => "Persona fisica",
         self::TYPE_GIURIDICAL => "Persona giurica",
-        self::TYPE_BUILDING   => 'Condominio'
+        self::TYPE_BUILDING => 'Condominio'
     );
 
     /**
@@ -30,17 +31,9 @@ class Person
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    /**
-     * @var Company
-     *
-     * @ORM\ManyToOne(targetEntity="Company", inversedBy="employees")
-     * @ORM\JoinColumn(name="company_id", referencedColumnName="id", nullable=true)
-     */
-    protected $company;
 
     /**
      * @var string $type
@@ -139,30 +132,6 @@ class Person
     protected $notes;
 
     /**
-     * @var $isCustomer
-     *
-     * @ORM\Column(name="is_customer", type="boolean")
-     * @Assert\Type(type="bool")
-     */
-    protected $isCustomer = false;
-
-    /**
-     * @var $isSupplier
-     *
-     * @ORM\Column(name="is_supplier", type="boolean")
-     * @Assert\Type(type="bool")
-     */
-    protected $isSupplier = false;
-
-    /**
-     * @var $isInstaller
-     *
-     * @ORM\Column(name="is_installer", type="boolean")
-     * @Assert\Type(type="bool")
-     */
-    protected $isInstaller = false;
-
-    /**
      * @var $isAdministrator
      *
      * @ORM\Column(name="is_administrator", type="boolean")
@@ -210,7 +179,7 @@ class Person
      */
     public function getTypeDescr()
     {
-        return self::$typeDescr[ $this->getType() ];
+        return self::$typeDescr[$this->getType()];
     }
 
     public function getFullName()
@@ -495,66 +464,6 @@ class Person
     }
 
     /**
-     * Set isCustomer
-     *
-     * @param boolean $isCustomer
-     */
-    public function setIsCustomer($isCustomer)
-    {
-        $this->isCustomer = $isCustomer;
-    }
-
-    /**
-     * Get isCustomer
-     *
-     * @return boolean
-     */
-    public function getIsCustomer()
-    {
-        return $this->isCustomer;
-    }
-
-    /**
-     * Set isSupplier
-     *
-     * @param boolean $isSupplier
-     */
-    public function setIsSupplier($isSupplier)
-    {
-        $this->isSupplier = $isSupplier;
-    }
-
-    /**
-     * Get isSupplier
-     *
-     * @return boolean
-     */
-    public function getIsSupplier()
-    {
-        return $this->isSupplier;
-    }
-
-    /**
-     * Set isInstaller
-     *
-     * @param boolean $isInstaller
-     */
-    public function setIsInstaller($isInstaller)
-    {
-        $this->isInstaller = $isInstaller;
-    }
-
-    /**
-     * Get isInstaller
-     *
-     * @return boolean
-     */
-    public function getIsInstaller()
-    {
-        return $this->isInstaller;
-    }
-
-    /**
      * Set isAdministrator
      *
      * @param boolean $isAdministrator
@@ -626,7 +535,7 @@ class Person
 
     public function getTypeAsString()
     {
-        return self::$typeDescr[ $this->type ];
+        return self::$typeDescr[$this->type];
     }
 
     public function isStep1Valid(ExecutionContext $context)
@@ -658,23 +567,4 @@ class Person
         return $this->contracts;
     }
 
-    /**
-     * Set company
-     *
-     * @param Boilr\BoilrBundle\Entity\Company $company
-     */
-    public function setCompany(\Boilr\BoilrBundle\Entity\Company $company)
-    {
-        $this->company = $company;
-    }
-
-    /**
-     * Get company
-     *
-     * @return Boilr\BoilrBundle\Entity\Company 
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
 }

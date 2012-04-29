@@ -1,5 +1,5 @@
 {% set renderBackButton = flow.getCurrentStep() in (flow.getFirstStep() + 1) .. flow.getLastStep() %}
-<div class="craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
+<div class="form-actions craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
 {% spaceless %}
 	{#
 		Default button (the one trigged by pressing the enter/return key) must be defined first.
@@ -8,21 +8,21 @@
 	#}
 	<button type="submit" class="craue_formflow_button_last btn btn-primary">
 		{%- if flow.getCurrentStep() < flow.getLastStep() -%}
-			{{- 'button.next' | trans({}, 'CraueFormFlowBundle') -}}
+			{{- 'Avanti' | trans({}, 'CraueFormFlowBundle') -}}
 		{%- else -%}
-			{{- 'button.finish' | trans({}, 'CraueFormFlowBundle') -}}
+			{{- 'Termina' | trans({}, 'CraueFormFlowBundle') -}}
 		{%- endif -%}
 	</button>
 
 	{% if renderBackButton %}
 		{# see http://www.html5rocks.com/en/tutorials/forms/html5forms/ #}
 		<button type="submit" name="{{ flow.getFormTransitionKey() }}" value="back" formnovalidate="formnovalidate" class="btn">
-			{{- 'button.back' | trans({}, 'CraueFormFlowBundle') -}}
+			{{- 'Indietro' | trans({}, 'CraueFormFlowBundle') -}}
 		</button>
 	{% endif %}
 
 	<button type="submit" class="btn btncraue_formflow_button_first" name="{{ flow.getFormTransitionKey() }}" value="reset" formnovalidate="formnovalidate">
-		{{- 'button.reset' | trans({}, 'CraueFormFlowBundle') -}}
+		{{- 'Reset' | trans({}, 'CraueFormFlowBundle') -}}
 	</button>
 {% endspaceless %}
 </div>

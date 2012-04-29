@@ -23,21 +23,23 @@ class SystemController extends BaseController
 
     /**
      * @Route("/{id}/show-details", name="system_show")
-     * @ParamConverter("system", class="BoilrBundle:System")
      * @Template(vars={"system"})
      */
-    public function showAction(MySystem $system)
+    public function showAction()
     {
+        $system = $this->paramConverter('id');
+
+        return compact('system');
     }
 
     /**
      * @Route("/delete/{id}", name="system_delete")
-     * @ParamConverter("system", class="BoilrBundle:System")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
      * @Template()
      */
-    public function deleteAction(MySystem $system)
+    public function deleteAction()
     {
+        $system = $this->paramConverter('id');
         $person = $system->getOwner();
         $success = $this->getEntityRepository()->deleteSystem($system);
 
@@ -108,16 +110,17 @@ class SystemController extends BaseController
 
     /**
      * @Route("/{id}/attachments", name="system_list_doc")
-     * @ParamConverter("system", class="BoilrBundle:System")
      * @Template()
      */
-    public function listAttachmentsAction(MySystem $system)
+    public function listAttachmentsAction()
     {
+        $system = $this->paramConverter('id');
         $attachments = $this->getDoctrine()->getRepository('BoilrBundle:Attachment')
-                            ->findBy(array('type' => MyAttachment::TYPE_SYSTEM,
-                                           'parentSystem' => $system->getId())
-                                    );
+                ->findBy(array('type' => MyAttachment::TYPE_SYSTEM,
+            'parentSystem' => $system->getId())
+        );
 
         return array('attachments' => $attachments, 'system' => $system);
     }
+
 }

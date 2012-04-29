@@ -1,4 +1,4 @@
-{% extends 'BoilrBundle:Person:person-base.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
 
@@ -54,8 +54,8 @@
                 </tr>
               </thead>
               <tbody>
-                {% for key,mi in interventions %}
-                <tr class="{{ cycle(['odd', 'even'], key) }}">
+                {% for mi in interventions %}
+                <tr>
                   <td>
                     <a href="{{ url('list_all_interventions', { year : mi.scheduledDate|date('Y'), month: mi.scheduledDate|date('m')} ) }}">
                       {{ mi.scheduledDate | date('d-m-Y H:i') }}

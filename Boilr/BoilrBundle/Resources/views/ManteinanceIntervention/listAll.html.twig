@@ -1,47 +1,35 @@
-{% extends 'BoilrBundle:ManteinanceIntervention:intervention-base.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 
 {% block extra_header %}
 <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/calendar.css') }}"/>
-<style>
-#btnPrev {
-    float: left;
-}
-
-#btnNext {
-    float: right;
-}
-</style>
 {% endblock %}
 
 {% block inner_block %}
 <div class="span9">
-<h2>Elenco interventi mensili</h2>
+  <div class="page-header">
+    <h1>Elenco interventi <small>{{ title }}</small></h1>
+  </div>
 
-<div>
-    <button id="btnPrev">Mese precedente</button>
-    <button id="btnNext">Mese successivo</button>
+  <div class="row-fluid">
+    <div class="span3">
+      <a class="btn btn-small" href="{{ url('list_all_interventions', {year: prevMonth|date('Y'), month: prevMonth|date('m')} ) }}">
+        <i class="icon-arrow-left"></i> Precedente
+      </a>
+    </div>
+    <div class="span3">
+      <h2>{{ title }}</h2>
+    </div>
+    <div class="span3">
+      <a class="btn btn-small" href="{{ url('list_all_interventions', {year: nextMonth|date('Y'), month: nextMonth|date('m')} ) }}">
+        <i class="icon-arrow-right"></i> Successivo
+      </a>
+    </div>
+  </div>
 
-    {{ calendar(year, month, records) }}
+  <div class="row-fluid">
+    <div class="span9">
+      {{ calendar(year, month, records) }}
+    </div>
+  </div>
 </div>
-</div>
-{% endblock %}
-
-{% block javascripts %}
-<script type="text/javascript">
-/* <![CDATA[ */
-    $(function()
-    {
-        $('#btnPrev').button({ icons: { primary: "ui-icon-arrow-1-w" }, text: false })
-                     .click(function(event) {
-                                    window.location.href = "{{ url('list_all_interventions', {year: prevMonth|date('Y'), month: prevMonth|date('m')} ) }}";
-                            });
-
-        $('#btnNext').button({ icons: { primary: "ui-icon-arrow-1-e" }, text: false })
-                     .click(function(event) {
-                                    window.location.href = "{{ url('list_all_interventions', {year: nextMonth|date('Y'), month: nextMonth|date('m')} ) }}";
-                            });
-    });
-
-/* ]]> */
-</script>
 {% endblock %}

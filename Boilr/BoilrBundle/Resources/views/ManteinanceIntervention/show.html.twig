@@ -1,92 +1,71 @@
-{% extends 'BoilrBundle:ManteinanceIntervention:intervention-base.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
 {% block inner_block %}
 <div class="span9">
-<h2>Dettaglio intervento {{ interv.isPlanned?"programmato":"non programmato" }}</h2>
+  <div class="page-header">
+    <h1>Dettaglio intervento <small>{{ interv.isPlanned?"programmato":"non programmato" }}</small></h1>
+  </div>
 
-<fieldset>
-    <legend>Dettaglio</legend>
+  <div class="well-small">
+    <h3>Dettaglio cliente</h3>
 
-    {{ mymacro.fieldset_row('Cliente', interv.customer.fullname) }}
-    {{ mymacro.fieldset_row('Data intervento', interv.scheduledDate | date('d-m-Y H:i')) }}
-    {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate | date('d-m-Y H:i')) }}
-    {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
+    <dl class="dl-horizontal">
+      {{ mymacro.fieldset_row('Cliente', interv.customer.fullname) }}
+      {{ mymacro.fieldset_row('Data intervento', interv.scheduledDate | date('d-m-Y H:i')) }}
+      {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate | date('d-m-Y H:i')) }}
+      {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
 
-    {% set closeDate = interv.closeDate?interv.closeDate|date('d-m-Y H:i'):'-' %}
-    {{ mymacro.fieldset_row('Data chiusura', closeDate ) }}
-    {% if interv.isPlanned %}
+      {% set closeDate = interv.closeDate?interv.closeDate|date('d-m-Y H:i'):'-' %}
+      {{ mymacro.fieldset_row('Data chiusura', closeDate ) }}
+      {% if interv.isPlanned %}
         {{ mymacro.fieldset_row('Scadenza contratto', interv.contract.endDate|date('d-m-Y')) }}
-    {% endif %}
-</fieldset>
+      {% endif %}
+    </dl>
+  </div>
 
-<fieldset>
-    <legend>Impianti da revisionare</legend>
+  {% if interv.installer is not null %}
+    {% include 'BoilrBundle:Installer:_detail.html.twig' with { 'installer': interv.installer } %}
+  {% else %}
+    <div class="alert alert-info">Non è stato assegnato alcun installatore all'intervento.</div>
+  {% endif %}
 
-    <table>
-        <thead>
-            <tr>
-                <th>Matricola</th>
-                <th>Descrizione</th>
-                <th>Tipologia</th>
-                <th>Gruppo controlli</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for detail in interv.details %}
-            <tr>
-                <td>{{ detail.system.code }}</td>
-                <td>{{ detail.system.descr }}</td>
-                <td>{{ detail.system.systemType.name }}</td>
-                <td>{{ detail.operationGroup.fullDescr }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
+  <div class="well-small">
+    <h3>Impianti da revisionare</h3>
+
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>Matricola</th>
+          <th>Descrizione</th>
+          <th>Tipologia</th>
+          <th>Gruppo controlli</th>
+          <th>Risult.</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for detail in interv.details %}
+        <tr>
+          <td>{{ detail.system.code }}</td>
+          <td>{{ detail.system.descr }}</td>
+          <td>{{ detail.system.systemType.name }}</td>
+          <td>{{ detail.operationGroup.fullDescr }}</td>
+          <td>{{ (detail.checks|length > 0)?"si":"no" }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
     </table>
-</fieldset>
+  </div>
 
-{% if interv.installer is not null %}
-    {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': interv.installer, 'allFields': false, 'title': 'Dati installatore' } %}
-{% else %}
-    <fieldset>
-        <legend>Dati installatore</legend>
-        <div>Non è stato assegnato alcun installatore all'intervento</div>
-        {% if interv.isAborted() == false %}
-        <div style="margin-top: 10px;">
-            <ul id="icons" class="ui-widget ui-helper-clearfix">
-                <li class="ui-state-default ui-corner-all">
-                    <a href="{{ url('add_installer_to_interv', {'id': interv.id}) }}">
-                        <span class="ui-icon ui-icon-plusthick" title="Associa installatore"></span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        {% endif %}
-    </fieldset>
-{% endif %}
 
-<fieldset>
-    <legend>Operazioni disponibili</legend>
-    <button id="btnCancel">Annulla intervento</button>
-</fieldset>
+  {% if interv.installer is null and interv.isAborted() == false and interv.isConfirmed() == false %}
+    <a class="btn btn-small" href="{{ url('add_installer_to_interv', {'id': interv.id}) }}"><i class="icon-plus"></i> Associa installatore</a>
+  {% endif %}
+  {% if interv.isClosed() == false %}
+    <a class="btn btn-small btn-danger" href="{{ url('intervention_abort', {id: interv.id}) }}"><i class="icon-trash icon-white"></i> Annulla</a>
+  {% endif %}
+  {% if interv.isTentative() == true and interv.isAborted() == false and interv.isClosed() == false %}
+    <a class="btn btn-small btn-success" href="{{ url('intervention_confirm', {id: interv.id}) }}"><i class="icon-ok icon-white"></i> Conferma</a>
+  {% endif %}
 </div>
-{% endblock %}
-
-{% block javascripts %}
-<script type="text/javascript">
-    /* <![CDATA[ */
-
-    $(function() {
-        {% if interv.isTentative() == true %}
-        $('#btnCancel').button({ icons: { primary: "ui-icon-trash" }, text: false })
-                       .click(function(event) {
-                                    window.location.href = '{{ url('intervention_abort', {id: interv.id}) }}';
-                              });
-        {% else %}
-            $('#btnCancel').button({ icons: { primary: "ui-icon-trash" }, text: false, disabled: true });
-        {% endif %}
-    });
-
-    /* ]]> */
-</script>
 {% endblock %}

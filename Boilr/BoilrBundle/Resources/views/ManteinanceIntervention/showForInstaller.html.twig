@@ -1,0 +1,85 @@
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+{% block inner_block %}
+<div class="span9">
+  <div class="page-header">
+    <h1>Dettaglio intervento <small>{{ interv.isPlanned?"programmato":"non programmato" }}</small></h1>
+  </div>
+
+  <div class="well-small">
+    <h3>Dettaglio cliente</h3>
+
+    <dl class="dl-horizontal">
+      {{ mymacro.fieldset_row('Cliente', interv.customer.fullname) }}
+      {{ mymacro.fieldset_row('Data intervento', interv.scheduledDate | date('d-m-Y H:i')) }}
+      {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate | date('d-m-Y H:i')) }}
+      {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
+
+      {% set closeDate = interv.closeDate?interv.closeDate|date('d-m-Y H:i'):'-' %}
+      {{ mymacro.fieldset_row('Data chiusura', closeDate ) }}
+      {% if interv.isPlanned %}
+          {{ mymacro.fieldset_row('Scadenza contratto', interv.contract.endDate|date('d-m-Y')) }}
+      {% endif %}
+    </dl>
+  </div>
+
+  {% if interv.installer is not null %}
+    {% include 'BoilrBundle:Installer:_detail.html.twig' with { 'installer': interv.installer } %}
+  {% else %}
+     <div class="alert alert-info">Non è stato assegnato alcun installatore all'intervento</div>
+  {% endif %}
+
+  <div class="well-small">
+    <h3>Impianti da revisionare</h3>
+
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>Matricola</th>
+          <th>Descrizione</th>
+          <th>Tipologia</th>
+          <th>Gruppo controlli</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for detail in interv.details %}
+        <tr>
+          <td>{{ detail.system.code }}</td>
+          <td>{{ detail.system.descr }}</td>
+          <td>{{ detail.system.systemType.name }}</td>
+          <td>{{ detail.operationGroup.fullDescr }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    {% if interv.installer is null %}
+      <a class="btn btn-small" href="{{ url('add_installer_to_interv', {'id': interv.id}) }}">
+          <i class="icon-plus"></i> Associa installatore
+      </a>
+    {% endif %}
+    {% if interv.isConfirmed() %}
+      <a class="btn btn-small" href="{{ url('intervention_close', {'id': interv.id}) }}">
+          <i class="icon-ok-circle"></i> Concludi intervento
+      </a>
+    {% endif %}
+    {% if interv.hasCheckResults %}
+      <a class="btn btn-small" href="{{ url('intervention_choose_template', {'id': interv.id}) }}">
+        <i class="icon-th-list"></i> Genera allegato
+      </a>
+    {% else %}
+      {% if interv.isClosed() %}
+        <a class="btn btn-small" href="{{ url('intervention_insert_result', {'id': interv.id}) }}">
+          <i class="icon-pencil"></i> Compila allegato
+        </a>
+      {% endif %}
+    {% endif %}
+      <a class="btn btn-small" href="{{ url('intervention_upload_doc', {'id': interv.id}) }}">
+          <i class="icon-upload"></i> Allega documento
+      </a>
+  </div>
+</div>
+{% endblock %}

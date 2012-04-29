@@ -1,37 +1,39 @@
-{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 {% block inner_block %}
 <div class="span9">
-<h2>Gruppi di controlli</h2>
-
-<fieldset>
+  <div class="page-header">
+    <h1>Gruppi di controlli</h1>
+  </div>
+  
+  <fieldset>
     <legend>Elenco operazioni</legend>
 
     <table class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>Sigla</th>
-                <th>Descrizione</th>
-                <th># controlli</th>
-                <th>Operaz.</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for key,group in records %}
-            <tr class="{{ cycle(['odd', 'even'], key) }}">
-                <td><a href="{{ url('operation_group_operations', {id: group.id} ) }}">{{ group.name }}</a></td>
-                <td>{{ group.descr }}</td>
-                <td>{{ group.operations|length }}</td>
-                <td>
-                    <a href="{{ url('operation_group_edit', {oid: group.id}) }}"><i class="icon-pencil"></i></a>
-                    <a href="{{ url('operation_group_delete', {id: group.id}) }}"><i class="icon-trash"></i></a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
+    <thead>
+      <tr>
+        <th>Sigla</th>
+        <th>Descrizione</th>
+        <th># controlli</th>
+        <th>Operaz.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for group in records %}
+      <tr>
+        <td><a href="{{ url('operation_group_operations', {id: group.id} ) }}">{{ group.name }}</a></td>
+        <td>{{ group.descr }}</td>
+        <td>{{ group.operations|length }}</td>
+        <td>
+          <a class="btn btn-mini" href="{{ url('operation_group_edit', {oid: group.id}) }}"><i class="icon-pencil"></i></a>
+          <a class="btn btn-mini" href="{{ url('operation_group_delete', {id: group.id}) }}"><i class="icon-trash"></i></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
     </table>
-</fieldset>
+  </fieldset>
 
   <div style="margin-top: 10px;">
     <a class="btn btn-small" href="{{ url('operation_group_add') }}">

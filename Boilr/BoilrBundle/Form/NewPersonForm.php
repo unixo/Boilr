@@ -36,23 +36,38 @@ class NewPersonForm extends AbstractType
 
             case 2:
                 $builder->add('addresses', 'collection', array(
+                    'label' => 'Indirizzi',
+                    'show_legend' => false,
                     'type' => new AddressForm(),
                     'allow_add' => true, 'allow_delete' => true,
-                    'prototype' => true, 'by_reference' => false
+                    'prototype' => true, 'by_reference' => false,
+                    'widget_add_btn' => "Aggiungi",
+                    'options' => array(
+                        'widget_remove_btn' => "elimina",
+                    )
                 ));
                 break;
 
             case 3:
+                break;
+/*
+            case 3:
                 $builder->add('systems', 'collection', array(
+                    'label' => 'Impianti',
+                    'show_legend' => false,
                     'type' => new SystemForm(),
                     'allow_add' => true, 'allow_delete' => true,
-                    'prototype' => true, 'by_reference' => false
+                    'prototype' => true, 'by_reference' => false,
+                    'widget_add_btn' => "Aggiungi",
+                    'options' => array(
+                        'widget_remove_btn' => "elimina",
+                    )
                 ));
-                // }
                 break;
 
             case 4:
                 break;
+ */
         }
     }
 

@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM,
     Symfony\Component\Validator\Constraints as Assert,
     Symfony\Component\Security\Core\User\UserInterface,
     Gedmo\Mapping\Annotation as Gedmo;
-
 use Boilr\BoilrBundle\Validator\Constraints as MyAssert;
 
 /**
@@ -20,12 +19,13 @@ use Boilr\BoilrBundle\Validator\Constraints as MyAssert;
  */
 class User implements UserInterface
 {
+
     /**
      * @var integer $id
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
@@ -122,6 +122,17 @@ class User implements UserInterface
         }
 
         return $roles;
+    }
+
+    /**
+     * Returns true if the user has given role
+     *
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole($role)
+    {
+        return in_array($role, $this->getRoles());
     }
 
     public function getSalt()
@@ -342,11 +353,11 @@ class User implements UserInterface
     /**
      * rue(message = "The password cannot match your first name")
 
-    public function isPasswordLegal()
-    {
-        $tokens = array(strtolower($this->name), strtolower($this->surname));
+      public function isPasswordLegal()
+      {
+      $tokens = array(strtolower($this->name), strtolower($this->surname));
 
-        return (!in_array($this->password, $tokens));
-    }
-    */
+      return (!in_array($this->password, $tokens));
+      }
+     */
 }

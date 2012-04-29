@@ -34,11 +34,11 @@ class TemplateController extends BaseController
 
     /**
      * @Route("/{id}/sections", name="template_section_list")
-     * @ParamConverter("template", class="BoilrBundle:Template")
      * @Template()
      */
-    public function sectionListAction(MyTemplate $template)
+    public function sectionListAction()
     {
+        $template = $this->paramConverter('id');
         $sections = $template->getSections();
 
         return array('sections' => $sections, 'template' => $template, 'count' => count($sections));
@@ -46,13 +46,13 @@ class TemplateController extends BaseController
 
     /**
      * @Route("/delete/{id}", name="template_delete")
-     * @ParamConverter("template", class="BoilrBundle:Template")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
-    public function deleteAction(MyTemplate $template)
+    public function deleteAction()
     {
         try {
+            $template = $this->paramConverter('id');
             $dem = $this->getEntityManager();
             $dem->remove($template);
             $dem->flush();
@@ -110,11 +110,11 @@ class TemplateController extends BaseController
 
     /**
      * @Route("/{id}/preview", name="template_preview")
-     * @ParamConverter("template", class="BoilrBundle:Template")
      * @Template()
      */
-    public function previewAction(MyTemplate $template)
+    public function previewAction()
     {
+        $template = $this->paramConverter('id');
         $html = $this->renderView('BoilrBundle:Template:pdf.html.twig', array('template' => $template));
 
         return new Response(

@@ -1,0 +1,36 @@
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+{% block inner_block %}
+<div class="span9">
+  <div class="page-header">
+    <h1>Conclusione intervento di manutenzione</h1>
+  </div>
+
+  <form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+
+    {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': interv.customer, 'allFields': false, 'title': 'Dati cliente'} %}
+
+    <div class="well">
+      <h3>Dettaglio intervento</h3>
+
+      <dl class="dl-horizontal">
+        {{ mymacro.fieldset_row('Tecnico', interv.installer.getFullName()) }}
+        {{ mymacro.fieldset_row('Data/ora inizio', interv.scheduledDate|date('d/m/Y H:i')) }}
+        {{ mymacro.fieldset_row('Chiusura prevista', interv.expectedCloseDate|date('d/m/Y H:i')) }}
+      </dl>
+    </div>
+
+    {{ form_row(form.closeDate) }}
+
+    <div class="form-actions">
+        <input class="btn btn-primary" type="submit" value="Salva" />
+        <a class="btn" href="{{ url('intervention_detail_for_installer', {'id': interv.id}) }}">Annulla</a>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+  </form>
+</div>
+{% endblock %}
+

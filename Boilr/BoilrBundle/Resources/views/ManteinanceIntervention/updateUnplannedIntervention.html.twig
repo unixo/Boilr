@@ -1,11 +1,12 @@
-{% extends 'BoilrBundle:ManteinanceIntervention:intervention-base.html.twig' %}
-{% form_theme form 'BoilrBundle:Form:fields.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 
 {% block inner_block %}
 <div class="span9">
-<h2>Inserimento intervento di manutenzione non programmato</h2>
+  <div class="page-header">
+    <h1>Modifica intervento di manutenzione <small>non programmato</small></h1>
+  </div>
 
-<form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
+  <form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} >
 
     {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': customer, 'allFields': false, 'title': 'Dati cliente'} %}
 

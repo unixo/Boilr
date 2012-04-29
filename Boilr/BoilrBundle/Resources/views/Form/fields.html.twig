@@ -2,16 +2,18 @@
 
 {% block field_row %}
 {% spaceless %}
-<div class="control-group">
+<div class="control-group{% if errors|length > 0 %} error{% endif %}">
   {{ form_label(form) }}
-    {% if prepend is defined %}
-        {{ form_widget(form, {'prepend': prepend}) }}
-    {% else %}
-      {{ form_widget(form) }}
-    {% endif %}
-  {% if help is defined %}
-    <p class="help-inline">>{{ help }}</p>
+
+  {% if prepend is defined %}
+    {% set attr = attr|merge({'prepend': prepend}) %}
   {% endif %}
+
+  {% if help is defined %}
+    {% set attr = attr|merge({'help': help}) %}
+  {% endif %}
+
+  {{ form_widget(form) }}
 </div>
 {% endspaceless %}
 {% endblock field_row %}
@@ -19,35 +21,47 @@
 
 {% block field_label %}
 {% spaceless %}
-    <label id="{{ id ~ '_label'}}"
-           for="{{ id }}"{% for attrname,attrvalue in attr %} {{attrname}}="{{attrvalue}}"{% endfor %}
-           class="control-label{% if errors|length > 0 %} error{% endif %}">
-        {{ required?'<span class="reqsymb">* </span>':'' }}{{ label|trans }}:
-    </label>
+  <label id="{{ id ~ '_label'}}"
+         for="{{ id }}"{% for attrname,attrvalue in attr %} {{attrname}}="{{attrvalue}}"{% endfor %}
+         class="control-label{% if errors|length > 0 %} error{% endif %}">
+      {{ required?'<span class="reqsymb">* </span>':'' }}{{ label|trans }}:
+  </label>
 {% endspaceless %}
 {% endblock field_label %}
 
 
 {% block field_widget %}
 {% spaceless %}
+
     {% set type = type|default('text') %}
 
     {% if errors|length > 0 %}
-        {% set attr = attr|merge({'class':'wrong_input',
-      'data-tips':errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }) %}
+      {% set attr = attr|merge({'class':'wrong_input', 'data-tips':errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }) %}
+    {% endif %}
+
+    {% if type == 'file' %}
+      {% set attr = attr|merge({'class':'input-file'}) %}
     {% endif %}
 
     {% if simple is not defined %}<div class="controls">{% endif %}
-      {% if prepend is defined %}
+        {% if prepend is defined %}
         <div class="input-prepend">
             <span class="add-on">{{ prepend }}</span>
-      {% endif %}
-      <input type="{{ type }}" {{ block('widget_attributes') }} value="{{ value }}"  />
-      {% if suffix is defined %}{{ suffix|raw }} {% endif %}
-      {% if prepend is defined %}</div>{% endif %}
-      {% if simple is not defined %}</div>{% endif %}
+        {% endif %}
+            <input type="{{ type }}" {{ block('widget_attributes') }} value="{{ value }}"  />
+            {% if suffix is defined %}{{ suffix|raw }} {% endif %}
+            {% if help is defined %}<p class="help-inline">{{ help }}</p>{% endif %}
+        {% if prepend is defined %}</div>{% endif %}
+    {% if simple is not defined %}</div>{% endif %}
 {% endspaceless %}
 {% endblock %}
+
+
+{% block checkbox_widget %}
+{% spaceless %}
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endspaceless %}
+{% endblock checkbox_widget %}
 
 
 {% block choice_widget %}
@@ -62,20 +76,45 @@
     </div>
   {% else %}
     <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}{% if errors|length > 0 %} class="wrong_input" data-tips="{{ errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }}"{% endif %}>
-        {% if empty_value is not none %}
-            <option value="">{{ empty_value|trans }}</option>
-        {% endif %}
-        {% if preferred_choices|length > 0 %}
-            {% set options = preferred_choices %}
-            {{ block('widget_choice_options') }}
-            {% if choices|length > 0 and separator is not none %}
-                <option disabled="disabled">{{ separator }}</option>
-            {% endif %}
-        {% endif %}
-        {% set options = choices %}
-        {{ block('widget_choice_options') }}
+    {% if empty_value is not none %}
+      <option value="">{{ empty_value|trans }}</option>
+    {% endif %}
+    {% if preferred_choices|length > 0 %}
+      {% set options = preferred_choices %}
+      {{ block('widget_choice_options') }}
+      {% if choices|length > 0 and separator is not none %}
+        <option disabled="disabled">{{ separator }}</option>
+      {% endif %}
+    {% endif %}
+    {% set options = choices %}
+    {{ block('widget_choice_options') }}
     </select>
     {% endif %}
+    {% if help is defined %}<p class="help-inline">{{ help }}</p>{% endif %}
   {% if simple is not defined %}</div>{% endif %}
 {% endspaceless %}
 {% endblock choice_widget %}
+
+
+{% block date_widget %}
+{% spaceless %}
+    {% if widget == 'single_text' %}
+        {% if errors|length > 0 %}
+            {% set attr = attr|merge({'class': 'jdate wrong_input', 'data-tips': errors[0].messageTemplate|trans(errors[0].messageParameters, 'validators') }) %}
+        {% else %}
+            {% set attr = attr|merge({'class': 'jdate' }) %}
+        {% endif %}
+        {% if simple is not defined %}<div class="controls">{% endif %}
+        <input type="text" {{ block('widget_attributes') }} value="{{ value }}" />
+        {% if simple is not defined %}</div>{% endif %}
+    {% else %}
+        <div style="display: inline-block" {{ block('widget_container_attributes') }}>
+            {{ date_pattern|replace({
+                '{{ year }}':  form_widget(form.year),
+                '{{ month }}': form_widget(form.month),
+                '{{ day }}':   form_widget(form.day),
+            })|raw }}
+        </div>
+    {% endif %}
+{% endspaceless %}
+{% endblock date_widget %}

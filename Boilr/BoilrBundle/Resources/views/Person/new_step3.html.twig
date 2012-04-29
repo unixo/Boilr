@@ -1,3 +1,4 @@
+{#
 {% macro prototype(item) %}
 {% spaceless %}
     <tr>
@@ -34,7 +35,7 @@
       </tr>
     </thead>
     <tbody>
-    {% for key, item in form.systems %}
+    {% for item in form.systems %}
       {{ _self.prototype(item) }}
     {% endfor %}
     </tbody>
@@ -46,3 +47,13 @@
 </fieldset>
 
 {{ form_widget(form.systems) }}
+
+<fieldset>
+  <legend>Impianti</legend>
+
+  {{ form_widget(form) }}
+</fieldset>
+#}
+{% include 'BoilrBundle:Person:_anag.html.twig' with {'person': person, 'allFields': true } %}
+
+{% include 'BoilrBundle:Person:_addresses.html.twig' with {'person': person } %}

@@ -6,7 +6,6 @@ use Boilr\BoilrBundle\Entity\OperationGroup,
     Boilr\BoilrBundle\Form\OperationGroupForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
-    Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
     JMS\SecurityExtraBundle\Annotation\Secure;
@@ -32,11 +31,11 @@ class OperationGroupController extends BaseController
 
     /**
      * @Route("/{id}/list-operations", name="operation_group_operations")
-     * @ParamConverter("group", class="BoilrBundle:OperationGroup")
      * @Template()
      */
-    public function showOperationsAction(OperationGroup $group)
+    public function showOperationsAction()
     {
+        $group = $this->paramConverter('id');
         $operations = $group->getOperations();
 
         return array('operations' => $operations, 'count' => count($operations), 'group' => $group);
@@ -44,11 +43,11 @@ class OperationGroupController extends BaseController
 
     /**
      * @Route("/{id}/delete", name="operation_group_delete")
-     * @ParamConverter("opgroup", class="BoilrBundle:OperationGroup")
      * @Template()
      */
     public function deleteAction(OperationGroup $opgroup)
     {
+        $opgroup = $this->paramConverter('id');
         try {
             $dem = $this->getDoctrine()->getEntityManager();
             $dem->remove($opgroup);

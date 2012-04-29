@@ -1,0 +1,25 @@
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+
+{% block inner_block %}
+<div class="span9">
+  <div class="page-header">
+    <h1>Selezione modello <small>generazione allegato</small></h1>
+  </div>
+
+  {% include 'BoilrBundle:ManteinanceIntervention:_detail.html.twig' with {'interv': intervention} %}
+
+  <form id="form_detail_results" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+    <fieldset>
+
+    </fieldset>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+
+    <div class="form-actions">
+      <input class="btn btn-primary" type="submit" value="Genera" />
+      <a class="btn" href="{{ url('intervention_detail_for_installer', {id: intervention.id}) }}">Annulla</a>
+    </div>
+  </form>
+</div>
+{% endblock inner_block %}

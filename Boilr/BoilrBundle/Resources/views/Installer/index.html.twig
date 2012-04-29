@@ -1,1 +1,9 @@
-{% extends 'BoilrBundle:Default:template5-installer.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+
+{% block inner_block %}
+<div class="span9">
+  <div class="hero-unit">
+    <h1>Benvenuto, {{ app.security.getToken().getUser().getFullName() }}!</h1>
+  </div>
+</div>
+{% endblock inner_block %}

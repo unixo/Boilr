@@ -6,20 +6,27 @@ use Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Form\UnplannedInterventionForm,
     Boilr\BoilrBundle\Entity\InterventionDetail,
+    Boilr\BoilrBundle\Entity\Group as MyGroup,
+    Boilr\BoilrBundle\Entity\Attachment as MyAttachment,
     Boilr\BoilrBundle\Form\ManteinanceInterventionSearchForm,
+    Boilr\BoilrBundle\Form\DetailResultsForm,
+    Boilr\BoilrBundle\Form\ChooseTemplateForm,
     Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter,
+    Boilr\BoilrBundle\Form\Model\InterventionDetailResults,
     Boilr\BoilrBundle\Form\ManteinanceInterventionForm,
     Boilr\BoilrBundle\Extension\MyDateTime;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
+    Symfony\Component\HttpFoundation\Response,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
-    JMS\SecurityExtraBundle\Annotation\Secure;
+    JMS\SecurityExtraBundle\Annotation\Secure,
+    Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ManteinanceInterventionController extends BaseController
 {
+
     function __construct()
     {
         $this->entityName = 'BoilrBundle:ManteinanceIntervention';
@@ -40,11 +47,11 @@ class ManteinanceInterventionController extends BaseController
      */
     public function listCurrentMonthAction()
     {
-        $now   = new \DateTime();
-        $year  = $now->format('Y');
+        $now = new \DateTime();
+        $year = $now->format('Y');
         $month = $now->format('m');
 
-        return $this->redirect( $this->generateUrl('list_all_interventions', array('month' => $month, 'year' => $year)) );
+        return $this->redirect($this->generateUrl('list_all_interventions', array('month' => $month, 'year' => $year)));
     }
 
     /**
@@ -55,14 +62,14 @@ class ManteinanceInterventionController extends BaseController
     {
         // Build date interval
         $startDate = new \DateTime();
-        $endDate   = new \DateTime();
+        $endDate = new \DateTime();
         $startDate->setDate($year, $month, 1);
         $monthName = $startDate->format('F');
         $lastDay = date("d", strtotime("last day of $monthName $year"));
         $endDate->setDate($year, $month, $lastDay);
 
         // Evaluate next/prev month
-        $interval  = \DateInterval::createFromDateString('1 month');
+        $interval = \DateInterval::createFromDateString('1 month');
         $nextMonth = new \DateTime();
         $nextMonth->setDate($year, $month, 1);
         $nextMonth->add($interval);
@@ -70,28 +77,47 @@ class ManteinanceInterventionController extends BaseController
         $prevMonth->setDate($year, $month, 1);
         $prevMonth->sub($interval);
 
+        // page title
+        $title = $monthName . " " . $year;
+
         // Search interventions
         $records = $this->getEntityRepository()
-                        ->interventionsBetweenDates($startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
+                ->interventionsBetweenDates($startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
 
         // Format titles
         $results = array();
         foreach ($records as $intervention) {
             $date = $intervention->getScheduledDate();
-            $day  = $date->format('d');
+            $day = $date->format('d');
             $results[$day][] = $this->getInterventionTitle($intervention);
         }
 
-        return array('records' => $results, 'year' => $year, 'month' => $month, 'prevMonth' => $prevMonth, 'nextMonth' => $nextMonth);
+        return array('records' => $results, 'year' => $year, 'month' => $month,
+            'prevMonth' => $prevMonth, 'nextMonth' => $nextMonth, 'title' => $title);
     }
 
     /**
-     * @Route("/show/{id}", name="intervention_detail")
-     * @ParamConverter("interv", class="BoilrBundle:ManteinanceIntervention")
+     * @Route("/{id}/show", name="intervention_detail")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
+     * @Template()
+     */
+    public function showAction()
+    {
+        $interv = $this->paramConverter('id');
+
+        return compact('interv');
+    }
+
+    /**
+     * @Route("/{id}/details-for-installer", name="intervention_detail_for_installer")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_INSTALLER")
      * @Template(vars={"interv"})
      */
-    public function showAction(ManteinanceIntervention $interv)
+    public function showForInstallerAction()
     {
+        $interv = $this->paramConverter('id');
+
+        return compact('interv');
     }
 
     /**
@@ -101,53 +127,63 @@ class ManteinanceInterventionController extends BaseController
      */
     protected function getInterventionTitle(ManteinanceIntervention $int)
     {
-        $url   = $this->generateUrl('intervention_detail', array('id' => $int->getId()));
+        $help = null;
+        $icon = null;
+        $url = $this->generateUrl('intervention_detail', array('id' => $int->getId()));
+
         switch ($int->getStatus()) {
             case ManteinanceIntervention::STATUS_TENTATIVE:
-                $icon = "ui-icon-help";
+                $icon = "icon-question-sign";
+                $help = "Da confermare";
                 break;
             case ManteinanceIntervention::STATUS_ABORTED:
-                $icon = "ui-icon-trash";
+                $icon = "icon-remove";
+                $help = "Annullato";
                 break;
             case ManteinanceIntervention::STATUS_CLOSED:
-                $icon = "ui-icon-check";
+                $icon = "icon-check";
+                $help = "Concluso";
+                break;
+            case ManteinanceIntervention::STATUS_CONFIRMED:
+                $icon = "icon-thumbs-up";
+                $help = "Confermato";
                 break;
             default:
-                $icon = "ui-icon-alert";
+                $icon = "icon-alert";
+                $help = "stato sconosciuto";
                 break;
         }
 
         $title = $int->getCustomer()->getSurname();
-        $time  = $int->getScheduledDate()->format('H:i');
-        $html  = sprintf('<li><a href="%s">%s <span class="ui-icon %s"></span>%s</a></li>',
-                         $url, $time, $icon, $title);
+        $time = $int->getScheduledDate()->format('H:i');
+        $html = sprintf('<li><a href="%s">%s <i class="%s" title="%s"></i>%s</a></li>', $url, $time, $icon, $help, $title);
 
         return $html;
     }
 
     /**
      * @Route("/add-unplanned/{id}", name="unplanned_intervention_add")
-     * @ParamConverter("customer", class="BoilrBundle:Person")
      * @Template()
      */
-    public function addUnplannedInterventionAction(MyPerson $customer)
+    public function addUnplannedInterventionAction()
     {
+        $customer = $this->paramConverter('id', "BoilrBundle:Person");
         $interv = ManteinanceIntervention::interventionForCustomer($customer);
-        $form   = $this->createForm(new ManteinanceInterventionForm(), $interv, array('validation_groups' => array('unplanned')));
+        $form = $this->createForm(new ManteinanceInterventionForm(), $interv, array('validation_groups' => array('unplanned')));
 
         if ($this->isPOSTRequest()) {
             $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
-                $miRepo   = $this->getEntityRepository();
+                $miRepo = $this->getEntityRepository();
                 $retValue = $miRepo->persistUnplannedIntervention($interv);
 
                 if ($retValue['success'] === true) {
                     $this->setNoticeMessage('Operazione conclusa con successo');
-                    $year  = $interv->getScheduledDate()->format('Y');
+                    $year = $interv->getScheduledDate()->format('Y');
                     $month = $interv->getScheduledDate()->format('m');
 
-                    return $this->redirect( $this->generateUrl('list_all_interventions', array('year' => $year, 'month' => $month)));
+                    return $this->redirect($this->generateUrl('list_all_interventions', array('year' => $year, 'month' => $month)));
                 } else {
                     $this->setErrorMessage($retValue['message']);
                 }
@@ -159,11 +195,12 @@ class ManteinanceInterventionController extends BaseController
 
     /**
      * @Route("/update-unplanned/{id}", name="unplanned_intervention_edit")
-     * @ParamConverter("interv", class="BoilrBundle:ManteinanceIntervention")
      * @Template()
      */
-    public function updateUnplannedInterventionAction(ManteinanceIntervention $interv)
+    public function updateUnplannedInterventionAction()
     {
+        // @todo terminare il metodo
+        $interv = $this->paramConverter('id');
         $customer = $this->getDoctrine()->getRepository('BoilrBundle:Person')->findOneById($pid);
         $mi = new ManteinanceIntervention();
         $mi->setCustomer($customer);
@@ -179,106 +216,16 @@ class ManteinanceInterventionController extends BaseController
         $form = $this->createForm(new \Boilr\BoilrBundle\Form\ManteinanceInterventionForm, $mi);
 
         return array('form' => $form->createView(), 'customer' => $customer);
-
-        /*
-        $opGroups = $this->getDoctrine()->getRepository('BoilrBundle:OperationGroup')->findAll();
-        $customer = $this->getDoctrine()->getRepository('BoilrBundle:Person')->findOneById($pid);
-        $mi = new \Boilr\BoilrBundle\Form\Model\UnplannedIntervention($customer, $opGroups);
-        $form = $this->createForm(new UnplannedInterventionForm(), $mi);
-
-        return array('form' => $form->createView(), 'customer' => $customer);
-        */
-
-        //--------------------------------------------------------------------
-
-        /**
-         * If I'm creating a new intervention, a customer must be specified (pid)
-         * otherwise I'm trying to edit an existing intervention (iid)
-         */
-        /*
-        if (isset($pid)) {
-            $customer = $this->getDoctrine()->getRepository('BoilrBundle:Person')->findOneById($pid);
-            if (! $customer) {
-                throw new NotFoundHttpException("Invalid customer");
-            }
-
-            // Check if selected customer has at least one system, otherwise redirect to his profile page
-            if ($customer->getSystems()->count() == 0) {
-                $this->setErrorMessage('Non è stato associato alcun impianto al cliente.');
-
-                return $this->redirect( $this->generateUrl('show_person', array('id' => $customer->getId() )));
-            }
-
-            $interv = new \Boilr\BoilrBundle\Form\Model\UnplannedIntervention($customer);
-            $aDate = MyDateTime::nextWorkingDay(new \DateTime() );
-            $aDate->setTime(8, 0, 0);
-            $interv->setScheduledDate($aDate);
-        } else {
-            // An update has been requested, fetch the intervention from the store
-            $interv = $this->getDoctrine()->getRepository(self::ENTITY)->findOneById($iid);
-            if (! $interv) {
-                throw new NotFoundHttpException("Invalid intervention");
-            }
-            $customer = $interv->getCustomer();
-        }
-
-        // Build the form
-        $form = $this->createForm(new UnplannedInterventionForm(), $interv);
-                                  // array('validation_groups' => array('unplanned')) );
-
-        // Check if user submitted the form
-        if ($this->isPOSTRequest()) {
-            $form->bindRequest($this->getRequest());
-
-            if ($form->isValid()) {
-                // ladybug_dump($interv); die();
-                $miRepo = $this->getDoctrine()->getRepository(self::ENTITY);
-
-                // further check: verify that given intervention doesn't overlap with any other
-                $overlaps = $miRepo->doesInterventionOverlaps( $interv->getScheduledDate() );
-                if ($overlaps) {
-                    $this->setErrorMessage("La data/ora richiesta si sovrappone con un altro appuntamento.");
-                } else {
-                    $mi = $interv->factory();
-                    // evaluate expected close date
-                    $miRepo->evalExpectedCloseDate($mi);
-
-                    // try to persist changes to the store
-                    $success = true;
-
-                    try {
-                        $em = $this->getEntityManager();
-                        $em->persist($mi);
-                        $em->flush();
-                    } catch (\PDOException $exc) {
-                        var_dump($exc->getMessage());
-                        $success = false;
-                    }
-
-                    if ($success) {
-                        $this->setNoticeMessage('Operazione creata con successo');
-                        $year  = $mi->getScheduledDate()->format('Y');
-                        $month = $mi->getScheduledDate()->format('m');
-
-                        return $this->redirect( $this->generateUrl('list_all_interventions', array('year' => $year, 'month' => $month)));
-                    } else {
-                        $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
-                    }
-                }
-            }
-        }
-
-        return array('form' => $form->createView(), 'customer' => $customer);
-        */
     }
 
     /**
      * @Route("/set-installer/{id}", name="add_installer_to_interv")
-     * @ParamConverter("interv", class="BoilrBundle:ManteinanceIntervention")
      * @Template()
      */
-    public function addInstallerAction(ManteinanceIntervention $interv)
+    public function addInstallerAction()
     {
+        $interv = $this->paramConverter('id');
+
         // Build the flow/form
         $flow = $this->get('boilr.form.flow.linkInstaller');
 
@@ -296,8 +243,8 @@ class ManteinanceInterventionController extends BaseController
 
             if ($flow->nextStep()) {
                 return array(
-                    'form'   => $flow->createForm($interv)->createView(),
-                    'flow'   => $flow,
+                    'form' => $flow->createForm($interv)->createView(),
+                    'flow' => $flow,
                     'interv' => $interv
                 );
             }
@@ -310,13 +257,13 @@ class ManteinanceInterventionController extends BaseController
                 $flow->reset();
                 $this->setNoticeMessage("Operazione completata con successo");
 
-                return $this->redirect($this->generateUrl('intervention_detail', array('id' => $interv->getId() )));
+                return $this->redirect($this->generateUrl('intervention_detail', array('id' => $interv->getId())));
             } catch (\PDOException $exc) {
                 $this->setErrorMessage("Si è verificato un'errore durante il salvataggio");
             }
         }
 
-        return array('form' => $form->createView(), 'flow' => $flow, 'interv' => $interv );
+        return array('form' => $form->createView(), 'flow' => $flow, 'interv' => $interv);
     }
 
     /**
@@ -325,8 +272,8 @@ class ManteinanceInterventionController extends BaseController
      */
     public function searchAction()
     {
-        $filter  = new ManteinanceInterventionFilter();
-        $form    = $this->createForm(new ManteinanceInterventionSearchForm, $filter);
+        $filter = new ManteinanceInterventionFilter();
+        $form = $this->createForm(new ManteinanceInterventionSearchForm, $filter);
         $results = array();
 
         if ($this->isPOSTRequest()) {
@@ -343,20 +290,234 @@ class ManteinanceInterventionController extends BaseController
     /**
      * Cancel given intervention
      *
-     * @Route("/abort/{id}", name="intervention_abort")
+     * @Route("/{id}/abort", name="intervention_abort")
      * @ParamConverter("interv", class="BoilrBundle:ManteinanceIntervention")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
      * @Template()
      */
     public function abortAction(ManteinanceIntervention $interv)
     {
+        $notAllowed = array(ManteinanceIntervention::STATUS_ABORTED,
+            ManteinanceIntervention::STATUS_CLOSED);
+        if (in_array($interv->getStatus(), $notAllowed)) {
+            throw new \InvalidArgumentException('invalid intervention status');
+        }
+
         try {
             $interv->setStatus(ManteinanceIntervention::STATUS_ABORTED);
             $this->getEntityManager()->flush();
-            $this->setNoticeMessage('Intervento annullato con successo');
+            $this->setNoticeMessage("L'intervento è stato annullato");
         } catch (Exception $exc) {
             $this->setErrorMessage('Si è verificato un problema durante il salvataggio');
         }
 
-        return $this->redirect($this->generateUrl('intervention_detail', array('id' => $interv->getId() )));
+        return $this->redirect($this->generateUrl('intervention_detail', array('id' => $interv->getId())));
     }
+
+    /**
+     * Confirm given intervention
+     *
+     * @Route("/{id}/confirm", name="intervention_confirm")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
+     * @Template()
+     */
+    public function confirmAction()
+    {
+        $interv = $this->paramConverter('id');
+
+        if ($interv->getStatus() != ManteinanceIntervention::STATUS_TENTATIVE) {
+            throw new \InvalidArgumentException('invalid intervention status');
+        }
+
+        try {
+            $interv->setStatus(ManteinanceIntervention::STATUS_CONFIRMED);
+            $this->getEntityManager()->flush();
+            $this->setNoticeMessage("L'intervento è stato confermato");
+        } catch (Exception $exc) {
+            $this->setErrorMessage('Si è verificato un problema durante il salvataggio');
+        }
+
+        return $this->redirect($this->generateUrl('intervention_detail', array('id' => $interv->getId())));
+    }
+
+    /**
+     * @Route("/{id}/attachments", name="intervention_list_doc")
+     * @Template()
+     */
+    public function listAttachmentsAction()
+    {
+        $intervention = $this->paramConverter('id');
+        $attachments = $this->getDoctrine()->getRepository('BoilrBundle:Attachment')
+                ->findBy(array('type' => MyAttachment::TYPE_INTERVENTION,
+            'parentIntervention' => $intervention->getId())
+        );
+
+        return array('attachments' => $attachments, 'interv' => $intervention);
+    }
+
+    /**
+     * Close given intervention
+     *
+     * @Route("/{id}/close", name="intervention_close")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR, ROLE_INSTALLER")
+     * @Template()
+     */
+    public function closeAction()
+    {
+        $interv = $this->paramConverter('id');
+
+        // if current user is an installer, check if the intervention has been linked to him
+        if ($this->getCurrentUser()->hasRole(MyGroup::ROLE_INSTALLER)) {
+            $installer = $this->getCurrentInstaller();
+            if ($installer->getId() != $interv->getInstaller()->getId()) {
+                throw new AccessDeniedException('operation not allowed');
+            }
+        }
+
+        $interv->setCloseDate(new \DateTime());
+        $form = $this->createFormBuilder($interv, array('validation_groups' => array('close')))
+                ->add('closeDate', 'datetime', array('label' => 'Data/ora chiusura', 'required' => true, 'date_widget' => 'single_text'))
+                ->getForm()
+        ;
+
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
+
+            if ($form->isValid()) {
+                try {
+                    $now = new \DateTime();
+                    foreach ($interv->getDetails() as $detail) {
+                        /* @var $detail \Boilr\BoilrBundle\Entity\InterventionDetail */
+                        $detail->getSystem()->setLastManteinance($now);
+                    }
+                    $interv->setStatus(ManteinanceIntervention::STATUS_CLOSED);
+                    $this->getEntityManager()->flush();
+                    $this->setNoticeMessage('Intervento concluso con successo');
+
+                    return $this->redirect($this->generateUrl('intervention_insert_result', array('id' => $interv->getId())));
+                } catch (Exception $exc) {
+                    $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
+                }
+            }
+        }
+
+        return array('form' => $form->createView(), 'interv' => $interv);
+    }
+
+    /**
+     * Insert results for given intervention
+     *
+     * @Route("/{id}/choose-detail", name="intervention_insert_result")
+     * @Secure(roles="ROLE_INSTALLER")
+     * @Template()
+     */
+    public function insertResultAction()
+    {
+        $interv = $this->paramConverter('id');
+
+        if ($interv->getHasCheckResults()) {
+            $this->setErrorMessage("I risultati dell'intevento sono stati già inseriti.");
+
+            return $this->getLastRoute();
+        }
+
+        // if current user is an installer, check if the intervention has been linked to him
+        if ($this->getCurrentUser()->hasRole(MyGroup::ROLE_INSTALLER)) {
+            $installer = $this->getCurrentInstaller();
+            if ($installer->getId() != $interv->getInstaller()->getId()) {
+                throw new AccessDeniedException('operation not allowed');
+            }
+        }
+
+        if ($interv->getDetails()->count() == 1) {
+            $details = $interv->getDetails();
+            return $this->redirect($this->generateUrl('interventiondetail_insert_result', array('id' => $details[0]->getId())));
+        }
+
+        // @todo: restituire una pagina con la lista degli impianti, ognuno con un redirect verso interventiondetail_insert_result
+    }
+
+    /**
+     * Insert results for given intervention detail
+     *
+     * @Route("/{id}/insert-results", name="interventiondetail_insert_result")
+     * @Secure(roles="ROLE_INSTALLER")
+     * @Template()
+     */
+    public function insertDetailResultsAction()
+    {
+        $detail = $this->paramConverter('id', "BoilrBundle:InterventionDetail");
+        $model = new InterventionDetailResults($detail);
+        $form = $this->createForm(new DetailResultsForm(), $model);
+
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
+
+            if ($form->isValid()) {
+                $success = $this->getEntityRepository()->persistCheckResults($model);
+                if ($success) {
+                    $this->setNoticeMessage('Risultati salvati con successo');
+
+                    return $this->redirect($this->generateUrl('intervention_detail_for_installer', array('id' => $detail->getIntervention()->getId())));
+                } else {
+                    $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
+                }
+            }
+        }
+
+        return array('form' => $form->createView(), 'detail' => $detail);
+    }
+
+    /**
+     *
+     *
+     * @Route("/{id}/choose-template", name="intervention_choose_template")
+     * @Template()
+     */
+    public function chooseTemplateAction()
+    {
+        $intervention = $this->paramConverter('id');
+        $form = $this->createForm(new ChooseTemplateForm());
+
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
+
+            if ($form->isValid()) {
+                $clientData = $form->getClientData();
+                $template = $clientData['template'];
+
+                return $this->redirect($this->generateUrl('intervention_generate_report',
+                        array('id' => $intervention->getId(), 'tid' => $template->getId())));
+            }
+        }
+
+        return array('form' => $form->createView(), 'intervention' => $intervention);
+    }
+
+    /**
+     * Generate report for an intervention using a specific template
+     *
+     * @Route("/{id}/generate/{tid}", name="intervention_generate_report")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR, ROLE_INSTALLER")
+     * @Template()
+     */
+    public function generateReportAction()
+    {
+        $intervention = $this->paramConverter('id');
+        $template = $this->paramConverter('tid', 'BoilrBundle:Template');
+        $document = $this->getEntityRepository()->prepareDocument($intervention, $template);
+        $fileName = $template->getName().".pdf";
+        $params = compact('intervention', 'template', 'document');
+
+        $html = $this->renderView('BoilrBundle:ManteinanceIntervention:generateReport.html.twig', $params);
+
+        return new Response(
+                        $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+                        200, array(
+                            'Content-Type' => 'application/pdf',
+                            'Content-Disposition' => 'inline; filename="'.$fileName.'"'
+                        )
+        );
+    }
+
 }

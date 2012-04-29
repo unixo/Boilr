@@ -14,13 +14,13 @@ class ManteinanceInterventionFilter
 
     /**
      * @var \DateTime
-     * @Assert\DateTime
+     * @Assert\Date
      */
     protected $startDate;
 
     /**
      * @var \DateTime
-     * @Assert\DateTime
+     * @Assert\Date
      */
     protected $endDate;
 
@@ -38,10 +38,8 @@ class ManteinanceInterventionFilter
     function __construct()
     {
         $now       = new \DateTime();
-        $now->setTime(8, 0, 0);
         $nextMonth = clone $now;
         $nextMonth->add( \DateInterval::createFromDateString('1 month') );
-        $nextMonth->setTime(18, 0, 0);
 
         $this->status       = array();
         $this->searchByDate = true;

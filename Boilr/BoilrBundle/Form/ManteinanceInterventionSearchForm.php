@@ -19,7 +19,7 @@ class ManteinanceInterventionSearchForm extends AbstractType
             ManteinanceIntervention::STATUS_TENTATIVE => 'Da confermare'
         );
 
-        $builder->add('searchByDate', 'checkbox', array('required' => false))
+        $builder->add('searchByDate', 'checkbox', array('required' => false, 'label' => 'Ricerca per data'))
                 ->add('startDate', 'date', array(
                     'label' => 'Inizio intervallo',
                     'required' => false,

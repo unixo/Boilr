@@ -4,7 +4,6 @@ namespace Boilr\BoilrBundle\Controller;
 
 use Boilr\BoilrBundle\Entity\ManteinanceSchema,
     Boilr\BoilrBundle\Form\ManteinanceSchemaForm;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
@@ -17,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
  */
 class ManteinanceSchemaController extends BaseController
 {
+
     function __construct()
     {
         $this->entityName = 'BoilrBundle:ManteinanceSchema';
@@ -29,9 +29,9 @@ class ManteinanceSchemaController extends BaseController
     public function indexAction()
     {
         $schemas = $this->getEntityManager()->createQuery(
-                       "SELECT s FROM BoilrBundle:ManteinanceSchema s ".
-                       "JOIN s.systemType st ".
-                       "ORDER BY st.id, s.listOrder"
+                        "SELECT s FROM BoilrBundle:ManteinanceSchema s " .
+                        "JOIN s.systemType st " .
+                        "ORDER BY st.id, s.listOrder"
                 )->getResult();
 
         return array('schemas' => $schemas);
@@ -48,26 +48,25 @@ class ManteinanceSchemaController extends BaseController
         /* @var $schema ManteinanceSchema */
 
         if (isset($id)) {
-            if (! ($schema = $this->getEntityRepository()->findOneById($id)) ) {
-                throw new NotFoundHttpException("Invalid schema");
+            if (!($schema = $this->getEntityRepository()->findOneById($id))) {
+                throw new \InvalidArgumentException("Invalid argument");
             }
         } else {
             $schema = new ManteinanceSchema();
         }
 
         // Create the form, fill with data and select proper validation group
-        $form = $this->createForm(new ManteinanceSchemaForm(), $schema,
-                            array( 'validation_groups' => array('schema') ));
+        $form = $this->createForm(new ManteinanceSchemaForm(), $schema, array('validation_groups' => array('schema')));
 
         if ($this->isPOSTRequest()) {
-            $form->bindRequest( $this->getRequest() );
+            $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
                 $success = $this->getEntityRepository()->persistSchema($schema);
                 if ($success) {
                     $this->setNoticeMessage('Operazione completata con successo');
 
-                    return $this->redirect( $this->generateUrl('manteinance_schema_list') );
+                    return $this->redirect($this->generateUrl('manteinance_schema_list'));
                 } else {
                     $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
                 }
@@ -85,14 +84,14 @@ class ManteinanceSchemaController extends BaseController
     public function moveAction(ManteinanceSchema $schema, $dir = "down")
     {
         $_dir = strtolower($dir);
-        if (! in_array($_dir, array('up', 'down'))) {
+        if (!in_array($_dir, array('up', 'down'))) {
             throw new \InvalidArgumentException("Invalid argument");
         }
 
         $schemas = $this->getEntityRepository()->findBySystemType($schema->getSystemType()->getId());
 
         $pos = -1;
-        for ($i=0; $i < count($schemas); $i++) {
+        for ($i = 0; $i < count($schemas); $i++) {
             $item = $schemas[$i];
             if ($item->getId() == $schema->getId()) {
                 $pos = $i;
@@ -102,9 +101,12 @@ class ManteinanceSchemaController extends BaseController
 
         if (count($schemas) > 0) {
             // Move item down
-            if ($pos == 0 && $_dir === "down");
+            if ($pos == 0 && $_dir === "down")
+                ;
+                // @todo da terminare
         }
 
-        return $this->redirect( $this->generateUrl('manteinance_schema_list') );
+        return $this->redirect($this->generateUrl('manteinance_schema_list'));
     }
+
 }

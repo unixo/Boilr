@@ -1,47 +1,51 @@
-{% extends 'BoilrBundle:Default:template5-admin.html.twig' %}
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
 
 {% block inner_block %}
 <div class="span9">
-  <h2>Elenco schemi di manutenzione</h2>
-
-  <fieldset>
-    <table class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>Tipologia impianto</th>
-                <th>Gruppo Operaz.</th>
-                <th>Periodico?</th>
-                <th>Frequenza</th>
-                <th>Ordine</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% set lastId = 0 %}
-            {% for key,schema in schemas %}
-                <tr>
-                    <td>{{ (lastId == schema.systemType.id) ? '' : schema.systemType.name }}</td>
-                    <td>{{ schema.operationGroup.name }}</td>
-                    <td>{{ mymacro.imgcheck_if_true(schema.isPeriodic) }}</td>
-                    <td>{{ schema.freq }}</td>
-                    <td>
-                    {% if schema.listOrder > 0 %}
-                        <a href="{{ url('manteinance_schema_move', {'id': schema.id, 'dir':'up'}) }}"><img src="/img/arrow_up.gif" /></a>
-                    {% endif %}
-                        <a href="{{ url('manteinance_schema_move', {'id': schema.id, 'dir':'down'}) }}"><img src="/img/arrow_down.gif" /></a>
-                    </td>
-                </tr>
-                {% set lastId = schema.systemType.id %}
-            {% endfor %}
-        </tbody>
-    </table>
-</fieldset>
+  <div class="page-header">
+    <h1>Schemi di manutenzione <small>elenco</small></h1>
+  </div>
+  
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Tipologia impianto</th>
+        <th>Gruppo Operaz.</th>
+        <th>Periodico?</th>
+        <th>Frequenza</th>
+        <th>Ordine</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set lastId = 0 %}
+      {% for schema in schemas %}
+      <tr>
+        <td>{{ (lastId == schema.systemType.id) ? '' : schema.systemType.name }}</td>
+        <td>{{ schema.operationGroup.name }}</td>
+        <td>{{ mymacro.imgcheck_if_true(schema.isPeriodic) }}</td>
+        <td>{{ schema.freq }}</td>
+        <td>
+        {% if schema.listOrder > 0 %}
+          <a class="btn btn-mini" href="{{ url('manteinance_schema_move', {'id': schema.id, 'dir':'up'}) }}">
+            <i class="icon-arrow-up"></i>
+          </a>
+        {% endif %}
+          <a class="btn btn-mini" href="{{ url('manteinance_schema_move', {'id': schema.id, 'dir':'down'}) }}">
+            <i class="icon-arrow-down"></i>
+          </a>
+        </td>
+      </tr>
+      {% set lastId = schema.systemType.id %}
+      {% endfor %}
+    </tbody>
+  </table>
 
   <div style="margin-top: 10px;">
     <a class="btn btn-small" href="{{ url('manteinance_schema_add') }}">
       <i class="icon-plus"></i> Aggiungi
     </a>
-</div>
+  </div>
 </div>
 
 {% endblock %}

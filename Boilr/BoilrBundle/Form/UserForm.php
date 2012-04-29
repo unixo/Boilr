@@ -25,6 +25,7 @@ class UserForm extends AbstractType
             ->add('password', 'repeated', array('type' => 'password', 'label' => 'Password', 'required' => false))
             ->add('isActive', 'checkbox', array('required' => true, 'label' => 'Attivo'))
             ->add('groups', 'entity',     array(
+                                            'label' => 'Gruppi',
                                             'required' => true,
                                             'multiple' => true,
                                             'class'    => 'BoilrBundle:Group',

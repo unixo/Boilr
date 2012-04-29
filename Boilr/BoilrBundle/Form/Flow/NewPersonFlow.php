@@ -6,10 +6,11 @@ use Craue\FormFlowBundle\Form\FormFlow;
 
 class NewPersonFlow extends FormFlow
 {
-    protected $maxSteps = 4;
+    protected $maxSteps = 3;
 
     protected function loadStepDescriptions()
     {
-        return array('Anagrafica', 'Indirizzi', 'Impianti', 'Riepilogo');
+        // return array('Anagrafica', 'Indirizzi', 'Impianti', 'Riepilogo');
+        return array('Anagrafica', 'Indirizzi', 'Riepilogo');
     }
 }

@@ -1,0 +1,54 @@
+{% extends 'MopaBootstrapBundle::layout.html.twig' %}
+
+{% block content %}
+<h1>Person list</h1>
+
+<table class="records_list table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Vatcode</th>
+            <th>Fiscalcode</th>
+            <th>Homephone</th>
+            <th>Officephone</th>
+            <th>Cellularphone</th>
+            <th>Faxnumber</th>
+            <th>Primarymail</th>
+            <th>Secondarymail</th>
+            <th>Notes</th>
+            <th>Isadministrator</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td><a href="{{ path('customer_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+            <td>{{ entity.type }}</td>
+            <td>{{ entity.title }}</td>
+            <td>{{ entity.name }}</td>
+            <td>{{ entity.surname }}</td>
+            <td>{{ entity.vatCode }}</td>
+            <td>{{ entity.fiscalCode }}</td>
+            <td>{{ entity.homePhone }}</td>
+            <td>{{ entity.officePhone }}</td>
+            <td>{{ entity.cellularPhone }}</td>
+            <td>{{ entity.faxNumber }}</td>
+            <td>{{ entity.primaryMail }}</td>
+            <td>{{ entity.secondaryMail }}</td>
+            <td>{{ entity.notes }}</td>
+            <td>{{ entity.isAdministrator }}</td>
+            <td>                    <a href="{{ path('customer_show', { 'id': entity.id }) }}" class="btn btn-info">show</a>                    <a href="{{ path('customer_edit', { 'id': entity.id }) }}" class="btn btn-info">edit</a>            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('customer_new') }}"  class="btn primary">
+    Create a new entry
+</a>
+{% endblock %}

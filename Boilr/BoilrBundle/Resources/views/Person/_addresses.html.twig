@@ -15,8 +15,8 @@
       </tr>
     </thead>
     <tbody>
-    {% for key,value in person.addresses %}
-      <tr class="{{ cycle(['odd', 'even'], key) }}">
+    {% for value in person.addresses %}
+      <tr>
         <td>
           {% if toolbar is defined and toolbar == true %}
             {% if value.isValid() == false %}
@@ -32,10 +32,10 @@
         <td>{{ value.state }}</td>
         {% if toolbar is defined and toolbar == true %}
         <td>
-          <a class="btn btn-small" href="{{ url('address_edit', {'aid': value.id} ) }}">
+          <a class="btn btn-mini" href="{{ url('address_edit', {'aid': value.id} ) }}">
             <i class="icon-pencil" title="Modifica"></i>
          </a>
-         <a class="btn btn-small" href="{{ url('address_delete', {'id': value.id} ) }}">
+         <a class="btn btn-mini" href="{{ url('address_delete', {'id': value.id} ) }}">
            <i class="icon-trash" title="Elimina"></i>
          </a>
         </td>

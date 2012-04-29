@@ -41,26 +41,6 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $u->addGroup($manager->merge($this->getReference('group-operator')));
         $manager->persist($u);
         $manager->flush();
-
-        $u = new MyUser();
-        $u->setName('Tecnico');
-        $u->setSurname('Installatore #1');
-        $u->setLogin('installer1');
-        $u->setPassword('923de213762af4f71822c5ed68d4b83c805632fd'); // operator
-        $u->setIsActive(true);
-        $u->addGroup($manager->merge($this->getReference('group-installer')));
-        $manager->persist($u);
-        $manager->flush();
-
-        $u = new MyUser();
-        $u->setName('Tecnico');
-        $u->setSurname('Installatore #2');
-        $u->setLogin('installer2');
-        $u->setPassword('923de213762af4f71822c5ed68d4b83c805632fd'); // installatore
-        $u->setIsActive(true);
-        $u->addGroup($manager->merge($this->getReference('group-installer')));
-        $manager->persist($u);
-        $manager->flush();
     }
 
     public function getOrder()

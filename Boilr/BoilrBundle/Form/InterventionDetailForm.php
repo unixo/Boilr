@@ -15,11 +15,10 @@ class InterventionDetailForm extends AbstractType
                                 'required' => false,
                                 'class'    => 'BoilrBundle:OperationGroup',
                                 'property' => 'name',
-                   'empty_value' => false,
+                                'empty_value' => false,
                      ))
                 ->add('checked', 'checkbox', array(
                                 'required' => false,
-
                 ))
                 ;
     }

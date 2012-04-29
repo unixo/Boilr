@@ -27,12 +27,12 @@ class TemplateSectionController extends BaseController
 
     /**
      * @Route("/{id}/delete", name="template_section_delete")
-     * @ParamConverter("section", class="BoilrBundle:TemplateSection")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      */
-    public function deleteAction(TemplateSection $section)
+    public function deleteAction()
     {
         try {
+            $section = $this->paramConverter('id');
             $dem = $this->getEntityManager();
             $dem->remove($section);
             $dem->flush();
