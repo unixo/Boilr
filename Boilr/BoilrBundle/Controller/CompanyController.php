@@ -37,11 +37,11 @@ class CompanyController extends BaseController
 
     /**
      * @Route("/{id}/list-employees", name="company_employee_list")
-     * @ParamConverter("company", class="BoilrBundle:Company")
      * @Template()
      */
-    public function listEmployeesAction(Company $company)
+    public function listEmployeesAction()
     {
+        $company = $this->paramConverter("id");
         $employees = $this->getEntityRepository()->getEmployees($company);
 
         return array('company' => $company, 'employees' => $employees);
@@ -49,11 +49,11 @@ class CompanyController extends BaseController
 
     /**
      * @Route("/{id}/delete", name="company_delete")
-     * @ParamConverter("company", class="BoilrBundle:Company")
      * @Template()
      */
-    public function deleteAction(Company $company)
+    public function deleteAction()
     {
+        $company = $this->paramConverter("id");
         try {
             $dem = $this->getEntityManager();
             $dem->remove($company);

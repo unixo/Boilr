@@ -82,16 +82,16 @@ class UserController extends BaseController
 
     /**
      * @Route("/{id}/delete", name="user_delete")
-     * @ParamConverter("user", class="BoilrBundle:User")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      */
-    public function deleteAction(MyUser $user)
+    public function deleteAction()
     {
         try {
+            $user = $this->paramConverter("id");
             $dem = $this->getEntityManager();
             $dem->remove($user);
             $dem->flush();
-            $this->setNoticeMessage("Operazione conclusa con successo");
+            $this->setNoticeMessage("Utente eliminato con successo");
         } catch (Exception $exc) {
             $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
         }

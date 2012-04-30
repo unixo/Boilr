@@ -291,12 +291,12 @@ class ManteinanceInterventionController extends BaseController
      * Cancel given intervention
      *
      * @Route("/{id}/abort", name="intervention_abort")
-     * @ParamConverter("interv", class="BoilrBundle:ManteinanceIntervention")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
      * @Template()
      */
-    public function abortAction(ManteinanceIntervention $interv)
+    public function abortAction()
     {
+        $interv = $this->paramConverter("id");
         $notAllowed = array(ManteinanceIntervention::STATUS_ABORTED,
             ManteinanceIntervention::STATUS_CLOSED);
         if (in_array($interv->getStatus(), $notAllowed)) {

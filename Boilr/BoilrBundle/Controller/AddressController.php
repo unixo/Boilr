@@ -21,13 +21,13 @@ class AddressController extends BaseController
     }
 
     /**
-     * @Route("/delete/{id}", name="address_delete")
-     * @ParamConverter("address", class="BoilrBundle:Address")
+     * @Route("/{id}/delete", name="address_delete")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
      * @Template()
      */
     public function deleteAction(MyAddress $address)
     {
+        $address = $this->paramConverter("id");
         $person = $address->getPerson();
         $success = false;
 

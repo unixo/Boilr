@@ -61,11 +61,13 @@ class InstallerController extends BaseController
 
     /**
      * @Route("/{id}/show", name="installer_show")
-     * @ParamConverter("installer", class="BoilrBundle:Installer")
-     * @Template(vars={"installer"})
+     * @Template()
      */
-    public function showAction(MyInstaller $installer)
+    public function showAction()
     {
+        $installer = $this->paramConverter("id");
+
+        return compact('installer');
     }
 
     /**

@@ -78,11 +78,13 @@ class ManteinanceSchemaController extends BaseController
 
     /**
      * @Route("/move/{id}/{dir}", name="manteinance_schema_move")
-     * @ParamConverter("schema", class="BoilrBundle:ManteinanceSchema")
      * @Template()
      */
-    public function moveAction(ManteinanceSchema $schema, $dir = "down")
+    public function moveAction()
     {
+        $schema = $this->paramConverter("id");
+        $dir = $this->getRequest()->get('dir');
+        $dir = $dir?strtolower($dir):"up";
         $_dir = strtolower($dir);
         if (!in_array($_dir, array('up', 'down'))) {
             throw new \InvalidArgumentException("Invalid argument");

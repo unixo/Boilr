@@ -27,11 +27,11 @@ class OperationController extends BaseController
 
     /**
      * @Route("/{id}/delete", name="operation_delete")
-     * @ParamConverter("oper", class="BoilrBundle:Operation")
      * @Template()
      */
-    public function deleteAction(Operation $oper)
+    public function deleteAction()
     {
+        $oper = $this->paramConverter("id");
         $group = $oper->getParentGroup();
 
         try {
@@ -104,13 +104,14 @@ class OperationController extends BaseController
 
     /**
      * @Route("/move/{id}/{dir}", name="operation_move")
-     * @ParamConverter("oper", class="BoilrBundle:Operation")
      * @Template()
      */
-    public function moveAction(Operation $oper, $dir = "down")
+    public function moveAction()
     {
-        $_dir = strtolower($dir);
-        if (!in_array($_dir, array('up', 'down'))) {
+        $oper = $this->paramConverter("id");
+        $dir = $this->getRequest()->get('dir');
+        $dir = $dir?strtolower($dir):"down";
+        if (!in_array($dir, array('up', 'down'))) {
             throw new \InvalidArgumentException("Invalid argument");
         }
 

@@ -5,7 +5,6 @@ namespace Boilr\BoilrBundle\Controller;
 use Boilr\BoilrBundle\Entity\TemplateSection,
     Boilr\BoilrBundle\Form\TemplateSectionForm,
     Boilr\BoilrBundle\Form\TemplateSectionOpForm;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
@@ -20,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
  */
 class TemplateSectionController extends BaseController
 {
+
     function __construct()
     {
         $this->entityName = 'BoilrBundle:TemplateSection';
@@ -53,14 +53,14 @@ class TemplateSectionController extends BaseController
     public function addOrUpdateAction($tid = null, $sid = null)
     {
         $template = null;
-        $section  = null;
-        $opType   = null;
+        $section = null;
+        $opType = null;
 
         // Guess if I'm adding a new section or updating an existing one
         if ($tid != null) {
             $template = $this->getDoctrine()->getRepository('BoilrBundle:Template')->findOneById($tid);
             if ($template) {
-                $opType  = "add";
+                $opType = "add";
                 $section = new TemplateSection();
                 $section->setTemplate($template);
                 $section->setListOrder($template->getSections()->count());
@@ -69,7 +69,7 @@ class TemplateSectionController extends BaseController
             $section = $this->getEntityRepository()->findOneById($sid);
             if ($section) {
                 $template = $section->getTemplate();
-                $opType   = "update";
+                $opType = "update";
             }
         }
 
@@ -91,8 +91,7 @@ class TemplateSectionController extends BaseController
                     $dem->flush();
                     $this->setNoticeMessage("Operazione conclusa con successo");
 
-                    return $this->redirect($this->generateUrl('template_section_list',
-                            array('id' => $template->getId())));
+                    return $this->redirect($this->generateUrl('template_section_list', array('id' => $template->getId())));
                 } catch (Exception $exc) {
                     $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
                 }
@@ -104,32 +103,33 @@ class TemplateSectionController extends BaseController
 
     /**
      * @Route("/{id}/move/{dir}", name="section_move")
-     * @ParamConverter("section", class="BoilrBundle:TemplateSection")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      */
-    public function moveAction(TemplateSection $section, $dir = "down")
+    public function moveAction()
     {
-        $_dir = strtolower($dir);
-        if (! in_array($_dir, array('up', 'down'))) {
+        $section = $this->paramConverter("id");
+        $dir = $this->getRequest()->get('dir');
+        $dir = $dir ? strtolower($dir) : "down";
+        if (!in_array($dir, array('up', 'down'))) {
             throw new \InvalidArgumentException("Invalid argument");
         }
 
         $template = $section->getTemplate();
-        $count    = $template->getSections()->count()-1;
-        $index    = $template->getSections()->indexOf($section);
+        $count = $template->getSections()->count() - 1;
+        $index = $template->getSections()->indexOf($section);
 
         if (($index == 0 && $dir == "up") || ($index == $count && $dir == "down")) {
             throw new \InvalidArgumentException("Invalid argument");
         }
 
         if ($dir == "up") {
-            $prevSection = $template->getSections()->get($index-1);
+            $prevSection = $template->getSections()->get($index - 1);
             $prevSection->setListOrder($index);
-            $section->setListOrder($index-1);
+            $section->setListOrder($index - 1);
         } else {
-            $nextSection = $template->getSections()->get($index+1);
+            $nextSection = $template->getSections()->get($index + 1);
             $nextSection->setListOrder($index);
-            $section->setListOrder($index+1);
+            $section->setListOrder($index + 1);
         }
         $this->getEntityManager()->flush();
 
@@ -138,12 +138,12 @@ class TemplateSectionController extends BaseController
 
     /**
      * @Route("/{id}/bind-operations", name="template_section_bind")
-     * @ParamConverter("section", class="BoilrBundle:TemplateSection")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
-    public function bindOperationsAction(TemplateSection $section)
+    public function bindOperationsAction()
     {
+        $section = $this->paramConverter("id");
         $form = $this->createForm(new TemplateSectionOpForm(), $section);
 
         if ($this->isPOSTRequest()) {
@@ -153,8 +153,7 @@ class TemplateSectionController extends BaseController
                 try {
                     $this->getEntityManager()->flush();
                     $this->setNoticeMessage('Operazione conclusa con successo');
-                    return $this->redirect($this->generateUrl('template_section_list',
-                              array('id' => $section->getTemplate()->getId())));
+                    return $this->redirect($this->generateUrl('template_section_list', array('id' => $section->getTemplate()->getId())));
                 } catch (Exception $exc) {
                     $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
                 }
@@ -166,13 +165,14 @@ class TemplateSectionController extends BaseController
 
     /**
      * @Route("/{id}/unbind-operation/{pid}", name="template_section_unbind")
-     * @ParamConverter("section", class="BoilrBundle:TemplateSection")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      */
-    public function unbindOperationAction(TemplateSection $section, $pid)
+    public function unbindOperationAction()
     {
+        $section = $this->paramConverter("id");
+        $pid = $this->getRequest()->get('pid');
         $operation = $this->getDoctrine()->getRepository('BoilrBundle:Operation')->findOneById($pid);
-        if (! $operation) {
+        if (!$operation) {
             throw new \InvalidArgumentException("Invalid argument");
         }
 
@@ -184,7 +184,7 @@ class TemplateSectionController extends BaseController
             $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
         }
 
-        return $this->redirect($this->generateUrl('template_section_list',
-                              array('id' => $section->getTemplate()->getId())));
+        return $this->redirect($this->generateUrl('template_section_list', array('id' => $section->getTemplate()->getId())));
     }
+
 }
