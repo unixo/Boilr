@@ -35,12 +35,12 @@ class ContractController extends BaseController
 
     /**
      * @Route("/add/{id}", name="add_contract")
-     * @ParamConverter("system", class="BoilrBundle:System")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
      * @Template()
      */
-    public function addAction(MySystem $system)
+    public function addAction()
     {
+        $system = $this->paramConverter("id", "BoilrBundle:System");
         if (!$system->getAddress()) {
             if ($system->getOwner()->getAddresses()->count() > 0) {
                 $this->setErrorMessage("L'impianto non è associato ad alcun indirizzo: selezionarlo adesso.");
