@@ -9,7 +9,7 @@
 
   <form id="form_contract" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
 
-    {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': system.owner, 'allFields': false} %}
+    {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': system.owner, 'allFields': false, 'title': 'Dati cliente'} %}
 
     <fieldset>
         <legend>Dettagli Contratto</legend>
@@ -20,14 +20,8 @@
           {{ mymacro.fieldset_row('Collocaz. impianto', system.address.address) }}
         </dl>
 
-        <div class="control-group">
-          <label class="control-label" for="input01">Data inizio:</label>
-          {{ form_widget(form.startDate, {'attr': {'class': 'jdate'}}) }}
-        </div>
-        <div class="control-group">
-          <label class="control-label" for="input01">Data inizio:</label>
-          {{ form_widget(form.endDate, {'attr': {'class': 'jdate'}}) }}
-        </div>
+        {{ form_row(form.startDate, {'attr': {'class': 'jdate'}}) }}
+        {{ form_row(form.endDate, {'attr': {'class': 'jdate'}}) }}
     </fieldset>
 
     <div class="form-actions">
