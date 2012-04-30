@@ -10,7 +10,6 @@ class NewPersonFlow extends FormFlow
 
     protected function loadStepDescriptions()
     {
-        // return array('Anagrafica', 'Indirizzi', 'Impianti', 'Riepilogo');
         return array('Anagrafica', 'Indirizzi', 'Riepilogo');
     }
 }

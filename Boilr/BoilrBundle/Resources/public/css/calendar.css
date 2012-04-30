@@ -1,0 +1,54 @@
+ol.calendar {
+    width:57em;
+    margin:0 auto;
+    display:block;
+    min-height: 200px;
+    background: url('../img/tl.png') top left no-repeat;
+    padding: 12px 0 0 20px;
+}
+
+ol.calendar li {
+    list-style:none;
+}
+
+ol.calendar li li {
+    width:7em;
+    height:7em;
+    float:left;
+    margin:.2em;
+    padding:.2em;
+    overflow:auto;
+    background: url('../img/day-bg.png') bottom right no-repeat;
+}
+
+ol.calendar li li.holiday {
+}
+
+ol.calendar li li p {
+    font-size:.7em;
+    display:block;
+}
+
+ol.calendar li li ol {
+    width:auto;
+}
+
+ol.calendar li li ul li, ol.calendar li li ol li {
+    font-size:.9em;
+    display:block;
+    height:auto;
+    width:auto;
+    background: none;
+    margin:0;
+    padding:.2em 0;
+    float:none;
+}
+
+ol.calendar span.ui-icon {
+    float: right;
+}
+
+ol.calendar li#lastmonth li, li#nextmonth li {
+    background: url('../img/day-bg-inactive.jpg');
+    color: white;
+}

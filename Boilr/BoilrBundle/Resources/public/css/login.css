@@ -1,0 +1,131 @@
+body {
+    background-color: white;
+    color: #424849;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    margin: 0px auto auto;
+    padding: 0px;
+}
+
+#main_container {
+    height: auto;
+    margin: auto;
+    padding: 0px;
+    width: 970px;
+}
+
+#header {
+    height: 110px;
+    margin: auto;
+    width: 970px;
+}
+
+#main_content {
+    background-color: white;
+    clear: both;
+    margin: auto;
+    width: 970px;
+}
+
+.admin_login {
+    height: 300px;
+    padding: 50px 0px 50px 350px;
+}
+
+.left_box {
+    float: left;
+    height: auto;
+    padding-bottom: 10px;
+    width: 257px;
+}
+
+.top_left_box {
+    background: url("../img/top_box_bg.gif") no-repeat 50% 50%;
+    float: left;
+    height: 10px;
+    width: 257px;
+}
+
+.center_left_box {
+    background: url("../img/center_box_bg.gif") repeat-y;
+    float: left;
+    height: auto;
+    width: 257px;
+}
+
+.bottom_left_box {
+    background: url("../img/bottom_box_bg.gif") no-repeat 50% 50%;
+    float: left;
+    height: 10px;
+    width: 257px;
+}
+
+.box_title {
+    color: #615357;
+    font-size: 18px;
+    padding: 5px 0px;
+    text-align: center;
+    width: 257px;
+}
+
+.box_title span {
+    color: #D8325D;
+    font-weight: bold;
+}
+
+.form {
+    color: #615357;
+    padding: 5px 0px;
+    text-align: center;
+    width: 257px;
+}
+
+.form_row {
+    float: left;
+    padding: 3px 0px;
+    text-align: center;
+    width: 257px;
+}
+
+label.left {
+    float:left;
+    width:70px;
+    padding-top:3px;
+    text-align:right;
+}
+
+input.form_input{
+    border: 1px solid #C8D2D9;
+    background-color:#FFFFFF;
+    margin:0px;
+    width:150px;
+    float:left;
+    margin-left:10px;
+}
+
+.login_error {
+    background-color: #FFEBE8;
+    border-color: #C00;
+    border-bottom-left-radius: 3px 3px;
+    border-bottom-left-radius: 3px 3px;
+    border-bottom-left-radius: 3px 3px;
+    border-bottom-right-radius: 3px 3px;
+    border-bottom-right-radius: 3px 3px;
+    border-bottom-right-radius: 3px 3px;
+    border-style: solid;
+    border-width: 1px;
+    border-top-left-radius: 3px 3px;
+    border-top-left-radius: 3px 3px;
+    border-top-left-radius: 3px 3px;
+    border-top-right-radius: 3px 3px;
+    border-top-right-radius: 3px 3px;
+    border-top-right-radius: 3px 3px;
+    margin: 0px 0px 16px 8px;
+    padding: 12px;
+}
+
+.top_logo {
+    width: 500px;
+    clear: both;
+    margin: auto;
+}

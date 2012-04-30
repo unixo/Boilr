@@ -9,27 +9,15 @@
     <meta name="robots" content="index, follow" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
-    {#
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/boilr_common.css') }}"/>
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/jquery.dataTables.css') }}"/>
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/tipsy.css') }}"/>
-    #}
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/jquery-ui-1.8.7.custom.css') }}"/>
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/bootstrap.css') }}"/>
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/boilr-common.css') }}"/>
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-      legend {
-          margin-bottom: 0;
-      }
-    </style>
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/bootstrap-responsive.css') }}"/>
+    {% stylesheets filter='less,cssembed,?yui_css'
+            "@BoilrBundle/Resources/public/css/bootstrap.css"
+            "@BoilrBundle/Resources/public/css/bootstrap-responsive.css"
+            "@BoilrBundle/Resources/public/css/calendar.css"
+            "@BoilrBundle/Resources/public/css/boilr-common.css"
+	  output="css/boilr.css"  %}
+  <link href="{{ asset_url }}" type="text/css" rel="stylesheet"	media="screen" />
+    {% endstylesheets %}
+
     {% block extra_header %}
     {% endblock %}
 
@@ -94,7 +82,7 @@
         <div class="span9">
           <div class="alert alert-error">
             <a class="close" data-dismiss="alert">×</a>
-            <strong>Errore</strong> {{ app.session.flash('error') }}
+            <span class="label label-important">Errore</span> {{ app.session.flash('error') }}
           </div>
         </div>
         {% endif %}
@@ -104,7 +92,7 @@
         <div class="span9">
           <div class="alert alert-success">
             <a class="close" data-dismiss="alert">×</a>
-            <strong>Informazione</strong> {{ app.session.flash('notice') }}
+            <span class="label label-info">Info</span> {{ app.session.flash('notice') }}
           </div>
         </div>
         {% endif %}
@@ -118,43 +106,34 @@
       <hr>
 
       <footer>
+         <p class="pull-right">Prof. Maurizio Maffi</p>
         <p>&copy; Ferruccio Vitale - Università degli studi "Carlo Bo" - Urbino</p>
       </footer>
     </div><!--/.fluid-container-->
 
     {% javascripts
-        '@BoilrBundle/Resources/private/js/jquery.js'
-        '@BoilrBundle/Resources/private/js/jquery-ui-1.8.16.custom.min.js'
-        '@BoilrBundle/Resources/private/js/jquery.ui.datepicker-it.js'
-        '@BoilrBundle/Resources/private/js/jquery.tipsy.js'
-        '@BoilrBundle/Resources/private/js/jquery.dataTables.js'
-        '@BoilrBundle/Resources/private/js/jquery.dataTables.reloadAjax.js'
-        '@BoilrBundle/Resources/private/js/jquery.dynamicTable.js'
-        '@BoilrBundle/Resources/private/js/Scroller.js'
-        '@BoilrBundle/Resources/private/js/bootstrap.js'
-        '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-collection.js'
-        output="js/boilr.js" filter='yui_js' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
+          '@BoilrBundle/Resources/private/js/jquery.js'
+          '@BoilrBundle/Resources/private/js/jquery-ui-1.8.19.custom.min.js'
+          '@BoilrBundle/Resources/private/js/jquery.ui.datepicker-it.js'
+          '@BoilrBundle/Resources/private/js/jquery.dataTables.js'
+          '@BoilrBundle/Resources/private/js/jquery.dataTables.reloadAjax.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-transition.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-modal.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-dropdown.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-scrollspy.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-tab.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-tooltip.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-popover.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-alert.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-button.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-collapse.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-carousel.js'
+          '@MopaBootstrapBundle/Resources/bootstrap/js/bootstrap-typeahead.js'
+          '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-collection.js'
+          '@BoilrBundle/Resources/private/js/boilr-common.js'
+          output="js/boilr.js" filter='yui_js' %}
+<script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-
-    <script type="text/javascript">
-        /* <![CDATA[ */
-        $(function() {
-            $.datepicker.setDefaults($.datepicker.regional['it']);
-            $(".jdate").datepicker();
-
-            $('.dropdown-toggle').dropdown()
-
-{#
-            $('.wrong_input').tipsy( {
-                trigger: 'focus',
-                gravity: $.fn.tipsy.autoNS,
-                title: 'data-tips' }
-            );
-#}
-        });
-        /* ]]> */
-    </script>
 
     {% block javascripts %}
     {% endblock %}
