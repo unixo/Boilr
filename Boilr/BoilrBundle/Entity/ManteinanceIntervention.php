@@ -145,6 +145,18 @@ class ManteinanceIntervention
         return $int;
     }
 
+    public static function plannedInterventionFactory(\Boilr\BoilrBundle\Entity\Contract $contract)
+    {
+        $int = new ManteinanceIntervention();
+        $int->setHasCheckResults(false);
+        $int->setIsPlanned(true);
+        $int->setContract($contract);
+        $int->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
+        $int->setCustomer($contract->getCustomer());
+
+        return $int;
+    }
+
     /**
      * Add a system to be checked
      *
@@ -161,6 +173,13 @@ class ManteinanceIntervention
 
         // Link it with this intervention
         $this->addInterventionDetail($detail);
+
+        // Check if system comes with a default installer and intervention has no installer linked
+        if ($this->getInstaller() == null) {
+            if ($sys->getDefaultInstaller()) {
+                $this->setInstaller($sys->getDefaultInstaller());
+            }
+        }
 
         return $detail;
     }

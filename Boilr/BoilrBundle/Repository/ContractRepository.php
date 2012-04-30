@@ -59,10 +59,8 @@ class ContractRepository extends EntityRepository
             // Serialize new contract
             $em->persist($contract);
 
-            $customer = $contract->getCustomer();
-            $sysType  = $contract->getSystem()->getSystemType();
-
             // Get all manteinance schema belonging to system type
+            $sysType  = $contract->getSystem()->getSystemType();
             $schemas = $this->getEntityManager()->createQueryBuilder()
                             ->select('ms')
                             ->from('BoilrBundle:ManteinanceSchema', 'ms')
@@ -85,12 +83,8 @@ class ContractRepository extends EntityRepository
                     $lastDate = $this->getFutureDate($lastDate, $schema->getFreq());
 
                     while ($lastDate <= $contract->getEndDate()) {
-                        $manInt   = new ManteinanceIntervention();
-                        $manInt->setIsPlanned(true);
-                        $manInt->setContract($contract);
-                        $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
+                        $manInt = ManteinanceIntervention::plannedInterventionFactory($contract);
                         $manInt->setScheduledDate($lastDate);
-                        $manInt->setCustomer($customer);
                         $manInt->addSystem($contract->getSystem(), $schema->getOperationGroup());
                         $miRepos->evalExpectedCloseDate($manInt);
 
@@ -99,12 +93,9 @@ class ContractRepository extends EntityRepository
                     }
                 } else {
                     $lastDate = $this->getFutureDate($lastDate, $schema->getFreq());
-                    $manInt   = new ManteinanceIntervention();
-                    $manInt->setIsPlanned(true);
-                    $manInt->setContract($contract);
-                    $manInt->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
+
+                    $manInt = ManteinanceIntervention::plannedInterventionFactory($contract);
                     $manInt->setScheduledDate($lastDate);
-                    $manInt->setCustomer($customer);
                     $manInt->addSystem($contract->getSystem(), $schema->getOperationGroup());
                     $miRepos->evalExpectedCloseDate($manInt);
 
