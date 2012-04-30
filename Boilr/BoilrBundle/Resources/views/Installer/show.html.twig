@@ -4,88 +4,21 @@
 
 {% block inner_block %}
 <div class="span9">
-  <h2>Dettaglio installatore "{{ installer.surname ~ ' ' ~ installer.name }}"</h2>
-  <br>
-  <div id="tabs">
-    <ul>
-      <li><a href="#fragment-1"><span>Anagrafica</span></a></li>
-      <li><a href="#tabAddresses"><span>Indirizzi</span></a></li>
-      <li><a href="#fragment-3"><span>Impianti</span></a></li>
-      <li><a href="#tabContracts"><span>Assistenza</span></a></li>
-    </ul>
-    <div id="fragment-1">
-      {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': person, 'allFields': true } %}
-
-      <div style="margin-top: 10px;">
-        <a id="btnRegistry" class="btn btn-small" title="Modifica anagrafica">
-          <i class="icon-pencil"></i> Modifica
-        </a>
-      </div>
-    </div>
-    <div id="tabAddresses">
-        {% include 'BoilrBundle:Person:_addresses.html.twig' with { 'person': person, 'toolbar': true } %}
-
-        {% if person.addresses | length > 0 %}
-            <div>{{ vichgeo_map_for('location', person.addresses) }}</div>
-            <div style="margin-top: 10px;">
-                <button class="btn btn-small" id="btnCenterMap" title="Centra" onClick="console.log(addressesMap.getZoom());addressesMap.fitBounds(addressesMapBounds);">
-                    <i class="icon-screenshot"></i> Centra
-                </button>
-            </div>
-        {% endif %}
-    </div>
-    <div id="fragment-3">
-        {% include 'BoilrBundle:Person:_systems.html.twig' with { 'person': person, 'toolbar': true } %}
-    </div>
-    <div id="tabContracts">
-        {% include 'BoilrBundle:Person:_contracts.html.twig' with { 'person': person } %}
-
-        {% if interventions | length > 0 %}
-        <fieldset>
-            <legend>Calendario prossimi interventi</legend>
-
-            <table class="table table-condensed table-striped">
-              <thead>
-                <tr>
-                  <th>Data</th>
-                  <th>Stato</th>
-                  <th>Impianto</th>
-                  <th>Programmato</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for mi in interventions %}
-                <tr>
-                  <td>
-                    <a href="{{ url('list_all_interventions', { year : mi.scheduledDate|date('Y'), month: mi.scheduledDate|date('m')} ) }}">
-                      {{ mi.scheduledDate | date('d-m-Y H:i') }}
-                    </a>
-                  </td>
-                  <td>{{ mi.getStatusDescr() }}</td>
-                  <td>
-                    {% spaceless %}
-                      {% if mi.details|length == 1 %}
-                        {{ mi.details[0].system.descr }}
-                      {% else %}
-                        {{ mi.details | length }} impianti
-                      {% endif %}
-                    {% endspaceless %}
-                  </td>
-                  <td>{{ mymacro.imgcheck_if_true(mi.isPlanned) }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-        {% endif %}
-
-        {% if person.systems | length > 0 %}
-        <div style="margin-top: 10px;">
-            <a class="btn btn-small" id="btnAddUnplanned" title="Intervento non programmato">
-              <i class="icon-time"></i> Aggiungi intervento non programmato
-            </a>
-        </div>
-        {% endif %}
-    </div>
+  <div class="page-header">
+    <h1>{{ installer.surname ~ ' ' ~ installer.name }} <small>Scheda tecnico</small></h1>
   </div>
+
+  <dl class="dl-horizontal">
+    {{ mymacro.fieldset_row("Società", installer.company.name) }}
+    {{ mymacro.fieldset_row("Cognome", installer.surname) }}
+    {{ mymacro.fieldset_row("Nome", installer.name) }}
+    {{ mymacro.fieldset_row("Partita IVA", installer.vatCode) }}
+    {{ mymacro.fieldset_row("Email", installer.email) }}
+    {{ mymacro.fieldset_row("Telef. ufficio", installer.officePhone) }}
+    {{ mymacro.fieldset_row("Telef. cellulare", installer.cellularPhone) }}
+    {% if installer.account is not null %}
+      {{ mymacro.fieldset_row("Login", installer.account.login) }}
+    {% endif %}
+  </dl>
 </div>
 {% endblock %}
