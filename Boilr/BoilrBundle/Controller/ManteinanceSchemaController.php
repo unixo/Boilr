@@ -28,13 +28,42 @@ class ManteinanceSchemaController extends BaseController
      */
     public function indexAction()
     {
-        $schemas = $this->getEntityManager()->createQuery(
-                        "SELECT s FROM BoilrBundle:ManteinanceSchema s " .
-                        "JOIN s.systemType st " .
-                        "ORDER BY st.id, s.listOrder"
-                )->getResult();
+        $types = $this->getDoctrine()->getRepository('BoilrBundle:SystemType')
+                ->findBy(array(), array('name' => 'ASC'));
 
-        return array('schemas' => $schemas);
+        return compact('types');
+    }
+
+    /**
+     * @Route("/{id}/schema-detail", name="manteinance_schema_detail")
+     * @Template()
+     */
+    public function schemaDetailAction()
+    {
+        $systemType = $this->paramConverter("id", "BoilrBundle:SystemType");
+        $count = $systemType->getSchemas()->count();
+
+        return compact('systemType', 'count');
+    }
+
+    /**
+     * @Route("/{id}/detail", name="manteinance_schema_delete")
+     * @Template()
+     */
+    public function deleteAction()
+    {
+        try {
+            $schema = $this->paramConverter("id");
+            $sysType = $schema->getSystemType();
+            $em = $this->getEntityManager();
+            $em->remove($schema);
+            $em->flush();
+            $this->setNoticeMessage('Schema eliminato con successo');
+        } catch (Exception $exc) {
+            $this->setErrorMessage("Si è verificato un errore durante l'operazione");
+        }
+
+        return $this->redirect($this->generateUrl('manteinance_schema_detail', array('id' => $sysType->getId())));
     }
 
     /**
@@ -84,31 +113,31 @@ class ManteinanceSchemaController extends BaseController
     {
         $schema = $this->paramConverter("id");
         $dir = $this->getRequest()->get('dir');
-        $dir = $dir?strtolower($dir):"up";
-        $_dir = strtolower($dir);
-        if (!in_array($_dir, array('up', 'down'))) {
+        $dir = $dir ? strtolower($dir) : "up";
+        if (!in_array($dir, array('up', 'down'))) {
             throw new \InvalidArgumentException("Invalid argument");
         }
 
-        $schemas = $this->getEntityRepository()->findBySystemType($schema->getSystemType()->getId());
+        $sysType = $schema->getSystemType();
+        $count = $sysType->getSchemas()->count() - 1;
+        $index = $sysType->getSchemas()->indexOf($schema);
 
-        $pos = -1;
-        for ($i = 0; $i < count($schemas); $i++) {
-            $item = $schemas[$i];
-            if ($item->getId() == $schema->getId()) {
-                $pos = $i;
-                break;
-            }
+        if (($index == 0 && $dir == "up") || ($index == $count && $dir == "down")) {
+            throw new \InvalidArgumentException("Invalid argument");
         }
 
-        if (count($schemas) > 0) {
-            // Move item down
-            if ($pos == 0 && $_dir === "down")
-                ;
-                // @todo da terminare
+        if ($dir == "up") {
+            $prevSchema = $sysType->getSchemas()->get($index - 1);
+            $prevSchema->setListOrder($index);
+            $schema->setListOrder($index - 1);
+        } else {
+            $nextSchema = $sysType->getSchemas()->get($index + 1);
+            $nextSchema->setListOrder($index);
+            $schema->setListOrder($index + 1);
         }
+        $this->getEntityManager()->flush();
 
-        return $this->redirect($this->generateUrl('manteinance_schema_list'));
+        return $this->redirect($this->generateUrl('manteinance_schema_detail', array('id' => $sysType->getId())));
     }
 
 }

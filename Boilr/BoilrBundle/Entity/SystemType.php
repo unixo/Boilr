@@ -38,6 +38,14 @@ class SystemType
     protected $installers;
 
     /**
+     * @var ManteinanceSchema
+     *
+     * @ORM\OneToMany(targetEntity="ManteinanceSchema", mappedBy="systemType")
+     * @ORM\OrderBy({"listOrder" = "ASC"})
+     */
+    protected $schemas;
+
+    /**
      * Get id
      *
      * @return integer
@@ -90,5 +98,25 @@ class SystemType
     public function getInstallers()
     {
         return $this->installers;
+    }
+
+    /**
+     * Add schemas
+     *
+     * @param Boilr\BoilrBundle\Entity\ManteinanceSchema $schemas
+     */
+    public function addManteinanceSchema(\Boilr\BoilrBundle\Entity\ManteinanceSchema $schemas)
+    {
+        $this->schemas[] = $schemas;
+    }
+
+    /**
+     * Get schemas
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getSchemas()
+    {
+        return $this->schemas;
     }
 }

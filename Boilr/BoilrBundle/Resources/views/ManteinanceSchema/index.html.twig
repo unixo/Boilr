@@ -4,9 +4,23 @@
 {% block inner_block %}
 <div class="span9">
   <div class="page-header">
-    <h1>Schemi di manutenzione <small>elenco</small></h1>
+    <h1>Schemi di manutenzione <small>per tipologia d'impianto</small></h1>
   </div>
-  
+
+  <dl>
+  {% for systemType in types %}
+    <dt><a href="{{ url('manteinance_schema_detail', {'id': systemType.id}) }}">{{ systemType.name }}</a></dt>
+    {% if systemType.schemas|length == 0 %}
+      <dd>vuoto</dd>
+    {% else %}
+      {% for schema in systemType.schemas %}
+        <dd>{{ schema.operationGroup.name }}, {{ schema.getFreqDescr() }}</dd>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  </dl>
+
+    {#
   <table class="table table-condensed table-striped">
     <thead>
       <tr>
@@ -40,6 +54,7 @@
       {% endfor %}
     </tbody>
   </table>
+    #}
 
   <div style="margin-top: 10px;">
     <a class="btn btn-small" href="{{ url('manteinance_schema_add') }}">

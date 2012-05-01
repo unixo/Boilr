@@ -10,10 +10,10 @@
     <fieldset>
       <legend>Dettagli schema di manutenzione</legend>
 
-        <div><label>Tipo impianto:</label>{{ form_widget(form.systemType) }}</div>
-        <div><label>Periodico:</label>{{ form_widget(form.isPeriodic) }}</div>
-        <div><label>Frequenza:</label>{{ form_widget(form.freq) }}</div>
-        <div><label>Operazioni:</label>{{ form_widget(form.operationGroup) }}</div>
+        {{ form_row(form.systemType, {'label': 'Tipo impianto'}) }}
+        {{ form_row(form.isPeriodic, {'label': 'Periodico?'}) }}
+        {{ form_row(form.freq, {'label': 'Frequenza', 'widget_addon': {'append': true, 'text': 'ss'}}) }}
+        {{ form_row(form.operationGroup, {'label': 'Gruppo controlli'}) }}
     </fieldset>
 
     <div class="form-actions">

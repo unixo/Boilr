@@ -190,4 +190,12 @@ class ManteinanceSchema
     {
         return $this->systemType;
     }
+
+    public function getFreqDescr()
+    {
+        $result = ($this->isPeriodic?"ogni ":"dopo ") .
+                  str_replace('month', 'mesi', $this->freq);
+
+        return $result;
+    }
 }
