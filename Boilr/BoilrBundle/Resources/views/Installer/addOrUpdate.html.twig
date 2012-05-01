@@ -3,7 +3,7 @@
 {% block inner_block %}
 <div class="span9">
   <div class="page-header">
-    <h1>Inserimento nuovo tecnico <small>scheda anagrafica</small></h1>
+    <h1>{{ (opType == 'add')?"Inserimento nuovo":"Aggiornamento" }} tecnico <small>scheda anagrafica</small></h1>
   </div>
 
   <form id="form_installer" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
@@ -32,7 +32,7 @@
 
     <div class="form-actions">
       <input class="btn btn-primary" type="submit" value="Salva" />
-      <a class="btn" href="">Annulla</a>
+      <a class="btn" href="{{ url(app.session.get('last_route').name, app.session.get('last_route').params) }}">Annulla</a>
     </div>
   </form>
 </div>

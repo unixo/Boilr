@@ -9,8 +9,8 @@
       <tr>
         <th>Cognome</th>
         <th>Nome</th>
-        <th>Recapito</th>
-        <th>Abilità</th>
+        <th>Telef. Ufficio</th>
+        <th>Telef. Cellulare</th>
         <th>Operaz.</th>
       </tr>
     </thead>
@@ -20,9 +20,9 @@
         <td>{{ person.surname }}</td>
         <td>{{ person.name }}</td>
         <td>{{ person.officePhone }}</td>
-        <td></td>
+        <td>{{ person.cellularPhone }}</td>
         <td>
-          <a class="btn btn-mini" href="" title="Documentazione"><i class="icon-list-alt"></i></a>
+          <a class="btn btn-mini" href="{{ url('installer_update', {id: person.id}) }}" title="Modifica"><i class="icon-pencil"></i></a>
           <a class="btn btn-mini" href="{{ url('installer_show', {id: person.id}) }}" title="Dettaglio"><i class="icon-folder-open"></i></a>
         </td>
       </tr>

@@ -20,5 +20,13 @@
       {{ mymacro.fieldset_row("Login", installer.account.login) }}
     {% endif %}
   </dl>
+
+  <dl>
+    <dt>Tipologia d'impianti su cui opera</dt>
+
+    {% for ability in installer.abilities %}
+    <dd>{{ ability.name }}</dd>
+    {% endfor %}
+  </dl>
 </div>
 {% endblock %}

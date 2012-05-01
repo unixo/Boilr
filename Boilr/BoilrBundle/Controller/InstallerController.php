@@ -30,12 +30,21 @@ class InstallerController extends BaseController
     }
 
     /**
-     * @Route("/new", name="installer_add")
+     * @Route("/add", name="installer_add")
+     * @Route("/{id}/update", name="installer_update")
      * @Template
      */
-    public function newAction()
+    public function addOrUpdateAction($id = null)
     {
-        $installer = new MyInstaller();
+        $installer = null;
+        $opType = null;
+        if ($id == null) {
+            $installer = new MyInstaller();
+            $opType = "add";
+        } else {
+            $installer = $this->paramConverter('id');
+            $opType = "update";
+        }
         $form = $this->createForm(new InstallerForm(), $installer);
 
         if ($this->isPOSTRequest()) {
@@ -44,7 +53,9 @@ class InstallerController extends BaseController
             if ($form->isValid()) {
                 try {
                     $dem = $this->getEntityManager();
-                    $dem->persist($installer);
+                    if ($opType == 'add') {
+                        $dem->persist($installer);
+                    }
                     $dem->flush();
                     $this->setNoticeMessage('Operazione conclusa con successo');
 
@@ -56,7 +67,7 @@ class InstallerController extends BaseController
             }
         }
 
-        return array('form' => $form->createView());
+        return array('form' => $form->createView(), 'opType' => $opType);
     }
 
     /**

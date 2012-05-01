@@ -29,7 +29,7 @@
 
     <div class="form-actions">
         <input class="btn btn-primary" type="submit" value="Salva" />
-        <a class="btn" href="{{ url(app.session.get('last_route').name) }}">Annulla</a>
+        <a class="btn" href="{{ url(app.session.get('last_route').name, app.session.get('last_route').params) }}">Annulla</a>
     </div>
 
     {{ form_rest(form) }}

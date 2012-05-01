@@ -88,6 +88,7 @@ class Installer
      *
      * @ORM\ManyToMany(targetEntity="SystemType", inversedBy="installers")
      * @ORM\JoinTable(name="abilities")
+     * @ORM\OrderBy({"name" = "ASC"})
      */
     protected $abilities;
 
@@ -268,7 +269,7 @@ class Installer
 
     public function getFullName()
     {
-        return $this->surname. ' ' .$this->name;
+        return $this->surname . ' ' . $this->name;
     }
 
     /**
@@ -290,4 +291,5 @@ class Installer
     {
         return $this->account;
     }
+
 }
