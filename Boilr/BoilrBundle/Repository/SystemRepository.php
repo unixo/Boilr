@@ -10,6 +10,25 @@ use Boilr\BoilrBundle\Entity\System as MySystem,
  */
 class SystemRepository extends EntityRepository
 {
+    public function hasSystemDocsOrInterventions(MySystem $system)
+    {
+        $count = $this->getEntityManager()->createQuery(
+                "SELECT COUNT(a) FROM BoilrBundle:Attachment a WHERE a.parentSystem = :sys"
+                )->setParameter('sys', $system)->getSingleScalarResult();
+        if ($count > 0) {
+            return true;
+        }
+
+        $count = $this->getEntityManager()->createQuery(
+                "SELECT COUNT(id) FROM BoilrBundle:InterventionDetail mi WHERE a.system = :sys"
+                )->setParameter('sys', $system)->getSingleScalarResult();
+        if ($count > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Delete an instance of system. Returns true if successful
      *

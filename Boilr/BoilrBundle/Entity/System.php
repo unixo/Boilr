@@ -97,7 +97,7 @@ class System
      * @var defaultInstaller
      *
      * @ORM\ManyToOne(targetEntity="Installer")
-     * @ORM\JoinColumn(name="installer_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="installer_id", referencedColumnName="id", nullable=true)
      */
     protected $defaultInstaller;
 

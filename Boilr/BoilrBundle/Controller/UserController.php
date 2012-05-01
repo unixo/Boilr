@@ -50,7 +50,7 @@ class UserController extends BaseController
             $user = new MyUser();
             $user->setIsActive(true);
         } else {
-            $user = $this->getEntityRepository()->findOneById($pid);
+            $user = $this->paramConverter("pid");
             if (!$user) {
                 throw new \InvalidArgumentException("Invalid argument");
             }

@@ -40,13 +40,21 @@ class SystemController extends BaseController
     public function deleteAction()
     {
         $system = $this->paramConverter('id');
-        $person = $system->getOwner();
-        $success = $this->getEntityRepository()->deleteSystem($system);
+        /* @var $system \Boilr\BoilrBundle\Entity\System */
 
-        if ($success) {
-            $this->setNoticeMessage("Impianto eliminato con successo");
+        // check if there are interventions or documents linked to given system
+        $error = $this->getEntityRepository()->hasSystemDocsOrInterventions($system);
+        if ($error) {
+            $this->setErrorMessage("Sono presenti interventi e/o documenti correlati all'impianto");
         } else {
-            $this->setErrorMessage("Si è verificato un errore durante l'eliminazione.");
+            $person = $system->getOwner();
+            $success = $this->getEntityRepository()->deleteSystem($system);
+
+            if ($success) {
+                $this->setNoticeMessage("Impianto eliminato con successo");
+            } else {
+                $this->setErrorMessage("Si è verificato un errore durante l'eliminazione.");
+            }
         }
 
         return $this->redirect($this->generateUrl('show_person', array('id' => $person->getId())));

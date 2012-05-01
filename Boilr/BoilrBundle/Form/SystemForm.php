@@ -59,14 +59,14 @@ class SystemForm extends AbstractType
                 $v[$i->getId()] = $i->getFullName();
             }
             $builder->add('defaultInstaller', "installer_selector", array(
-                    'required' => true,
+                    'required' => false,
                     'choices' => $v,
                     'help_inline' => "L'installatore predefinito verrà associato ai futuri interventi",
                     'preferred_choices' => array($system->getDefaultInstaller()->getId()),
                     'label' => 'Installatore'));
         } else {
             $builder->add('defaultInstaller', "installer_selector", array(
-                    'required' => true,
+                    'required' => false,
                     'help_inline' => "L'installatore predefinito verrà associato ai futuri interventi",
                     'label' => 'Installatore'));
         }
