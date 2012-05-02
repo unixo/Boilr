@@ -38,6 +38,7 @@ class ManteinanceInterventionSearchForm extends AbstractType
                     'label' => 'Stato',
                     'choices' => $allStatus,
                     'multiple' => true,
+                    'expanded' => true,
                     'required' => false,
                 ))
         ;
