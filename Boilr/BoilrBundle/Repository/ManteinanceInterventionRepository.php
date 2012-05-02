@@ -228,7 +228,7 @@ class ManteinanceInterventionRepository extends EntityRepository
     {
         $success = true;
         foreach ($interv->getDetails() as $detail) {
-            if ($detail->getChecks()->getCount() == 0) {
+            if ($detail->getChecks()->count() == 0) {
                 $success = false;
             }
         }
@@ -248,8 +248,9 @@ class ManteinanceInterventionRepository extends EntityRepository
     {
         $document = array();
 
-        // for each system in this manteinance intervention
+        // for each system (detail) in this manteinance intervention
         foreach ($interv->getDetails() as $interventionDetail) {
+            $intChecks = $interventionDetail->getChecks()->getValues();
             $sections = array();
 
             // for each section of given template
@@ -258,16 +259,13 @@ class ManteinanceInterventionRepository extends EntityRepository
 
                 // for each operation in current template section
                 foreach ($templateSection->getOperations() as $sectionOperation) {
+                    $results = array_filter($intChecks, function ($entry) use ($sectionOperation) {
+                                if ($entry->getParentOperation()->getId() == $sectionOperation->getId()) {
 
-                    // find an InterventionCheck instance whose parentOperation is sectionOperation
-                    $intChecks = $interventionDetail->getChecks()->getValues();
-                    $results = array_filter($intChecks, function ($entry) use ($sectionOperation)
-                                                        {
-                                                            if ($entry->getParentOperation()->getId() === $sectionOperation->getId()) {
-                                                                return true;
-                                                            }
-                                                            return false;
-                                                        });
+                                    return true;
+                                }
+                                return false;
+                            });
                     if (count($results) == 1) {
                         $interventionCheck = array_pop($results);
                         $textValue = $interventionCheck->getTextValue();
@@ -280,7 +278,7 @@ class ManteinanceInterventionRepository extends EntityRepository
                             'threewayValue' => $threewayValue
                         );
                         $currentSection['sectionResults'][] = $inspection;
-                   }
+                    }
                 }
                 $sections[] = $currentSection;
             }
@@ -290,4 +288,5 @@ class ManteinanceInterventionRepository extends EntityRepository
 
         return $document;
     }
+
 }

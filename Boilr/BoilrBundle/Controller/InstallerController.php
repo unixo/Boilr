@@ -8,6 +8,7 @@ use Boilr\BoilrBundle\Entity\Installer as MyInstaller,
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Method,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
     Symfony\Component\HttpFoundation\Response,
     JMS\SecurityExtraBundle\Annotation\Secure;
@@ -22,6 +23,7 @@ class InstallerController extends BaseController
 
     /**
      * @Route("/", name="installer_homepage")
+     * @Method("get")
      * @Template
      */
     public function indexAction()
@@ -72,6 +74,7 @@ class InstallerController extends BaseController
 
     /**
      * @Route("/{id}/show", name="installer_show")
+     * @Method("get")
      * @Template()
      */
     public function showAction()
@@ -83,6 +86,7 @@ class InstallerController extends BaseController
 
     /**
      * @Route("/installers-for-systemtype", name="installers_for_systype")
+     * @Method("get")
      */
     public function ajaxInstallerForSystemTypeAction()
     {
@@ -110,6 +114,7 @@ class InstallerController extends BaseController
 
     /**
      * @Route("/ajax-search-installer", name="ajax_pick_installer")
+     * @Method("get")
      */
     public function ajaxInstallerSearchAction()
     {
@@ -138,6 +143,7 @@ class InstallerController extends BaseController
     /**
      * @Route("/show-my-interventions", name="installer_list_interventions")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_INSTALLER")
+     * @Method("get")
      * @Template()
      */
     public function showMyInterventionsAction()
@@ -152,6 +158,7 @@ class InstallerController extends BaseController
     /**
      * @Route("/show-my-systems", name="installer_list_systems")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_INSTALLER")
+     * @Method("get")
      * @Template()
      */
     public function showMySystemsAction()
@@ -166,6 +173,7 @@ class InstallerController extends BaseController
     /**
      * @Route("/show-my-documents", name="installer_list_docs")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_INSTALLER")
+     * @Method("get")
      * @Template()
      */
     public function showMyDocumentsAction()

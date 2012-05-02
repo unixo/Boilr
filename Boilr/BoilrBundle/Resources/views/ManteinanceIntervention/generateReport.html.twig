@@ -27,7 +27,9 @@
                         <p>Impianto termico sito nel Comune di: {{ system.address.city }} ({{ system.address.province }})</p>
                         <p>in via/piazza: {{ system.address.street }}, CAP: {{ system.address.postalCode }}</p>
                         <p>Responsabile dell'impianto: {{ system.owner.getFullName() }}</p>
-                        <p>In qualità di: <span class="checkbox"></span> proprietario <span class="checkbox"></span> occupante <span class="checkbox"></span> terzo responsabile</p>
+                        <p>In qualità di: <span class="checkbox"></span> proprietario
+                                          <span class="checkbox"></span> occupante
+                                          <span class="checkbox"></span> terzo responsabile</p>
                       </div>
 
                       <table id="sections">
@@ -49,9 +51,8 @@
                           </tr>
                           {% endfor %}
                         {% endfor %}
-                    </table>
+                        </table>
                     {% endfor %}
-
 
                     <div id="recommendations">
                         <p>RACCOMANDAZIONI [6] [8] ___________________________________________________________________________________________

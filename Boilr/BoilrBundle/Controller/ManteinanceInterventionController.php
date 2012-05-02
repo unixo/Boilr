@@ -19,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
     Symfony\Component\HttpFoundation\Response,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Method,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
     JMS\SecurityExtraBundle\Annotation\Secure,
@@ -34,6 +35,7 @@ class ManteinanceInterventionController extends BaseController
 
     /**
      * @Route("/", name="main_intervention")
+     * @Method("get")
      * @Template
      */
     public function indexAction()
@@ -43,6 +45,7 @@ class ManteinanceInterventionController extends BaseController
 
     /**
      * @Route("/current-month", name="current_month_interventions")
+     * @Method("get")
      * @Template()
      */
     public function listCurrentMonthAction()
@@ -56,6 +59,7 @@ class ManteinanceInterventionController extends BaseController
 
     /**
      * @Route("/list-all/{year}/{month}", name="list_all_interventions")
+     * @Method("get")
      * @Template()
      */
     public function listAllAction($year, $month)
@@ -99,6 +103,7 @@ class ManteinanceInterventionController extends BaseController
     /**
      * @Route("/{id}/show", name="intervention_detail")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
+     * @Method("get")
      * @Template()
      */
     public function showAction()
@@ -111,6 +116,7 @@ class ManteinanceInterventionController extends BaseController
     /**
      * @Route("/{id}/details-for-installer", name="intervention_detail_for_installer")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_INSTALLER")
+     * @Method("get")
      * @Template(vars={"interv"})
      */
     public function showForInstallerAction()
@@ -125,7 +131,7 @@ class ManteinanceInterventionController extends BaseController
      *
      * @return string
      */
-    protected function getInterventionTitle(ManteinanceIntervention $int)
+    private function getInterventionTitle(ManteinanceIntervention $int)
     {
         $help = null;
         $icon = null;
@@ -268,6 +274,7 @@ class ManteinanceInterventionController extends BaseController
 
     /**
      * @Route("/search", name="search_intervention")
+     * @Method("get")
      * @Template
      */
     public function searchAction()
@@ -292,6 +299,7 @@ class ManteinanceInterventionController extends BaseController
      *
      * @Route("/{id}/abort", name="intervention_abort")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
+     * @Method("get")
      * @Template()
      */
     public function abortAction()
@@ -319,6 +327,7 @@ class ManteinanceInterventionController extends BaseController
      *
      * @Route("/{id}/confirm", name="intervention_confirm")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
+     * @Method("get")
      * @Template()
      */
     public function confirmAction()
@@ -342,6 +351,7 @@ class ManteinanceInterventionController extends BaseController
 
     /**
      * @Route("/{id}/attachments", name="intervention_list_doc")
+     * @Method("get")
      * @Template()
      */
     public function listAttachmentsAction()
@@ -360,6 +370,7 @@ class ManteinanceInterventionController extends BaseController
      *
      * @Route("/{id}/close", name="intervention_close")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR, ROLE_INSTALLER")
+     * @Method("get")
      * @Template()
      */
     public function closeAction()
@@ -486,8 +497,7 @@ class ManteinanceInterventionController extends BaseController
                 $clientData = $form->getClientData();
                 $template = $clientData['template'];
 
-                return $this->redirect($this->generateUrl('intervention_generate_report',
-                        array('id' => $intervention->getId(), 'tid' => $template->getId())));
+                return $this->redirect($this->generateUrl('intervention_generate_report', array('id' => $intervention->getId(), 'tid' => $template->getId())));
             }
         }
 
@@ -499,6 +509,7 @@ class ManteinanceInterventionController extends BaseController
      *
      * @Route("/{id}/generate/{tid}", name="intervention_generate_report")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR, ROLE_INSTALLER")
+     * @Method("get")
      * @Template()
      */
     public function generateReportAction()
@@ -506,7 +517,7 @@ class ManteinanceInterventionController extends BaseController
         $intervention = $this->paramConverter('id');
         $template = $this->paramConverter('tid', 'BoilrBundle:Template');
         $document = $this->getEntityRepository()->prepareDocument($intervention, $template);
-        $fileName = $template->getName().".pdf";
+        $fileName = $template->getName() . ".pdf";
         $params = compact('intervention', 'template', 'document');
 
         $html = $this->renderView('BoilrBundle:ManteinanceIntervention:generateReport.html.twig', $params);
@@ -514,9 +525,28 @@ class ManteinanceInterventionController extends BaseController
         return new Response(
                         $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
                         200, array(
-                            'Content-Type' => 'application/pdf',
-                            'Content-Disposition' => 'inline; filename="'.$fileName.'"'
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="' . $fileName . '"'
                         )
+        );
+    }
+
+    /**
+     * Export given intervention in XML
+     *
+     * @Route("/{id}/export-xml", name="intervention_xml_export")
+     * @Method("get")
+     * @Template()
+     */
+    public function exportXMLAction()
+    {
+        $interv = $this->paramConverter("id");
+        $xmlDoc = $interv->asXml();
+        $filename = sprintf("intervento_%d.xml", $interv->getId());
+
+        return new Response($xmlDoc, 200, array(
+                    'Content-Type' => 'application/xml',
+                    'Content-Disposition' => 'attachment; filename="' . $filename . '"')
         );
     }
 

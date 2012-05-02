@@ -5,6 +5,7 @@ namespace Boilr\BoilrBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Method,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
     JMS\SecurityExtraBundle\Annotation\Secure;
 use Boilr\BoilrBundle\Entity\User as MyUser,
@@ -15,6 +16,7 @@ class DefaultController extends BaseController
 
     /**
      * @Route("/", name="homepage")
+     * @Method("get")
      * @Template()
      */
     public function indexAction()
@@ -47,6 +49,7 @@ class DefaultController extends BaseController
     /**
      * @Route("/admin", name="admin_homepage")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
+     * @Method("get")
      * @Template("BoilrBundle:Default:template5-admin.html.twig")
      */
     public function adminHomeAction()
@@ -57,6 +60,7 @@ class DefaultController extends BaseController
     /**
      * @Route("/installer", name="installer_homepage")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_INSTALLER")
+     * @Method("get")
      * @Template("BoilrBundle:Default:template5-installer.html.twig")
      */
     public function installerHomeAction()

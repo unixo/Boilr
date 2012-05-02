@@ -17,17 +17,13 @@ class InterventionCheckForm extends AbstractType
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
-        /*
-                ->add('detailId', 'hidden')
-                ->add('operationId', 'hidden')
-                ->add('type', 'hidden')
-                */
                 ->add('threewayValue', 'choice', array(
                     'label' => 'Risultato',
                     'required' => true,
                     'choices' => array(1 => 'Si', 0 => 'No', 2 => 'N.C.'),
                     'expanded' => true,
                     'multiple' => false,
+                    'widget_type'  => "inline",
                 ))
                 ->add('textValue', 'text', array(
                     'label' => 'Risultato',
@@ -39,7 +35,6 @@ class InterventionCheckForm extends AbstractType
     public function getDefaultOptions(array $options)
     {
         return array(
-            //'data_class' => 'Boilr\BoilrBundle\Form\Model\InspectionCheck'
             'data_class' => 'Boilr\BoilrBundle\Entity\InterventionCheck'
         );
     }

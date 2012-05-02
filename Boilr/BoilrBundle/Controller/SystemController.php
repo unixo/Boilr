@@ -5,10 +5,12 @@ namespace Boilr\BoilrBundle\Controller;
 use Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Entity\System as MySystem,
     Boilr\BoilrBundle\Entity\Attachment as MyAttachment,
-    Boilr\BoilrBundle\Form\SystemForm;
+    Boilr\BoilrBundle\Form\SystemForm,
+    Boilr\BoilrBundle\Form\LinkInstallerForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Method,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter,
     JMS\SecurityExtraBundle\Annotation\Secure;
@@ -23,6 +25,7 @@ class SystemController extends BaseController
 
     /**
      * @Route("/{id}/show-details", name="system_show")
+     * @Method("get")
      * @Template(vars={"system"})
      */
     public function showAction()
@@ -33,8 +36,36 @@ class SystemController extends BaseController
     }
 
     /**
+     * @Route("/{id}/link-installer", name="system_link_installer")
+     * @Template()
+     */
+    public function linkInstallerAction()
+    {
+        $system = $this->paramConverter('id');
+        $form = $this->createForm(new LinkInstallerForm(), $system);
+
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
+
+            if ($form->isValid()) {
+                try {
+                    $this->getEntityManager()->flush();
+                    $this->setNoticeMessage('Tecnico associato con successo');
+
+                    return $this->redirect($this->generateUrl('system_show', array('id' => $system->getId())));
+                } catch (Exception $exc) {
+                    echo $exc->getTraceAsString();
+                }
+            }
+        }
+
+        return array('form' => $form->createView(), 'system' => $system);
+    }
+
+    /**
      * @Route("/delete/{id}", name="system_delete")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
+     * @Method("get")
      * @Template()
      */
     public function deleteAction()
@@ -118,6 +149,7 @@ class SystemController extends BaseController
 
     /**
      * @Route("/{id}/attachments", name="system_list_doc")
+     * @Method("get")
      * @Template()
      */
     public function listAttachmentsAction()
