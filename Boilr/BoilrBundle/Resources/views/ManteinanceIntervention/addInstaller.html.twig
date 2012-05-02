@@ -14,7 +14,7 @@
         <legend>Dettagli intervento</legend>
 
         {{ mymacro.fieldset_row('Cliente', interv.customer.fullName) }}
-        {{ mymacro.fieldset_row('Data', interv.scheduledDate|date('d-m-Y H:i')) }}
+        {{ mymacro.fieldset_row('Data', interv.scheduledDate|localizeddate("medium", "short")) }}
         {% if interv.details | length == 1 %}
         <div><label>Impianto:</label><span>{{ interv.details[0].system.descr }}</span></div>
         <div><label>Tipo:</label><span>{{ interv.details[0].system.systemType.name }}</span></div>

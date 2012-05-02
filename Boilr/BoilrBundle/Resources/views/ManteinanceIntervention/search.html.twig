@@ -43,7 +43,7 @@
     <tbody>
     {% for interv in results %}
       <tr>
-        <td>{{ interv.scheduledDate | date('d-m-Y H:i') }}</td>
+        <td>{{ interv.scheduledDate | localizeddate("medium", "short") }}</td>
         <td><a onclick="fnShowPersonDetail({{ interv.customer.id }})">{{ interv.customer.fullName }}</a></td>
         <td>{{ interv.installer.getFullName()|default('-') }}</td>
         <td>{{ interv.getStatusDescr() }}</td>

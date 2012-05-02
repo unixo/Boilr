@@ -39,7 +39,7 @@
               <td>{{ detail.vars.value.system.code }}</td>
               <td>{{ detail.vars.value.system.descr }}</td>
               <td>{{ detail.vars.value.system.systemType.name }}</td>
-              <td>{{ detail.vars.value.system.installDate | date('d-m-Y') }}</td>
+              <td>{{ detail.vars.value.system.installDate | localizeddate("medium", "none") }}</td>
             </tr>
             {% endfor %}
           </tbody>

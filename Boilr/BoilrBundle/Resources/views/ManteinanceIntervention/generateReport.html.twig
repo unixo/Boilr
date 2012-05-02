@@ -73,7 +73,16 @@
 
                     <div id="installer">
                       <h4>TECNICO CHE HA EFFETTUATO IL CONTROLLO:</h4>
-                      <p>Nome e Cognome: {{ intervention.installer.getFullName() }}</p>
+
+                      <div style="display: inline-block; float: left;">
+                        <div>
+                          Nome e Cognome:
+                          {{ intervention.installer.getFullName() }}<span style="width: 100%; border-bottom: 1px solid black;">&nbsp;</span>
+                        </div>
+                      </div>
+                      <div style="display: inline-block; float: right">
+                        Ragione sociale: {{intervention.installer.company.name}}
+                      </div>
                     </div>
 
                 </div>

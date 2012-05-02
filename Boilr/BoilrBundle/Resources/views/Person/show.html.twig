@@ -71,7 +71,7 @@
                 <tr class="{{ cycle(['odd', 'even'], key) }}">
                   <td>
                     <a href="{{ url('list_all_interventions', { year : mi.scheduledDate|date('Y'), month: mi.scheduledDate|date('m')} ) }}">
-                      {{ mi.scheduledDate | date('d-m-Y H:i') }}
+                      {{ mi.scheduledDate | localizeddate("medium", "short") }}
                     </a>
                   </td>
                   <td>{{ mi.getStatusDescr() }}</td>

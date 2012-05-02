@@ -1,4 +1,5 @@
 {% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
 {% block inner_block %}
 <div class="span9">
@@ -7,8 +8,17 @@
   </div>
 
   <form id="form_system" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
-
-    {% include 'BoilrBundle:Person:_anag.html.twig' with {'person': person, 'allFields': false} %}
+    <fieldset>
+      <legend>Dettagli cliente</legend>
+      <dl class="dl-horizontal">
+        {{ mymacro.fieldset_row('Tipo', person.getTypeAsString()) }}
+        {{ mymacro.fieldset_row('Titolo', person.title|default('-')) }}
+        {{ mymacro.fieldset_row('Nome', person.name) }}
+        {{ mymacro.fieldset_row('Cognome', person.surname) }}
+        {{ mymacro.fieldset_row('Codice fiscale', person.fiscalCode|default('-')) }}
+        {{ mymacro.fieldset_row('Partita IVA', person.vatCode|default('-')) }}
+      </dl>
+    </fieldset>
 
     <fieldset>
         <legend>Dettagli impianto</legend>

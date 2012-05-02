@@ -16,8 +16,8 @@
        <tr>
          <td>{{ value.system.systemType.name }}</td>
          <td>{{ value.system.descr }}</td>
-         <td>{{ value.startDate | date('d-m-Y') }}</td>
-         <td>{{ value.endDate | date('d-m-Y')  }}</td>
+         <td>{{ value.startDate | localizeddate("medium", "none") }}</td>
+         <td>{{ value.endDate | localizeddate("medium", "none")  }}</td>
        </tr>
      {% endfor %}
      </tbody>

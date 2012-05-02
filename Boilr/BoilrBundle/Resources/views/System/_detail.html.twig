@@ -1,0 +1,10 @@
+{% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
+
+<dl class="dl-horizontal">
+  {{ mymacro.fieldset_row('Proprietario', system.owner.getFullName()) }}
+  {{ mymacro.fieldset_row('Tipo', system.systemType.name) }}
+  {{ mymacro.fieldset_row('Seriale', system.code) }}
+  {{ mymacro.fieldset_row('Descrizione', system.descr) }}
+  {{ mymacro.fieldset_row('Data installaz.', system.installDate | localizeddate("medium", "none")) }}
+  {{ mymacro.fieldset_row('Ultima manutenz.', system.lastManteinance | localizeddate("medium", "none")) }}
+</dl>

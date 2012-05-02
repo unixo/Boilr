@@ -12,14 +12,14 @@
 
     <dl class="dl-horizontal">
       {{ mymacro.fieldset_row('Cliente', interv.customer.fullname) }}
-      {{ mymacro.fieldset_row('Data intervento', interv.scheduledDate | date('d-m-Y H:i')) }}
-      {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate | date('d-m-Y H:i')) }}
+      {{ mymacro.fieldset_row('Data intervento', interv.scheduledDate | localizeddate("medium", "short")) }}
+      {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate | localizeddate("medium", "short")) }}
       {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
 
-      {% set closeDate = interv.closeDate?interv.closeDate|date('d-m-Y H:i'):'-' %}
+      {% set closeDate = interv.closeDate?interv.closeDate|localizeddate("medium", "short"):'-' %}
       {{ mymacro.fieldset_row('Data chiusura', closeDate ) }}
       {% if interv.isPlanned %}
-        {{ mymacro.fieldset_row('Scadenza contratto', interv.contract.endDate|date('d-m-Y')) }}
+        {{ mymacro.fieldset_row('Scadenza contratto', interv.contract.endDate|localizeddate("medium", "none")) }}
       {% endif %}
     </dl>
   </div>

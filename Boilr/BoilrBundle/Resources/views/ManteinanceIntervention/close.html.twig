@@ -21,7 +21,9 @@
       </dl>
     </div>
 
-    {{ form_row(form.closeDate) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.closeDate.date, {'label': 'Data chiusura'}) }}
+    {{ form_row(form.closeDate.time, {'label': 'Ora chiusura'}) }}
 
     <div class="form-actions">
         <input class="btn btn-primary" type="submit" value="Salva" />
@@ -29,7 +31,7 @@
     </div>
 
     {{ form_rest(form) }}
-    {{ form_errors(form) }}
+
   </form>
 </div>
 {% endblock %}

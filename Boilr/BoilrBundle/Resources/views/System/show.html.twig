@@ -8,14 +8,7 @@
   </div>
 
   <h3>Scheda impianto</h3>
-  <dl class="dl-horizontal">
-    {{ mymacro.fieldset_row('Proprietario', system.owner.getFullName()) }}
-    {{ mymacro.fieldset_row('Tipo', system.systemType.name) }}
-    {{ mymacro.fieldset_row('Seriale', system.code) }}
-    {{ mymacro.fieldset_row('Descrizione', system.descr) }}
-    {{ mymacro.fieldset_row('Data installaz.', system.installDate | date('d-m-Y H:i')) }}
-    {{ mymacro.fieldset_row('Ultima manutenz.', system.lastManteinance | date('d-m-Y H:i')) }}
-  </dl>
+  {% include 'BoilrBundle:System:_detail.html.twig' with {'system': system} %}
 
   {% if system.defaultInstaller %}
     {% set inst = system.defaultInstaller %}
@@ -28,7 +21,13 @@
       {{ mymacro.fieldset_row('Partita IVA', inst.vatCode|default('-')) }}
     </dl>
   {% else %}
-    <div class="alert alert-info">Non è stato associato alcun tecnico predefinito.</div>
+    <div class="alert alert-info">
+      Non è stato associato alcun tecnico predefinito.
+      <p class="pull-right">
+      <a class="btn btn-mini" href="{{ url('system_link_installer', {'id': system.id}) }}">
+        <i class="icon-wrench"></i> Aggiungi
+      </a></p>
+    </div>
   {% endif %}
 
   <hr>
@@ -37,8 +36,11 @@
       <i class="icon-trash"></i> Elimina
     </a>
   {% endif %}
-    <a class="btn btn-small" href="{{ url('system_list_doc', {'id': system.id} ) }}">
-      <i class="icon-book"></i> Documentazione
-    </a>
+  <a class="btn btn-small" href="{{ url('system_list_doc', {'id': system.id} ) }}">
+    <i class="icon-book"></i> Documentazione
+  </a>
+  {% if system.defaultInstaller is null %}
+
+  {% endif %}
 </div>
 {% endblock inner_block %}
