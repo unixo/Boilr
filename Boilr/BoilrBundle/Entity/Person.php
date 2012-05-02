@@ -567,4 +567,15 @@ class Person
         return $this->contracts;
     }
 
+    public function asXml()
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $personXML = $dom->createElement("customer");
+        $personXML->appendChild($dom->createElement("name", $this->name));
+        $personXML->appendChild($dom->createElement("surname", $this->surname));
+        $personXML->appendChild($dom->createElement("homePhone", $this->homePhone));
+        $personXML->appendChild($dom->createElement("officePhone", $this->officePhone));
+
+        return $personXML;
+    }
 }

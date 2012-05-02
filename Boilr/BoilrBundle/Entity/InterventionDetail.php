@@ -179,4 +179,23 @@ class InterventionDetail
             $context->addViolation('Specificare la tipologia di controllo', array(), null);
         }
     }
+
+    /**
+     * Returns an instance of DOMElement representing current instance
+     *
+     * @return DOMElement
+     */
+    public function asXml()
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $detailXML = $dom->createElement("detail");
+        $detailXML->appendChild($dom->importNode($this->system->asXml(), true));
+        $checks = $dom->createElement("checks");
+        foreach ($this->checks as $check) {
+            $checks->appendChild($dom->importNode($check->asXml(), true));
+        }
+        $detailXML->appendChild($checks);
+
+        return $detailXML;
+    }
 }

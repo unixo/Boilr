@@ -503,4 +503,31 @@ class ManteinanceIntervention
     {
         return $this->hasCheckResults;
     }
+
+    public function asXml()
+    {
+        $doc = new \DOMDocument('1.0', 'utf-8');
+        $doc->formatOutput = true;
+
+        $rootNode = $doc->createElement('intervention');
+        $rootNode->setAttribute('isPlanned', $this->isPlanned?"true":"false");
+        $rootNode->setAttribute('scheduledDate', $this->scheduledDate->format('d-m-Y H:i'));
+        $rootNode->setAttribute('expectedCloseDate', $this->expectedCloseDate->format('d-m-Y H:i'));
+        $rootNode->setAttribute('closeDate', $this->closeDate->format('d-m-Y H:i'));
+        $doc->appendChild($rootNode);
+
+        $rootNode->appendChild($doc->importNode($this->customer->asXml(), true));
+        $rootNode->appendChild($doc->importNode($this->installer->asXml(), true));
+
+        $detailsNode = $doc->createElement("details");
+        foreach ($this->details as $detail) {
+            /* @var $detail \Boilr\BoilrBundle\Entity\InterventionDetail */
+            $detailsNode->appendChild($doc->importNode($detail->asXml(), true));
+        }
+        $rootNode->appendChild($detailsNode);
+
+        echo $doc->saveXML();die();
+
+        return $doc;
+    }
 }

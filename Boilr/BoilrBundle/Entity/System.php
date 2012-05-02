@@ -342,4 +342,19 @@ class System
     {
         return $this->defaultInstaller;
     }
+
+    public function asXml()
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $systemXML = $dom->createElement("system");
+        $systemXML->appendChild($dom->createElement("descr", $this->descr));
+        $systemXML->appendChild($dom->createElement("code", $this->code));
+        $systemXML->appendChild($dom->createElement("type", $this->systemType->getName()));
+        $systemXML->appendChild($dom->createElement("product", $this->product->getName()));
+    //    $systemXML->appendChild($dom->createElement("manufacturer", $this->product->getManufacturer()));
+        $systemXML->appendChild($dom->createElement("installDate", $this->installDate->format('d-m-Y H:i')));
+        $systemXML->appendChild($dom->createElement("lastManteinance", $this->lastManteinance->format('d-m-Y H:i')));
+
+        return $systemXML;
+    }
 }

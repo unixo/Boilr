@@ -165,4 +165,38 @@ class InterventionCheck
     {
         return $this->parentOperation;
     }
+
+    /**
+     * Returns an instance of DOMElement representing current instance
+     *
+     * @return DOMElement
+     */
+    public function asXml()
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $checkXML = $dom->createElement("check");
+        $checkXML->appendChild($dom->createElement("operation", $this->parentOperation->getName()));
+        if ($this->parentOperation->getResultType() === Operation::RESULT_CHECKBOX) {
+            $checkXML->appendChild($dom->createElement("type", "checkbox"));
+            $value = "";
+            switch ($this->threewayValue) {
+                case 0:
+                    $value = "NO";
+                    break;
+                case 1:
+                    $value = "SI";
+                    break;
+                case 2:
+                    $value = "Non Controllato";
+                    break;
+            }
+            $checkXML->appendChild($dom->createElement("value", $value));
+        } else {
+            $checkXML->appendChild($dom->createElement("type", "text"));
+            $checkXML->appendChild($dom->createElement("value", $this->textValue));
+        }
+
+        return $checkXML;
+    }
+
 }

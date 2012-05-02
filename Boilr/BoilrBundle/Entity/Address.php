@@ -15,15 +15,16 @@ use Vich\GeographicalBundle\Annotation as Vich;
  */
 class Address
 {
-    const TYPE_HOME   = 1;
+
+    const TYPE_HOME = 1;
     const TYPE_OFFICE = 2;
-    const TYPE_OTHER  = 3;
+    const TYPE_OTHER = 3;
 
     private static $typeDescr = array(
-            self::TYPE_HOME   => "Abitazione",
-            self::TYPE_OFFICE => "Ufficio",
-            self::TYPE_OTHER  => "Altro"
-        );
+        self::TYPE_HOME => "Abitazione",
+        self::TYPE_OFFICE => "Ufficio",
+        self::TYPE_OTHER => "Altro"
+    );
 
     /**
      * @var integer $id
@@ -96,7 +97,7 @@ class Address
 
     public function typeAsString()
     {
-        return self::$typeDescr[ $this->getType() ];
+        return self::$typeDescr[$this->getType()];
     }
 
     /**
@@ -277,11 +278,7 @@ class Address
     public function getAddress()
     {
         return sprintf(
-            '%s, %s, %s %s',
-            $this->street,
-            $this->city,
-            $this->state,
-            $this->postalCode
+                        '%s, %s, %s %s', $this->street, $this->city, $this->state, $this->postalCode
         );
     }
 
@@ -314,4 +311,23 @@ class Address
     {
         return (($this->latitude != 0) && ($this->longitude != 0));
     }
+
+    /**
+     * Returns an instance of DOMElement representing current instance
+     *
+     * @return DOMElement
+     */
+    public function asXml()
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $addressXML = $dom->createElement("address");
+        $addressXML->appendChild($dom->createElement("city", $this->city));
+        $addressXML->appendChild($dom->createElement("street", $this->street));
+        $addressXML->appendChild($dom->createElement("province", $this->province));
+        $addressXML->appendChild($dom->createElement("postalCode", $this->postalCode));
+        $addressXML->appendChild($dom->createElement("state", $this->state));
+
+        return $addressXML;
+    }
+
 }

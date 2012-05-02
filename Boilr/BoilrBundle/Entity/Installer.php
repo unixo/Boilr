@@ -292,4 +292,22 @@ class Installer
         return $this->account;
     }
 
+    /**
+     * Returns an instance of DOMElement representing current instance
+     *
+     * @return DOMElement
+     */
+    public function asXml()
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $installerXML = $dom->createElement("installer");
+        $installerXML->appendChild($dom->createElement("name", $this->name));
+        $installerXML->appendChild($dom->createElement("surname", $this->surname));
+        $installerXML->appendChild($dom->createElement("officePhone", $this->officePhone));
+        $installerXML->appendChild($dom->createElement("cellularPhone", $this->cellularPhone));
+        $installerXML->appendChild($dom->createElement("company", $this->company->getName()));
+
+        return $installerXML;
+    }
+
 }
