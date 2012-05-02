@@ -11,8 +11,10 @@
 
     {{ form_row(form.searchByDate) }}
     {{ form_row(form.startDate, {'attr': {'class': 'jdate'}}) }}
-    {{ form_row(form.endDate) }}
+    {{ form_row(form.endDate, {'attr': {'class': 'jdate'}}) }}
     {{ form_row(form.planned) }}
+    {{ form_row(form.withoutInstaller, {'label': 'Senza tecnico',
+                                        'help_inline': 'Spuntare la casella per visualizzare gli interventi senza un tecnico associato'}) }}
     {{ form_row(form.status) }}
 
     <div class="form-actions">
