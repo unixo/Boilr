@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ManteinanceInterventionFilter
 {
+
     /**
      * @var boolean
      * Assert\Type(type="bool")
@@ -31,20 +32,27 @@ class ManteinanceInterventionFilter
     protected $planned;
 
     /**
+     * @var boolean
+     * Assert\Type(type="bool")
+     */
+    protected $withoutInstaller;
+
+    /**
      * @var array
      */
     protected $status;
 
     function __construct()
     {
-        $now       = new \DateTime();
+        $now = new \DateTime();
         $nextMonth = clone $now;
-        $nextMonth->add( \DateInterval::createFromDateString('1 month') );
+        $nextMonth->add(\DateInterval::createFromDateString('1 month'));
 
-        $this->status       = array();
+        $this->status = array();
         $this->searchByDate = true;
-        $this->startDate    = $now;
-        $this->endDate      = $nextMonth;
+        $this->withoutInstaller = false;
+        $this->startDate = $now;
+        $this->endDate = $nextMonth;
     }
 
     public function getSearchByDate()
@@ -100,4 +108,15 @@ class ManteinanceInterventionFilter
     {
         $this->status = $status;
     }
+
+    public function getWithoutInstaller()
+    {
+        return $this->withoutInstaller;
+    }
+
+    public function setWithoutInstaller($withoutInstaller)
+    {
+        $this->withoutInstaller = $withoutInstaller;
+    }
+
 }

@@ -138,6 +138,10 @@ class ManteinanceInterventionRepository extends EntityRepository
             $qb->andWhere('mi.isPlanned = 1');
         }
 
+        if ($filter->getWithoutInstaller()) {
+            $qb->andWhere('mi.installer IS NULL');
+        }
+
         // Status
         if (count($filter->getStatus()) > 0) {
             $qb->andWhere('mi.status in (:statuses)');

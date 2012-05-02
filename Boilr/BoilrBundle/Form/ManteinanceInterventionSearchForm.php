@@ -33,6 +33,7 @@ class ManteinanceInterventionSearchForm extends AbstractType
                     'widget' => 'single_text',
                 ))
                 ->add('planned', 'checkbox', array('required' => false, 'label' => 'Programmato'))
+                ->add('withoutInstaller', 'checkbox', array('required' => false))
                 ->add('status', 'choice', array(
                     'label' => 'Stato',
                     'choices' => $allStatus,
