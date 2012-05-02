@@ -83,7 +83,7 @@ class ContractRepository extends EntityRepository
                     $lastDate = $this->getFutureDate($lastDate, $schema->getFreq());
 
                     while ($lastDate <= $contract->getEndDate()) {
-                        $manInt = ManteinanceIntervention::plannedInterventionFactory($contract);
+                        $manInt = ManteinanceIntervention::PlannedInterventionFactory($contract);
                         $manInt->setScheduledDate($lastDate);
                         $manInt->addSystem($contract->getSystem(), $schema->getOperationGroup());
                         $miRepos->evalExpectedCloseDate($manInt);
@@ -94,7 +94,7 @@ class ContractRepository extends EntityRepository
                 } else {
                     $lastDate = $this->getFutureDate($lastDate, $schema->getFreq());
 
-                    $manInt = ManteinanceIntervention::plannedInterventionFactory($contract);
+                    $manInt = ManteinanceIntervention::PlannedInterventionFactory($contract);
                     $manInt->setScheduledDate($lastDate);
                     $manInt->addSystem($contract->getSystem(), $schema->getOperationGroup());
                     $miRepos->evalExpectedCloseDate($manInt);

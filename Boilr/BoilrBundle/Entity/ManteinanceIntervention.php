@@ -145,7 +145,7 @@ class ManteinanceIntervention
         return $int;
     }
 
-    public static function plannedInterventionFactory(\Boilr\BoilrBundle\Entity\Contract $contract)
+    public static function PlannedInterventionFactory(\Boilr\BoilrBundle\Entity\Contract $contract)
     {
         $int = new ManteinanceIntervention();
         $int->setHasCheckResults(false);
