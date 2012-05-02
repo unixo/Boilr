@@ -60,7 +60,7 @@ class Attachment
     protected $type;
 
     /**
-     * @var onwer
+     * @var owner
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
