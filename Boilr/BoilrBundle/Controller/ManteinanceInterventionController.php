@@ -10,6 +10,7 @@ use Boilr\BoilrBundle\Entity\ManteinanceIntervention,
     Boilr\BoilrBundle\Entity\Attachment as MyAttachment,
     Boilr\BoilrBundle\Form\ManteinanceInterventionSearchForm,
     Boilr\BoilrBundle\Form\DetailResultsForm,
+    Boilr\BoilrBundle\Form\InterventionLinkInstallerForm,
     Boilr\BoilrBundle\Form\ChooseTemplateForm,
     Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter,
     Boilr\BoilrBundle\Form\Model\InterventionDetailResults,
@@ -225,56 +226,36 @@ class ManteinanceInterventionController extends BaseController
     }
 
     /**
-     * @Route("/set-installer/{id}", name="add_installer_to_interv")
+     * @Route("/{id}/add-installer", name="add_installer_to_interv")
      * @Template()
      */
     public function addInstallerAction()
     {
         $interv = $this->paramConverter('id');
+        $form = $this->createForm(new InterventionLinkInstallerForm(), $interv);
 
-        // Build the flow/form
-        $flow = $this->get('boilr.form.flow.linkInstaller');
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
 
-        // reset data if it's first time I request the page
-        if ($this->getRequest()->getMethod() === 'GET') {
-            $flow->reset();
-        }
+            if ($form->isValid()) {
+                $dem = $this->getEntityManager();
+                try {
+                    $dem->persist($interv);
+                    $dem->flush();
+                    $this->setNoticeMessage('Tecnico associato con successo');
 
-        $flow->setAllowDynamicStepNavigation(true);
-        $flow->bind($interv);
-
-        $form = $flow->createForm($interv);
-        if ($flow->isValid($form)) {
-            $flow->saveCurrentStepData();
-
-            if ($flow->nextStep()) {
-                return array(
-                    'form' => $flow->createForm($interv)->createView(),
-                    'flow' => $flow,
-                    'interv' => $interv
-                );
-            }
-
-            // flow finished
-            try {
-                $em = $this->getEntityManager();
-                $em->persist($interv);
-                $em->flush();
-                $flow->reset();
-                $this->setNoticeMessage("Operazione completata con successo");
-
-                return $this->redirect($this->generateUrl('intervention_detail', array('id' => $interv->getId())));
-            } catch (\PDOException $exc) {
-                $this->setErrorMessage("Si è verificato un'errore durante il salvataggio");
+                    return $this->redirect($this->generateUrl('intervention_detail', array('id' => $interv->getId())));
+                } catch (Exception $exc) {
+                    $this->setErrorMessage('Si è verificato un errore durante il salvataggio.');
+                }
             }
         }
 
-        return array('form' => $form->createView(), 'flow' => $flow, 'interv' => $interv);
+        return array('form' => $form->createView(), 'interv' => $interv);
     }
 
     /**
      * @Route("/search", name="search_intervention")
-     * @Method("get")
      * @Template
      */
     public function searchAction()
@@ -370,7 +351,6 @@ class ManteinanceInterventionController extends BaseController
      *
      * @Route("/{id}/close", name="intervention_close")
      * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR, ROLE_INSTALLER")
-     * @Method("get")
      * @Template()
      */
     public function closeAction()

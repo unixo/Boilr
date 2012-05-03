@@ -8,63 +8,17 @@
   </div>
 
   <form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
-    {% include 'CraueFormFlowBundle:FormFlow:stepField.html.twig' %}
 
-    <fieldset>
-        <legend>Dettagli intervento</legend>
+    {% include 'BoilrBundle:ManteinanceIntervention:_detail.html.twig' with {'interv': interv} %}
 
-        {{ mymacro.fieldset_row('Cliente', interv.customer.fullName) }}
-        {{ mymacro.fieldset_row('Data', interv.scheduledDate|localizeddate("medium", "short")) }}
-        {% if interv.details | length == 1 %}
-        <div><label>Impianto:</label><span>{{ interv.details[0].system.descr }}</span></div>
-        <div><label>Tipo:</label><span>{{ interv.details[0].system.systemType.name }}</span></div>
-        {% else %}
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Matricola</th>
-                        <th>Descrizione</th>
-                        <th>Tipologia</th>
-                        <th>Gruppo controlli</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for detail in interv.details %}
-                    <tr>
-                        <td>{{ detail.system.code }}</td>
-                        <td>{{ detail.system.descr }}</td>
-                        <td>{{ detail.system.systemType.name }}</td>
-                        <td>{{ detail.operationGroup.fullDescr }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
-    </fieldset>
-
-    {% if flow.getCurrentStep() == 1 %}
-        <fieldset>
-            <legend>Selezione installatore</legend>
-
-            <div><label>Nominativo:</label>{{ form_widget(form.installer) }}</div>
-        </fieldset>
-    {% elseif flow.getCurrentStep() == 2 %}
-         {% include 'BoilrBundle:Person:_anag.html.twig' with { 'person': interv.installer,
-                                                                'allFields': false,
-                                                                'title': 'Dati installatore' } %}
-    {% endif %}
-
-    {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' %}
-
+    {{ form_row(form.installer, {'label': 'Tecnico'}) }}
     {{ form_rest(form) }}
     {{ form_errors(form) }}
+
+    <div class="form-actions">
+      <input type="submit" class="btn btn-primary" value="Associa" />
+      <a class="btn" href="{{ url('intervention_detail', {id: interv.id}) }}">Annulla</a>
+    </div>
   </form>
 </div>
-{% endblock %}
-
-
-{% block javascripts %}
-{{ form_javascript(form) }}
 {% endblock %}
