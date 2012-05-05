@@ -25,7 +25,7 @@ class IconGenerator implements IconGeneratorInterface
         if ($obj instanceof MyAddress) {
             $img = self::$type[$obj->getType()];
 
-            return "/img/".$img;
+            return "/bundles/boilr/img/".$img;
         }
 
         return null;
