@@ -1,0 +1,81 @@
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+
+{% block inner_block %}
+<div class="span9">
+  <div class="page-header">
+    <h1>Assegnazione assistita intervanti <small>Selezione politica</small></h1>
+  </div>
+
+  <h3>Interventi di manutenzione <small>non ancora assegnati</small></h3>
+  {% if interventions|length > 0 %}
+      <div style="max-height: 250px; overflow-y: scroll">
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Cliente</th>
+              <th>Stato</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for interv in interventions %}
+            <tr>
+              <td>{{ interv.scheduledDate | localizeddate("short", "none") }}</td>
+              <td>{{ interv.customer.fullName }}</td>
+              <td>{{ interv.getStatusDescr() }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <hr>
+
+      <h3>Tecnici disponibili <small>selezionati in base alle abilità</small></h3>
+      <div style="max-height: 250px; overflow-y: scroll">
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>Nominativo</th>
+              <th>Abilità</th>
+              <th># interv.</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for installer in installers %}
+            <tr>
+              <td>{{ installer.name }}</td>
+              <td>
+                <a href="#" class="po-info" data-content="{{ installer.abilities|replace({", ": "<br>"})|raw }}" data-original-title="Tipologia d'impianti gestita">
+                  {{ installer.abilities|truncate(50) }}
+                </a>
+              </td>
+              <td>{{ installer.load }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <br/>
+
+      <div class="row-fluid">
+        <h3>Selezione algoritmo di associazione</h3>
+
+        <ul class="thumbnails">
+          <li class="span3">
+            <div class="caption">
+              <h5>Carico bilanciato</h5>
+              <p>Assegna gli interventi in pari misura a tutti i tecnici.</p>
+              <p><a href="{{ url('intervention_equalpolicy') }}" class="btn btn-primary">Vai</a></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+  {% else %}
+    <br>
+    <div class="alert alert-info">Tutti gli interventi risultano assegnati.</div>
+  {% endif %}
+
+</div>
+{% endblock inner_block %}

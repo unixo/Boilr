@@ -310,4 +310,19 @@ class Installer
         return $installerXML;
     }
 
+    /**
+     * Returns a comma-separated string representing installer abilities
+     * (type of systems he's able to mantain)
+     *
+     * @return string
+     */
+    public function getAbilitiesDescr()
+    {
+        $descr = array();
+        foreach ($this->abilities as $ab) {
+            $descr[] = $ab->getName();
+        }
+
+        return implode(", ", $descr);
+    }
 }

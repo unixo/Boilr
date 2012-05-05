@@ -530,4 +530,80 @@ class ManteinanceInterventionController extends BaseController
         );
     }
 
+    /**
+     * Export given intervention in XML
+     *
+     * @Route("/assignment-wizard", name="intervention_assignment_wizard")
+     * @Template()
+     */
+    public function assignmentWizardAction()
+    {
+        $interventions = $this->getEntityRepository()->findBy(array('installer' => null));
+        $installers = array();
+
+        if (count($interventions) > 0) {
+            $_installers = new \Doctrine\Common\Collections\ArrayCollection();
+
+            foreach ($interventions as $interv) {
+                $details = $interv->getDetails();
+                $systemType = $details[0]->getSystem()->getSystemType();
+                foreach ($systemType->getInstallers() as $inst) {
+                    if (! $_installers->contains($inst)) {
+                        $_installers->add($inst);
+                    }
+                }
+            }
+
+
+            foreach ($_installers as $inst) {
+                $entry['id'] = $inst->getId();
+                $entry['name'] = $inst->getFullName();
+                $entry['load'] = $this->getDoctrine()->getRepository('BoilrBundle:Installer')->getLoadForInstaller($inst);
+                $entry['abilities'] = $inst->getAbilitiesDescr();
+
+                $installers[] = $entry;
+            }
+        }
+
+        return array('interventions' => $interventions, 'installers' => $installers);
+    }
+
+    /**
+     * Apply equal balanced policy
+     *
+     * @Route("/policy/equal", name="intervention_equalpolicy")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
+     * @Template()
+     */
+    public function applyEqualPolicyAction()
+    {
+        $interventions = $this->getEntityRepository()->findBy(array('installer' => null));
+        $installers = $this->getDoctrine()->getRepository('BoilrBundle:Installer')->findAll();
+        $em = $this->getEntityManager();
+
+        $policy = new \Boilr\BoilrBundle\Policy\EqualBalancedPolicy($em);
+        $policy->setInstallers($installers);
+        $policy->setInterventions($interventions);
+
+        $results = $policy->elaborate();
+
+        if ($this->getRequest()->get('doit', false)) {
+            try {
+                foreach ($results as $entry) {
+                    $intervention = $entry['intervention'];
+                    $installer = $entry['installer']['obj'];
+                    $intervention->setInstaller($installer);
+                }
+                $this->getEntityManager()->flush();
+                $this->setNoticeMessage('Interventi assegnati con successo');
+
+                return $this->redirect($this->generateUrl('intervention_assignment_wizard'));
+            } catch (Exception $exc) {
+                $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
+            }
+        }
+
+        return array('interventions' => $interventions, 'results' => $results);
+    }
+
 }

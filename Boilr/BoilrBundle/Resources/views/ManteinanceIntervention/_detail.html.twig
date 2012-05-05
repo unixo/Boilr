@@ -1,7 +1,26 @@
 {% import "BoilrBundle:Common:macros.html.twig" as mymacro %}
+{% spaceless %}
+
+{% set customer = interv.customer %}
+{% set info = '<dl class="dl-horizontal">' ~
+              "<dt>Nome:</dt><dd>" ~ customer.fullname ~ "</dd>" ~
+              "<dt>Telef. casa:</dt><dd>" ~ customer.homePhone|default('-') ~ "</dd>" ~
+              "<dt>Telef. ufficio:</dt><dd>" ~ customer.officePhone|default('-') ~ "</dd>" ~
+              "<dt>Telef. cellulare:</dt><dd>" ~ customer.cellularPhone|default('-') ~ "</dd>" ~
+              "<dt>Email #1:</dt><dd>" ~ customer.primaryMail|default('-') ~ "</dd>" ~
+              "<dt>Email #2:</dt><dd>" ~ customer.secondaryMail|default('-') ~ "</dd>" ~
+              "</dl><p>&nbsp;</p>"
+%}
+
 
 <dl class="dl-horizontal">
-  {{ mymacro.fieldset_row('Cliente', interv.customer.fullname) }}
+  <dt>Cliente:</dt>
+  <dd>{{ interv.customer.fullname }}&nbsp;
+      <a href="#" class="btn btn-mini po-info" rel="popover"
+                   data-content="{{ info }}"
+                   data-original-title="Dettaglio cliente"><i class="icon-tag"></i>
+      </a>
+  </dd>
   {{ mymacro.fieldset_row('Data intervento', interv.scheduledDate | localizeddate("medium", "short")) }}
   {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate | localizeddate("medium", "short")) }}
   {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
@@ -12,3 +31,8 @@
     {{ mymacro.fieldset_row('Scadenza contratto', interv.contract.endDate|localizeddate("medium", "none")) }}
   {% endif %}
 </dl>
+
+{% endspaceless %}
+
+
+
