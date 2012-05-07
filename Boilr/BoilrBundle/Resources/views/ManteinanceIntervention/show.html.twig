@@ -1,59 +1,69 @@
 {% extends 'BoilrBundle:Default:template5-base.html.twig' %}
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
+{% block extra_header %}
+{# vichgeo_include_js() #}
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBxynXehOTkCM1FpypIlrZzqZQfAwNNvFE&sensor=false"></script>
+{{ vichgeo_include_css() }}
+{% endblock %}
+
 {% block inner_block %}
 <div class="span9">
   <div class="page-header">
     <h1>Dettaglio intervento <small>{{ interv.isPlanned?"programmato":"non programmato" }}</small></h1>
   </div>
 
-  <div class="well-small">
-    <h3>Dettaglio cliente</h3>
+  <h3>Dettaglio cliente</h3>
+  <dl class="dl-horizontal">
+    {{ mymacro.fieldset_row('Cliente', interv.customer.fullname) }}
+    {{ mymacro.fieldset_row('Data intervento', interv.scheduledDate | localizeddate("medium", "short")) }}
+    {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate | localizeddate("medium", "short")) }}
+    {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
 
-    <dl class="dl-horizontal">
-      {{ mymacro.fieldset_row('Cliente', interv.customer.fullname) }}
-      {{ mymacro.fieldset_row('Data intervento', interv.scheduledDate | localizeddate("medium", "short")) }}
-      {{ mymacro.fieldset_row('Fine prevista', interv.expectedCloseDate | localizeddate("medium", "short")) }}
-      {{ mymacro.fieldset_row('Stato', interv.getStatusDescr()) }}
+    {% set closeDate = interv.closeDate?interv.closeDate|localizeddate("medium", "short"):'-' %}
+    {{ mymacro.fieldset_row('Data chiusura', closeDate ) }}
+    {% if interv.isPlanned %}
+      {{ mymacro.fieldset_row('Scadenza contratto', interv.contract.endDate|localizeddate("medium", "none")) }}
+    {% endif %}
+  </dl>
 
-      {% set closeDate = interv.closeDate?interv.closeDate|localizeddate("medium", "short"):'-' %}
-      {{ mymacro.fieldset_row('Data chiusura', closeDate ) }}
-      {% if interv.isPlanned %}
-        {{ mymacro.fieldset_row('Scadenza contratto', interv.contract.endDate|localizeddate("medium", "none")) }}
-      {% endif %}
-    </dl>
-  </div>
+  <h3>Impianti da revisionare</h3>
+  <br>
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Matricola</th>
+        <th>Descrizione</th>
+        <th>Tipologia</th>
+        <th>Gruppo controlli</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for detail in interv.details %}
+      <tr>
+        <td>{{ detail.system.code }}</td>
+        <td>{{ detail.system.descr }}</td>
+        <td>{{ detail.system.systemType.name }}</td>
+        <td>{{ detail.operationGroup.fullDescr }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
   {% if interv.installer is not null %}
     {% include 'BoilrBundle:Installer:_detail.html.twig' with { 'installer': interv.installer } %}
+    <h3>Mappa del percorso</h3>
+    <div id="map" class="well" style="width: 95%; height: 400px"></div>
+    <div>
+      <dl class="dl-horizontal">
+        <dt>Partenza:</dt><dd>{{ interv.installer.company.address }}</dd>
+        <dt>Destinazione:</dt><dd>{{ interv.details[0].system.address.address }}</dd>
+        <dt>Durata tratta:</dt><dd><span id="time-length"></span></dd>
+      </dl>
+    </div>
   {% else %}
     <div class="alert alert-info">Non è stato assegnato alcun installatore all'intervento.</div>
   {% endif %}
-
-  <div class="well-small">
-    <h3>Impianti da revisionare</h3>
-
-    <table class="table table-condensed table-striped">
-      <thead>
-        <tr>
-          <th>Matricola</th>
-          <th>Descrizione</th>
-          <th>Tipologia</th>
-          <th>Gruppo controlli</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for detail in interv.details %}
-        <tr>
-          <td>{{ detail.system.code }}</td>
-          <td>{{ detail.system.descr }}</td>
-          <td>{{ detail.system.systemType.name }}</td>
-          <td>{{ detail.operationGroup.fullDescr }}</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  </div>
 
 
   {% if interv.installer is null and interv.isAborted() == false and interv.isConfirmed() == false %}
@@ -70,4 +80,12 @@
     <a class="btn btn-small" href="{{ url('intervention_xml_export', {'id': interv.id}) }}"><i class="icon-download"></i> Genera XML</a>
   {% endif %}
 </div>
+{% endblock %}
+
+
+{% block javascripts %}
+
+  {% if interv.installer is not null %}
+    {{ google_directions_for(interv.installer.company, interv.details[0].system.address) }}
+  {% endif %}
 {% endblock %}

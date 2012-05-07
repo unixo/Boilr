@@ -27,6 +27,7 @@ class LocationMap extends Map
         $this->setShowZoomControl(true);
         $this->setShowMapTypeControl(true);
         $this->setShowInfoWindowsForMarkers(true);
+        $this->setShowStreetViewControl(true);
 
         //$this->addMarker(new \Vich\GeographicalBundle\Map\Marker\MapMarker(41.6298297, 12.4738096));
         //$this->addMarker(new \Vich\GeographicalBundle\Map\Marker\MapMarker(41.7403131, 12.2676940));
