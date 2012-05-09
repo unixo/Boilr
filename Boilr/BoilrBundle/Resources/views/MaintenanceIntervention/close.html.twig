@@ -22,7 +22,7 @@
     </div>
 
     {{ form_errors(form) }}
-    {{ form_row(form.closeDate.date, {'label': 'Data chiusura'}) }}
+    {{ form_row(form.closeDate.date, {'label': 'Data chiusura', 'attr': {'class': 'jdate'}}) }}
     {{ form_row(form.closeDate.time, {'label': 'Ora chiusura'}) }}
 
     <div class="form-actions">

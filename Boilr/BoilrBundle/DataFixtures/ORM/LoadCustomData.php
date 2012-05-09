@@ -9,7 +9,7 @@ use Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Entity\Address as MyAddress,
     Boilr\BoilrBundle\Entity\System as MySystem,
     Boilr\BoilrBundle\Entity\Installer,
-    Boilr\BoilrBundle\Entity\ManteinanceIntervention,
+    Boilr\BoilrBundle\Entity\MaintenanceIntervention,
     Boilr\BoilrBundle\Entity\InterventionDetail,
     Boilr\BoilrBundle\Entity\InterventionCheck;
 
@@ -58,7 +58,7 @@ class LoadCustomData extends AbstractFixture implements OrderedFixtureInterface
         $sys1->setCode("FE07041975-1");
         $sys1->setDescr('Caldaia a gas');
         $sys1->setInstallDate($aDate1);
-        $sys1->setLastManteinance($aDate2);
+        $sys1->setLastMaintenance($aDate2);
         $sys1->setAddress($addr1);
         $sys1->setSystemType($manager->merge($this->getReference('systemtype-gas-lt-35')));
         $sys1->setProduct($manager->merge($this->getReference('product-genius')));
@@ -81,12 +81,12 @@ class LoadCustomData extends AbstractFixture implements OrderedFixtureInterface
         $aDate1->setTime(10, 0, 0);
         $aDate2->setDate(2011, 8, 10);
         $aDate2->setTime(10, 50, 0);
-        $mi = ManteinanceIntervention::UnplannedInterventionFactory();
+        $mi = MaintenanceIntervention::UnplannedInterventionFactory();
         $mi->setScheduledDate($aDate1);
         $mi->setExpectedCloseDate($aDate2);
         $mi->setCustomer($cust1);
         $mi->setInstaller($inst1);
-        $mi->setStatus(ManteinanceIntervention::STATUS_CLOSED);
+        $mi->setStatus(MaintenanceIntervention::STATUS_CLOSED);
 
         $detail = new InterventionDetail();
         $detail->setIntervention($mi);

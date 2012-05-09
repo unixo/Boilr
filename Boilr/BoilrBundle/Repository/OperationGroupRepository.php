@@ -19,6 +19,7 @@ class OperationGroupRepository extends EntityRepository
      */
     public function getEstimatedTimeLength(OperationGroup $opGroup)
     {
+        /* @todo da definire
         $timeLength = 0;
 
         foreach ($opGroup->getOperations() as $oper) {
@@ -26,5 +27,8 @@ class OperationGroupRepository extends EntityRepository
         }
 
         return $timeLength;
+        */
+
+        return 600;
     }
 }

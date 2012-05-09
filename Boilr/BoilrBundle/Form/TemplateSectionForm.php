@@ -12,14 +12,17 @@ use Symfony\Component\Form\AbstractType,
  */
 class TemplateSectionForm extends AbstractType
 {
+
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array('required' => true))
-                ;
+                ->add('name', 'text', array('required' => true))
+                ->add('timeLength', 'integer', array('required' => true))
+        ;
     }
 
-    public function getDefaultOptions(array $options) {
+    public function getDefaultOptions(array $options)
+    {
         return array(
             'data_class' => 'Boilr\BoilrBundle\Entity\TemplateSection'
         );
@@ -29,4 +32,5 @@ class TemplateSectionForm extends AbstractType
     {
         return 'templateSectionForm';
     }
+
 }

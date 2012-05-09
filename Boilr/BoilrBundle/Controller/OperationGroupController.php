@@ -24,9 +24,9 @@ class OperationGroupController extends BaseController
      */
     public function listAction()
     {
-        $records = $this->getEntityRepository()->findBy(array(), array('name' => 'ASC'));
+        $groups = $this->getEntityRepository()->findBy(array(), array('name' => 'ASC'));
 
-        return array('records' => $records);
+        return array('groups' => $groups);
     }
 
     /**
@@ -43,6 +43,7 @@ class OperationGroupController extends BaseController
 
     /**
      * @Route("/{id}/delete", name="operation_group_delete")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
     public function deleteAction(OperationGroup $opgroup)
@@ -63,6 +64,7 @@ class OperationGroupController extends BaseController
     /**
      * @Route("/add", name="operation_group_add")
      * @Route("/{oid}/update", name="operation_group_edit")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
     public function addOrUpdateAction($oid = null)

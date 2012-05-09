@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType,
     Symfony\Component\Form\FormBuilder;
 
 
-class ManteinanceInterventionForm extends AbstractType
+class MaintenanceInterventionForm extends AbstractType
 {
     public function buildForm(FormBuilder $builder, array $options)
     {
@@ -29,6 +29,6 @@ class ManteinanceInterventionForm extends AbstractType
 
     public function getDefaultOptions(array $options)
     {
-        return array('data_class' => 'Boilr\BoilrBundle\Entity\ManteinanceIntervention');
+        return array('data_class' => 'Boilr\BoilrBundle\Entity\MaintenanceIntervention');
     }
 }

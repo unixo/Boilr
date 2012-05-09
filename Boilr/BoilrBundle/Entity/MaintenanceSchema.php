@@ -6,12 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Boilr\BoilrBundle\Entity\ManteinanceSchema
+ * Boilr\BoilrBundle\Entity\MaintenanceSchema
  *
- * @ORM\Table(name="manteinance_schema")
- * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\ManteinanceSchemaRepository")
+ * @ORM\Table(name="manteinance_schemas")
+ * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\MaintenanceSchemaRepository")
  */
-class ManteinanceSchema
+class MaintenanceSchema
 {
     /**
      * @var integer $id
@@ -114,9 +114,9 @@ class ManteinanceSchema
     /**
      * Set manteinanceSchema
      *
-     * @param Boilr\BoilrBundle\Entity\ManteinanceSchema $manteinanceSchema
+     * @param Boilr\BoilrBundle\Entity\MaintenanceSchema $manteinanceSchema
      */
-    public function setManteinanceSchema(\Boilr\BoilrBundle\Entity\ManteinanceSchema $manteinanceSchema)
+    public function setMaintenanceSchema(\Boilr\BoilrBundle\Entity\MaintenanceSchema $manteinanceSchema)
     {
         $this->manteinanceSchema = $manteinanceSchema;
     }
@@ -124,9 +124,9 @@ class ManteinanceSchema
     /**
      * Get manteinanceSchema
      *
-     * @return Boilr\BoilrBundle\Entity\ManteinanceSchema
+     * @return Boilr\BoilrBundle\Entity\MaintenanceSchema
      */
-    public function getManteinanceSchema()
+    public function getMaintenanceSchema()
     {
         return $this->manteinanceSchema;
     }

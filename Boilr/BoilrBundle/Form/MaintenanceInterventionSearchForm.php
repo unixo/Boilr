@@ -4,19 +4,19 @@ namespace Boilr\BoilrBundle\Form;
 
 use Symfony\Component\Form\AbstractType,
     Symfony\Component\Form\FormBuilder;
-use Boilr\BoilrBundle\Entity\ManteinanceIntervention;
+use Boilr\BoilrBundle\Entity\MaintenanceIntervention;
 
-class ManteinanceInterventionSearchForm extends AbstractType
+class MaintenanceInterventionSearchForm extends AbstractType
 {
 
     public function buildForm(FormBuilder $builder, array $options)
     {
         $allStatus = array(
-            ManteinanceIntervention::STATUS_ABORTED => 'Annullata',
-            ManteinanceIntervention::STATUS_CLOSED => 'Conclusa',
-            ManteinanceIntervention::STATUS_CONFIRMED => 'Confermato',
-            ManteinanceIntervention::STATUS_SUSPENDED => 'Sospeso',
-            ManteinanceIntervention::STATUS_TENTATIVE => 'Da confermare'
+            MaintenanceIntervention::STATUS_ABORTED => 'Annullata',
+            MaintenanceIntervention::STATUS_CLOSED => 'Conclusa',
+            MaintenanceIntervention::STATUS_CONFIRMED => 'Confermato',
+            MaintenanceIntervention::STATUS_SUSPENDED => 'Sospeso',
+            MaintenanceIntervention::STATUS_TENTATIVE => 'Da confermare'
         );
 
         $builder->add('searchByDate', 'checkbox', array('required' => false, 'label' => 'Ricerca per data'))
@@ -52,7 +52,7 @@ class ManteinanceInterventionSearchForm extends AbstractType
     public function getDefaultOptions(array $options)
     {
         return array(
-            'data_class' => 'Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter'
+            'data_class' => 'Boilr\BoilrBundle\Form\Model\MaintenanceInterventionFilter'
         );
     }
 

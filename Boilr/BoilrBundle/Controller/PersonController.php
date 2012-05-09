@@ -190,7 +190,7 @@ class PersonController extends BaseController
     public function showAction()
     {
         $person = $this->paramConverter("id");
-        $interventions = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceIntervention')
+        $interventions = $this->getDoctrine()->getRepository('BoilrBundle:MaintenanceIntervention')
                 ->interventionsForCustomer($person);
 
         return array('person' => $person, 'interventions' => $interventions);

@@ -10,14 +10,13 @@
     <fieldset>
         <legend>Dettaglio sezione</legend>
 
-        {{ form_row(form.name) }}
+        {{ form_row(form.name, {'label': 'Nome sezione', 'attr': {'class': 'span6'}}) }}
+        {{ form_row(form.timeLength, {'label': 'Durata prevista', 'help_inline': 'espressa in minuti'}) }}
     </fieldset>
 
     <div class="form-actions">
-      <a class="btn" href="{{ url('template_section_list', {id: template.id}) }}">
-        <i class="icon-arrow-left"></i> Torna al dettaglio
-      </a>
-      <input class="craue_formflow_button_last btn btn-primary" type="submit" value="Salva" />
+      <input class="btn btn-primary" type="submit" value="Salva" />
+      <a class="btn" href="{{ url('template_section_list', {id: template.id}) }}">Annulla</a>
     </div>
 
     {{ form_rest(form) }}

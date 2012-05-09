@@ -6,10 +6,10 @@ use Doctrine\Common\DataFixtures\AbstractFixture,
     \Doctrine\Common\Persistence\ObjectManager,
     Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 
-use Boilr\BoilrBundle\Entity\ManteinanceSchema,
+use Boilr\BoilrBundle\Entity\MaintenanceSchema,
     Boilr\BoilrBundle\Entity\OperationGroup;
 
-class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInterface
+class MaintenanceSchemaData extends AbstractFixture implements OrderedFixtureInterface
 {
     function load(ObjectManager $manager)
     {
@@ -18,7 +18,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
 
         // Impianti termici con combustibile liquido: ogni 12 mesi, OPS1
         $st = $manager->merge($this->getReference('systemtype-termico-comb-liquido'));
-        $ms = new ManteinanceSchema();
+        $ms = new MaintenanceSchema();
         $ms->setSystemType($st);
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
@@ -28,7 +28,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
 
         // Impianti termici con combustibile solido: ogni 12 mesi, OPS1
         $st = $manager->merge($this->getReference('systemtype-termico-comb-solido'));
-        $ms = new ManteinanceSchema();
+        $ms = new MaintenanceSchema();
         $ms->setSystemType($st);
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
@@ -42,7 +42,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
          * - in seguito ogni 12 mesi dalla data di prima accensione, OPS1
          */
         $st = $manager->merge($this->getReference('systemtype-termico-comb-gt-116'));
-        $ms = new ManteinanceSchema();
+        $ms = new MaintenanceSchema();
         $ms->setSystemType($st);
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(false);
@@ -50,7 +50,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setListOrder(0);
         $manager->persist($ms);
 
-        $ms = new ManteinanceSchema();
+        $ms = new MaintenanceSchema();
         $ms->setSystemType($st);
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
@@ -60,7 +60,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
 
         // Impianti a gas > 35kw: ogni 12 mesi, OPS1
         $st = $manager->merge($this->getReference('systemtype-gas'));
-        $ms = new ManteinanceSchema();
+        $ms = new MaintenanceSchema();
         $ms->setSystemType($st);
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
@@ -74,7 +74,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
          * - in seguito ogni 12 mesi dalla data di prima accensione, OPS1
          */
         $st = $manager->merge($this->getReference('systemtype-gas-gt-350'));
-        $ms = new ManteinanceSchema();
+        $ms = new MaintenanceSchema();
         $ms->setSystemType($st);
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(false);
@@ -82,7 +82,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
         $ms->setListOrder(0);
         $manager->persist($ms);
 
-        $ms = new ManteinanceSchema();
+        $ms = new MaintenanceSchema();
         $ms->setSystemType($st);
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
@@ -92,7 +92,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
 
         // Impianti a gas <= 35kw, tipologia B: ogni 12 mesi, OPS1
         $st = $manager->merge($this->getReference('systemtype-gas-lt-35-B'));
-        $ms = new ManteinanceSchema();
+        $ms = new MaintenanceSchema();
         $ms->setSystemType($st);
         $ms->setOperationGroup($ops1);
         $ms->setIsPeriodic(true);
@@ -102,7 +102,7 @@ class ManteinanceSchemaData extends AbstractFixture implements OrderedFixtureInt
 
         // Impianti a gas <= 35kw: ogni 24 mesi, OPS1 + OPS2
         $st = $manager->merge($this->getReference('systemtype-gas-lt-35'));
-        $ms = new ManteinanceSchema();
+        $ms = new MaintenanceSchema();
         $ms->setSystemType($st);
         $ms->setOperationGroup($ops2);
         $ms->setIsPeriodic(true);

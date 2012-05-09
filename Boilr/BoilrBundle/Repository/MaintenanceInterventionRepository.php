@@ -3,18 +3,18 @@
 namespace Boilr\BoilrBundle\Repository;
 
 use Boilr\BoilrBundle\Entity\Person as MyPerson,
-    Boilr\BoilrBundle\Entity\ManteinanceIntervention,
+    Boilr\BoilrBundle\Entity\MaintenanceIntervention,
     Boilr\BoilrBundle\Entity\OperationGroup,
     Boilr\BoilrBundle\Entity\Installer,
     Boilr\BoilrBundle\Entity\Template,
-    Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter,
+    Boilr\BoilrBundle\Form\Model\MaintenanceInterventionFilter,
     Boilr\BoilrBundle\Form\Model\InterventionDetailResults;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * ManteinanceInterventionRepository
+ * MaintenanceInterventionRepository
  */
-class ManteinanceInterventionRepository extends EntityRepository
+class MaintenanceInterventionRepository extends EntityRepository
 {
 
     /**
@@ -27,7 +27,7 @@ class ManteinanceInterventionRepository extends EntityRepository
     {
         $interventions = $this->getEntityManager()->createQueryBuilder()
                         ->select('mi')
-                        ->from('BoilrBundle:ManteinanceIntervention', 'mi')
+                        ->from('BoilrBundle:MaintenanceIntervention', 'mi')
                         ->where('mi.customer = :owner')
                         ->orderBy('mi.scheduledDate')
                         ->setParameter('owner', $person)
@@ -46,7 +46,7 @@ class ManteinanceInterventionRepository extends EntityRepository
     {
         $interventions = $this->getEntityManager()->createQueryBuilder()
                         ->select('mi')
-                        ->from('BoilrBundle:ManteinanceIntervention', 'mi')
+                        ->from('BoilrBundle:MaintenanceIntervention', 'mi')
                         ->where('mi.installer = :installer')
                         ->orderBy('mi.scheduledDate')
                         ->setParameter('installer', $installer)
@@ -65,7 +65,7 @@ class ManteinanceInterventionRepository extends EntityRepository
     public function interventionsBetweenDates($start, $end)
     {
         $records = $this->getEntityManager()->createQuery(
-                        "SELECT si FROM BoilrBundle:ManteinanceIntervention si " .
+                        "SELECT si FROM BoilrBundle:MaintenanceIntervention si " .
                         "WHERE si.scheduledDate >= :date1 AND si.scheduledDate <= :date2 " .
                         "ORDER BY si.scheduledDate")
                 ->setParameters(array('date1' => $start, 'date2' => $end))
@@ -80,11 +80,11 @@ class ManteinanceInterventionRepository extends EntityRepository
      * @param \DateTime $aDate
      * @return boolean
      */
-    public function doesInterventionOverlaps(ManteinanceIntervention $interv)
+    public function doesInterventionOverlaps(MaintenanceIntervention $interv)
     {
         $aDate = $interv->getScheduledDate();
         $miCount = $this->getEntityManager()->createQuery(
-                                "SELECT COUNT(mi) FROM BoilrBundle:ManteinanceIntervention mi " .
+                                "SELECT COUNT(mi) FROM BoilrBundle:MaintenanceIntervention mi " .
                                 "WHERE :date >= mi.scheduledDate AND :date <= mi.expectedCloseDate")
                         ->setParameter('date', $aDate)->getSingleScalarResult();
 
@@ -94,9 +94,9 @@ class ManteinanceInterventionRepository extends EntityRepository
     /**
      * Evaluate expected close time based on operation group time length
      *
-     * @param ManteinanceIntervention $interv
+     * @param MaintenanceIntervention $interv
      */
-    public function evalExpectedCloseDate(ManteinanceIntervention $interv)
+    public function evalExpectedCloseDate(MaintenanceIntervention $interv)
     {
         if (!$interv->getScheduledDate()) {
             return;
@@ -120,11 +120,11 @@ class ManteinanceInterventionRepository extends EntityRepository
         $interv->setExpectedCloseDate($aDate);
     }
 
-    public function searchInterventions(ManteinanceInterventionFilter $filter)
+    public function searchInterventions(MaintenanceInterventionFilter $filter)
     {
         $params = array();
         $qb = $this->getEntityManager()->createQueryBuilder()->select('mi')
-                ->from('BoilrBundle:ManteinanceIntervention', 'mi')
+                ->from('BoilrBundle:MaintenanceIntervention', 'mi')
                 ->orderBy('mi.scheduledDate');
 
         // Date interval
@@ -155,7 +155,7 @@ class ManteinanceInterventionRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function persistUnplannedIntervention(ManteinanceIntervention $interv)
+    public function persistUnplannedIntervention(MaintenanceIntervention $interv)
     {
         // verify that given intervention doesn't overlap with any other
         if ($this->doesInterventionOverlaps($interv)) {
@@ -222,9 +222,9 @@ class ManteinanceInterventionRepository extends EntityRepository
      * If all systems in this intervention were checked and installed stored
      * inspection results, the intervention is marked as "hasCheckResults"
      *
-     * @param ManteinanceIntervention $interv
+     * @param MaintenanceIntervention $interv
      */
-    public function markInterventionAsChecked(ManteinanceIntervention $interv)
+    public function markInterventionAsChecked(MaintenanceIntervention $interv)
     {
         $success = true;
         foreach ($interv->getDetails() as $detail) {
@@ -241,10 +241,10 @@ class ManteinanceInterventionRepository extends EntityRepository
 
     /**
      *
-     * @param ManteinanceIntervention $interv
+     * @param MaintenanceIntervention $interv
      * @param Template $template
      */
-    public function prepareDocument(ManteinanceIntervention $interv, Template $template)
+    public function prepareDocument(MaintenanceIntervention $interv, Template $template)
     {
         $document = array();
 
@@ -260,22 +260,19 @@ class ManteinanceInterventionRepository extends EntityRepository
                 // for each operation in current template section
                 foreach ($templateSection->getOperations() as $sectionOperation) {
                     $results = array_filter($intChecks, function ($entry) use ($sectionOperation) {
-                                if ($entry->getParentOperation()->getId() == $sectionOperation->getId()) {
-
+                                if ($entry->getName() == $sectionOperation->getParentOperation()->getName()) {
                                     return true;
                                 }
                                 return false;
                             });
                     if (count($results) == 1) {
                         $interventionCheck = array_pop($results);
-                        $textValue = $interventionCheck->getTextValue();
-                        $threewayValue = $interventionCheck->getThreewayValue();
 
                         $inspection = array(
-                            'checkName' => $sectionOperation->getName(),
-                            'resultType' => $sectionOperation->getResultType(),
-                            'textValue' => $textValue,
-                            'threewayValue' => $threewayValue
+                            'checkName' => $interventionCheck->getName(),
+                            'resultType' => $interventionCheck->getResultType(),
+                            'textValue' => $interventionCheck->getTextValue(),
+                            'threewayValue' => $interventionCheck->getThreewayValue(),
                         );
                         $currentSection['sectionResults'][] = $inspection;
                     }

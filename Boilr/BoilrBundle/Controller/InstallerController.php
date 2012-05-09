@@ -4,7 +4,7 @@ namespace Boilr\BoilrBundle\Controller;
 
 use Boilr\BoilrBundle\Entity\Installer as MyInstaller,
     Boilr\BoilrBundle\Form\InstallerForm,
-    Boilr\BoilrBundle\Entity\ManteinanceIntervention;
+    Boilr\BoilrBundle\Entity\MaintenanceIntervention;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template,
@@ -149,7 +149,7 @@ class InstallerController extends BaseController
     public function showMyInterventionsAction()
     {
         $installer = $this->getCurrentInstaller();
-        $interventions = $this->getDoctrine()->getRepository('BoilrBundle:ManteinanceIntervention')
+        $interventions = $this->getDoctrine()->getRepository('BoilrBundle:MaintenanceIntervention')
                         ->interventionsForInstaller($installer);
 
         return array('interventions' => $interventions);

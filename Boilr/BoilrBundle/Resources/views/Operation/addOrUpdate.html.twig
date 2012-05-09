@@ -4,30 +4,21 @@
 {% block inner_block %}
 <div class="span9">
   <div class="page-header">
-    <h1>{{ (opType == 'add')?"Nuova":"Modifica" }} operazione</h1>
+    <h1>{{ (oper.id == null)?"Nuova":"Modifica" }} operazione</h1>
   </div>
 
   <form id="form_operation" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     <fieldset>
-        <legend>Dettagli gruppo d'appartenenza</legend>
-
-        <dl class="dl-horizontal">
-          {{ mymacro.fieldset_row('Nome', parentGroup.name) }}
-          {{ mymacro.fieldset_row('Descrizione', parentGroup.descr) }}
-        </dl>
-    </fieldset>
-
-    <fieldset>
         <legend>Dettaglio operazione</legend>
 
-        {{ form_row(form.name) }}
-        {{ form_row(form.timeLength) }}
+        {{ form_row(form.name, {'attr': {'class': 'span6'}}) }}
         {{ form_row(form.resultType) }}
+        {{ form_row(form.parentGroups, {'label': "Gruppi d'appartenenza"}) }}
     </fieldset>
 
     <div class="form-actions">
         <input class="btn btn-primary" type="submit" value="Salva" />
-        <a class="btn" href="{{ url('operation_group_operations', {'id': parentGroup.id}) }}">Annulla</a>
+        <a class="btn" href="{{ url('operation_group_list') }}">Annulla</a>
     </div>
 
     {{ form_rest(form) }}

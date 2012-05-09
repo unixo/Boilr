@@ -86,7 +86,7 @@ class Attachment
     /**
      * @var parentIntervention
      *
-     * @ORM\ManyToOne(targetEntity="ManteinanceIntervention")
+     * @ORM\ManyToOne(targetEntity="MaintenanceIntervention")
      * @ORM\JoinColumn(name="intervention_id", referencedColumnName="id", nullable=true)
      */
     protected $parentIntervention;
@@ -216,9 +216,9 @@ class Attachment
     /**
      * Set parentIntervention
      *
-     * @param Boilr\BoilrBundle\Entity\ManteinanceIntervention $parentIntervention
+     * @param Boilr\BoilrBundle\Entity\MaintenanceIntervention $parentIntervention
      */
-    public function setParentIntervention(\Boilr\BoilrBundle\Entity\ManteinanceIntervention $parentIntervention)
+    public function setParentIntervention(\Boilr\BoilrBundle\Entity\MaintenanceIntervention $parentIntervention)
     {
         $this->parentIntervention = $parentIntervention;
     }
@@ -226,7 +226,7 @@ class Attachment
     /**
      * Get parentIntervention
      *
-     * @return Boilr\BoilrBundle\Entity\ManteinanceIntervention
+     * @return Boilr\BoilrBundle\Entity\MaintenanceIntervention
      */
     public function getParentIntervention()
     {

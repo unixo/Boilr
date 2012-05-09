@@ -4,7 +4,7 @@ namespace Boilr\BoilrBundle\Form\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ManteinanceInterventionFilter
+class MaintenanceInterventionFilter
 {
 
     /**

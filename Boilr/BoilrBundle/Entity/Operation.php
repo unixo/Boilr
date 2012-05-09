@@ -4,7 +4,6 @@ namespace Boilr\BoilrBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM,
     Symfony\Component\Validator\Constraints as Assert;
-
 use Boilr\BoilrBundle\Entity\OperationGroup;
 
 /**
@@ -15,11 +14,12 @@ use Boilr\BoilrBundle\Entity\OperationGroup;
  */
 class Operation
 {
+
     const RESULT_CHECKBOX = 1;
     const RESULT_NOTE = 2;
 
     public static $resultDescr = array(
-        self::RESULT_CHECKBOX   => "Si/No/N.C.",
+        self::RESULT_CHECKBOX => "Si/No/N.C.",
         self::RESULT_NOTE => "Campo note",
     );
 
@@ -35,19 +35,10 @@ class Operation
     /**
      * @var string $name
      *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false, unique=true)
      * @Assert\NotBlank
      */
     private $name;
-
-    /**
-     * @var integer $timeLength
-     *
-     * @ORM\Column(name="time_length", type="integer", nullable=false)
-     * @Assert\NotBlank
-     * @Assert\Type(type="integer")
-     */
-    private $timeLength;
 
     /**
      * @var integer $resultType
@@ -55,26 +46,25 @@ class Operation
      * @ORM\Column(name="result_type", type="integer", nullable=false)
      * @Assert\NotBlank
      */
-    private $resultType;
-
-    /**
-     * @var integer $listOrder
-     *
-     * @ORM\Column(name="list_order", type="integer", nullable=false)
-     * @Assert\NotBlank
-     */
-    protected $listOrder;
+    private $resultType = self::RESULT_CHECKBOX;
 
     /**
      * @var OperationGroup
      *
-     * @ORM\ManyToOne(targetEntity="OperationGroup", inversedBy="operations")
-     * @ORM\JoinColumn(name="op_group_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToMany(targetEntity="OperationGroup", mappedBy="operations")
      * @Assert\NotBlank
      */
-    protected $parentGroup;
+    protected $parentGroups;
 
-    protected $sections;
+    public function getResultTypeDescr()
+    {
+        return self::$resultDescr[$this->getResultType()];
+    }
+
+    public function __construct()
+    {
+        $this->parentGroups = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -107,66 +97,6 @@ class Operation
     }
 
     /**
-     * Set listOrder
-     *
-     * @param integer $listOrder
-     */
-    public function setListOrder($listOrder)
-    {
-        $this->listOrder = $listOrder;
-    }
-
-    /**
-     * Get listOrder
-     *
-     * @return integer
-     */
-    public function getListOrder()
-    {
-        return $this->listOrder;
-    }
-
-    /**
-     * Set parentGroup
-     *
-     * @param Boilr\BoilrBundle\Entity\OperationGroup $parentGroup
-     */
-    public function setParentGroup(\Boilr\BoilrBundle\Entity\OperationGroup $parentGroup)
-    {
-        $this->parentGroup = $parentGroup;
-    }
-
-    /**
-     * Get parentGroup
-     *
-     * @return Boilr\BoilrBundle\Entity\OperationGroup
-     */
-    public function getParentGroup()
-    {
-        return $this->parentGroup;
-    }
-
-    /**
-     * Set timeLength
-     *
-     * @param integer $timeLength
-     */
-    public function setTimeLength($timeLength)
-    {
-        $this->timeLength = $timeLength;
-    }
-
-    /**
-     * Get timeLength
-     *
-     * @return integer
-     */
-    public function getTimeLength()
-    {
-        return $this->timeLength;
-    }
-
-    /**
      * Set resultType
      *
      * @param integer $resultType
@@ -186,8 +116,23 @@ class Operation
         return $this->resultType;
     }
 
-    public function getResultTypeDescr()
+    /**
+     * Add parentGroups
+     *
+     * @param Boilr\BoilrBundle\Entity\OperationGroup $parentGroups
+     */
+    public function addOperationGroup(\Boilr\BoilrBundle\Entity\OperationGroup $parentGroups)
     {
-        return self::$resultDescr[ $this->getResultType() ];
+        $this->parentGroups[] = $parentGroups;
+    }
+
+    /**
+     * Get parentGroups
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getParentGroups()
+    {
+        return $this->parentGroups;
     }
 }

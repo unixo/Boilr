@@ -20,16 +20,32 @@ class LoadOperationData extends AbstractFixture implements OrderedFixtureInterfa
         $filename = __DIR__ . '/../SampleData/operations.csv';
         $fhandle = fopen($filename, "r");
 
+        $ops1 = $manager->merge($this->getReference("ops1"));
+        $ops2 = $manager->merge($this->getReference("ops2"));
+
         while (($record = fgetcsv($fhandle, 1000, '|')) !== FALSE) {
-            // group|name|time_length|order|placeholder
+            // group|name
             $op = new Operation();
-            $op->setParentGroup($manager->merge($this->getReference($record[0])));
+            switch ($record[0]) {
+                case "ops1":
+                    $ops1->addOperation($op);
+                    $op->addOperationGroup($ops1);
+                    break;
+                case "ops2":
+                    $ops2->addOperation($op);
+                    $op->addOperationGroup($ops2);
+                    break;
+                case "ops1+2":
+                    $ops1->addOperation($op);
+                    $ops2->addOperation($op);
+                    $op->addOperationGroup($ops1);
+                    $op->addOperationGroup($ops2);
+                    break;
+            }
             $op->setName($record[1]);
-            $op->setTimeLength($record[2]);
-            $op->setListOrder($record[3]);
             $op->setResultType(Operation::RESULT_CHECKBOX);
             $manager->persist($op);
-            $this->addReference($record[4], $op);
+            $this->addReference($record[2], $op);
         }
         fclose($fhandle);
 

@@ -26,13 +26,45 @@ class OperationController extends BaseController
     }
 
     /**
-     * @Route("/{id}/delete", name="operation_delete")
+     * @Route("/list-operations", name="operation_list")
      * @Template()
+     */
+    public function listAction()
+    {
+        $operations = $this->getEntityRepository()->findAll();
+
+        return array('operations' => $operations);
+    }
+
+    /**
+     * @Route("/{id}/unlink-from-group/{gid}", name="operation_unlink")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
+     */
+    public function unlinkFromGroupAction()
+    {
+        $oper = $this->paramConverter("id");
+        /* @var $oper \Boilr\BoilrBundle\Entity\Operation */
+        $group = $this->paramConverter('gid', 'BoilrBundle:OperationGroup');
+        /* @var $group \Boilr\BoilrBundle\Entity\OperationGroup */
+
+        try {
+            $group->getOperations()->removeElement($oper);
+            $this->getDoctrine()->getEntityManager()->flush();
+            $this->setNoticeMessage("Operazione conclusa con successo");
+        } catch (Exception $exc) {
+            $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
+        }
+
+        return $this->redirect($this->generateUrl('operation_group_operations', array('id' => $group->getId())));
+    }
+
+    /**
+     * @Route("/{id}/delete", name="operation_delete")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      */
     public function deleteAction()
     {
         $oper = $this->paramConverter("id");
-        $group = $oper->getParentGroup();
 
         try {
             $dem = $this->getDoctrine()->getEntityManager();
@@ -43,39 +75,24 @@ class OperationController extends BaseController
             $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
         }
 
-        return $this->redirect($this->generateUrl('operation_group_operations', array('id' => $group->getId())));
+        return $this->getLastRoute();
     }
 
     /**
-     * @Route("/{gid}/add", name="operation_add")
-     * @Route("/{oid}/update", name="operation_edit")
+     * @Route("/add", name="operation_add")
+     * @Route("/{id}/update", name="operation_edit")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
      * @Template()
      */
-    public function addOrUpdateAction($gid = null, $oid = null)
+    public function addOrUpdateAction()
     {
-        $group = null;
         $oper = null;
-        $opType = null;
 
         // Guess if I'm adding a new operation or updating an existing one
-        if ($gid != null) {
-            $group = $this->getDoctrine()->getRepository('BoilrBundle:OperationGroup')->findOneById($gid);
-            if ($group) {
-                $opType = "add";
-                $oper = new Operation();
-                $oper->setParentGroup($group);
-                $oper->setListOrder($group->getOperations()->count());
-            }
+        if (! $this->getRequest()->get('id')) {
+             $oper = new Operation();
         } else {
-            $oper = $this->getEntityRepository()->findOneById($oid);
-            if ($oper) {
-                $group = $oper->getParentGroup();
-                $opType = "update";
-            }
-        }
-
-        if ($oper === null && $group === null) {
-            throw new \InvalidArgumentException("Invalid argument");
+            $oper = $this->paramConverter('id');
         }
 
         $form = $this->createForm(new OperationForm(), $oper);
@@ -86,57 +103,23 @@ class OperationController extends BaseController
             if ($form->isValid()) {
                 try {
                     $dem = $this->getEntityManager();
-                    if ($opType == 'add') {
+                    if (! $oper->getId()) {
+                        foreach ($oper->getParentGroups() as $opGroup) {
+                            $opGroup->addOperation($oper);
+                        }
                         $dem->persist($oper);
                     }
                     $dem->flush();
                     $this->setNoticeMessage("Operazione conclusa con successo");
 
-                    return $this->redirect($this->generateUrl('operation_group_operations', array('id' => $group->getId())));
+                    return $this->getLastRoute();
                 } catch (Exception $exc) {
                     $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
                 }
             }
         }
 
-        return array('form' => $form->createView(), 'parentGroup' => $group, 'opType' => $opType);
-    }
-
-    /**
-     * @Route("/move/{id}/{dir}", name="operation_move")
-     * @Template()
-     */
-    public function moveAction()
-    {
-        $oper = $this->paramConverter("id");
-        $dir = $this->getRequest()->get('dir');
-        $dir = $dir?strtolower($dir):"down";
-        if (!in_array($dir, array('up', 'down'))) {
-            throw new \InvalidArgumentException("Invalid argument");
-        }
-
-        $parentGroup = $oper->getParentGroup();
-        $count = $parentGroup->getOperations()->count() - 1;
-        $index = $parentGroup->getOperations()->indexOf($oper);
-
-        if (($index == 0 && $dir == "up") || ($index == $count && $dir == "down")) {
-            throw new \InvalidArgumentException("Invalid argument");
-        }
-
-        if ($dir == "up") {
-            $prevOper = $parentGroup->getOperations()->get($index - 1);
-            /* @var $prevOper \Boilr\BoilrBundle\Entity\Operation */
-            $prevOper->setListOrder($index);
-            $oper->setListOrder($index - 1);
-        } else {
-            $nextOper = $parentGroup->getOperations()->get($index + 1);
-            /* @var $nextOper \Boilr\BoilrBundle\Entity\Operation */
-            $nextOper->setListOrder($index);
-            $oper->setListOrder($index + 1);
-        }
-        $this->getEntityManager()->flush();
-
-        return $this->redirect($this->generateUrl('operation_group_operations', array('id' => $parentGroup->getId())));
+        return array('form' => $form->createView(), 'oper' => $oper);
     }
 
 }

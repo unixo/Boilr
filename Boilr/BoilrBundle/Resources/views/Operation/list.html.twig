@@ -4,15 +4,15 @@
 {% block inner_block %}
 <div class="span9">
   <div class="page-header">
-    <h1>Elenco operazioni <small>Gruppo {{ group.name }}</small></h1>
+    <h1>Elenco operazioni</h1>
   </div>
 
   <table class="table table-condensed table-striped">
     <thead>
       <tr>
         <th>Descrizione</th>
-        <th>Esito</th>
-        <th>Operazioni</th>
+        <th>Tipo risultato</th>
+        <th>Operaz.</th>
       </tr>
     </thead>
     <tbody>
@@ -21,12 +21,8 @@
         <td>{{ oper.name }}</td>
         <td>{{ oper.getResultTypeDescr() }}</td>
         <td>
-          <a class="btn btn-mini" href="{{ url('operation_edit', {id: oper.id}) }}">
-              <i class="icon-pencil" title="Modifica..."></i>
-          </a>
-          <a class="btn btn-mini" href="{{ url('operation_unlink', {id: oper.id, gid: group.id}) }}">
-              <i class="icon-minus" title="Elimina dal gruppo"></i>
-          </a>
+          <a class="btn btn-mini" href="{{ url('operation_edit', {id: oper.id}) }}"><i class="icon-pencil"></i></a>
+          <a class="btn btn-mini" href="{{ url('operation_delete', {id: oper.id}) }}"><i class="icon-trash"></i></a>
         </td>
       </tr>
       {% endfor %}
@@ -34,9 +30,7 @@
   </table>
 
   <div style="margin-top: 10px;">
-    <a class="btn btn-small" href="{{ url('operation_group_list') }}">
-      <i class="icon-arrow-left"></i> Torna all'elenco
-    </a>
+
     <a class="btn btn-small" href="{{ url('operation_add') }}">
       <i class="icon-plus"></i> Aggiungi operazione...
     </a>

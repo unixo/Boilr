@@ -32,7 +32,7 @@
             </a>
             {% endif %}
         </td>
-        <td><strong>{{ sect.name }}</strong></td>
+        <td><strong>{{ sect.name }} ({{ sect.timeLength }} minuti)</strong></td>
         <td>
             <a class="btn btn-mini" href="{{ url('template_section_edit', {sid: sect.id}) }}">
                 <i class="icon-pencil" title="Modifica..."></i>
@@ -46,11 +46,11 @@
         </td>
       </tr>
       {% if sect.operations|length > 0 %}
-          {% for oper in sect.operations %}
+          {% for sectOperation in sect.operations %}
           <tr>
               <td></td>
-              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ oper.name }}</td>
-              <td><a class="btn btn-mini" href="{{ url('template_section_unbind', {id: sect.id, pid: oper.id}) }}">
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ sectOperation.parentOperation.name }}</td>
+              <td><a class="btn btn-mini" href="{{ url('template_section_unbind', {id: sect.id, pid: sectOperation.id}) }}">
                       <i class="icon-remove" title="Elimina operazione"></i>
                   </a>
               </td>

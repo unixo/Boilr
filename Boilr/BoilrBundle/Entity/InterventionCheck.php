@@ -10,9 +10,7 @@ use Boilr\BoilrBundle\Entity\Operation as MyOperation;
 /**
  * Boilr\BoilrBundle\Entity\InterventionCheck
  *
- * @ORM\Table(name="intervention_checks", uniqueConstraints={
- *        @ORM\UniqueConstraint(name="si_detail_oper", columns={"detail_id", "operation_id"})
- * })
+ * @ORM\Table(name="intervention_checks")
  * @ORM\Entity
  * @Assert\Callback(methods={"isCheckValid"})
  */
@@ -36,12 +34,20 @@ class InterventionCheck
     protected $parentDetail;
 
     /**
-     * @var Operation
+     * @var string $name
      *
-     * @ORM\ManyToOne(targetEntity="Operation")
-     * @ORM\JoinColumn(name="operation_id", referencedColumnName="id", nullable=false)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
      */
-    protected $parentOperation;
+    private $name;
+
+    /**
+     * @var integer $resultType
+     *
+     * @ORM\Column(name="result_type", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $resultType;
 
     /**
      * @var string $textValue
@@ -59,7 +65,7 @@ class InterventionCheck
 
     public function isCheckValid(ExecutionContext $context)
     {
-        if ($this->parentOperation->getResultType() == MyOperation::RESULT_CHECKBOX) {
+        if ($this->getResultType() == MyOperation::RESULT_CHECKBOX) {
             if ($this->threewayValue === null || !in_array($this->threewayValue, array(0,1,2))) {
                 $property_path = $context->getPropertyPath() . ".threewayValue";
                 $context->setPropertyPath($property_path);
@@ -147,26 +153,6 @@ class InterventionCheck
     }
 
     /**
-     * Set parentOperation
-     *
-     * @param Boilr\BoilrBundle\Entity\Operation $parentOperation
-     */
-    public function setParentOperation(\Boilr\BoilrBundle\Entity\Operation $parentOperation)
-    {
-        $this->parentOperation = $parentOperation;
-    }
-
-    /**
-     * Get parentOperation
-     *
-     * @return Boilr\BoilrBundle\Entity\Operation
-     */
-    public function getParentOperation()
-    {
-        return $this->parentOperation;
-    }
-
-    /**
      * Returns an instance of DOMElement representing current instance
      *
      * @return DOMElement
@@ -175,8 +161,8 @@ class InterventionCheck
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $checkXML = $dom->createElement("check");
-        $checkXML->appendChild($dom->createElement("operation", $this->parentOperation->getName()));
-        if ($this->parentOperation->getResultType() === Operation::RESULT_CHECKBOX) {
+        $checkXML->appendChild($dom->createElement("operation", $this->getName()));
+        if ($this->getResultType() === Operation::RESULT_CHECKBOX) {
             $checkXML->appendChild($dom->createElement("type", "checkbox"));
             $value = "";
             switch ($this->threewayValue) {
@@ -199,4 +185,44 @@ class InterventionCheck
         return $checkXML;
     }
 
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set resultType
+     *
+     * @param integer $resultType
+     */
+    public function setResultType($resultType)
+    {
+        $this->resultType = $resultType;
+    }
+
+    /**
+     * Get resultType
+     *
+     * @return integer
+     */
+    public function getResultType()
+    {
+        return $this->resultType;
+    }
 }

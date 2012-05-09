@@ -62,12 +62,12 @@ class System
     protected $installDate;
 
     /**
-     * @var date $lastManteinance
+     * @var date $lastMaintenance
      *
-     * @ORM\Column(name="last_manteinance", type="date", nullable=true)
+     * @ORM\Column(name="last_maintenance", type="date", nullable=true)
      * @MyAssert\CustomDate(groups={"system", "flow_newPerson_step3"})
      */
-    protected $lastManteinance;
+    protected $lastMaintenance;
 
     /**
      * @var string $code
@@ -216,9 +216,9 @@ class System
      *
      * @param date $lastManteinance
      */
-    public function setLastManteinance($lastManteinance)
+    public function setLastMaintenance($lastMaintenance)
     {
-        $this->lastManteinance = $lastManteinance;
+        $this->lastMaintenance = $lastMaintenance;
     }
 
     /**
@@ -226,9 +226,9 @@ class System
      *
      * @return date
      */
-    public function getLastManteinance()
+    public function getLastMaintenance()
     {
-        return $this->lastManteinance;
+        return $this->lastMaintenance;
     }
 
     /**
@@ -308,7 +308,7 @@ class System
             return;
         }
 
-        if ($this->getLastManteinance() > $now) {
+        if ($this->getLastMaintenance() > $now) {
             $property_path = $context->getPropertyPath() . ".lastManteinance";
             $context->setPropertyPath($property_path);
             $context->addViolation("La data d'ultima manutenzione è successiva a quella odierna", array(), null);
@@ -316,7 +316,7 @@ class System
             return;
         }
 
-        if ($this->getInstallDate() > $this->getLastManteinance()) {
+        if ($this->getInstallDate() > $this->getLastMaintenance()) {
             $property_path = $context->getPropertyPath() . ".lastManteinance";
             $context->setPropertyPath($property_path);
             $context->addViolation("La data d'installazione è successiva all'ultima manutenzione", array(), null);
@@ -353,7 +353,7 @@ class System
         $systemXML->appendChild($dom->createElement("product", $this->product->getName()));
     //    $systemXML->appendChild($dom->createElement("manufacturer", $this->product->getManufacturer()));
         $systemXML->appendChild($dom->createElement("installDate", $this->installDate->format('d-m-Y H:i')));
-        $systemXML->appendChild($dom->createElement("lastManteinance", $this->lastManteinance->format('d-m-Y H:i')));
+        $systemXML->appendChild($dom->createElement("lastMaintenance", $this->lastMaintenance->format('d-m-Y H:i')));
 
         return $systemXML;
     }

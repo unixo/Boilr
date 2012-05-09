@@ -41,7 +41,7 @@ class SystemForm extends AbstractType
                     'required' => true,
                     'format' => 'dd/MM/yyyy',
                     'widget' => 'single_text'))
-                ->add('lastManteinance', 'date', array(
+                ->add('lastMaintenance', 'date', array(
                     'label' => 'Ultima manutenzione',
                     'format' => 'dd/MM/yyyy',
                     'widget' => 'single_text'))

@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 use Boilr\BoilrBundle\Entity\Attachment as MyAttachment,
     Boilr\BoilrBundle\Entity\System,
     Boilr\BoilrBundle\Entity\Group,
-    Boilr\BoilrBundle\Entity\ManteinanceIntervention,
+    Boilr\BoilrBundle\Entity\MaintenanceIntervention,
     Boilr\BoilrBundle\Form\AttachmentForm;
 
 /**
@@ -99,7 +99,7 @@ class AttachmentController extends BaseController
      */
     public function uploadInterventionDocAction()
     {
-        $intervention = $this->paramConverter("id", "BoilrBundle:ManteinanceIntervention");
+        $intervention = $this->paramConverter("id", "BoilrBundle:MaintenanceIntervention");
         // create and init attachment
         $attachment = new MyAttachment();
         $attachment->setUploadDate(new \DateTime());

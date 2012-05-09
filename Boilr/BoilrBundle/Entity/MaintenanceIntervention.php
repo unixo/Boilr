@@ -13,15 +13,15 @@ use Boilr\BoilrBundle\Validator\Constraints as MyAssert,
     Boilr\BoilrBundle\Entity\OperationGroup;
 
 /**
- * Boilr\BoilrBundle\Entity\ManteinanceIntervention
+ * Boilr\BoilrBundle\Entity\MaintenanceIntervention
  *
- * @ORM\Table(name="maintenance_intervention")
- * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\ManteinanceInterventionRepository")
+ * @ORM\Table(name="maintenance_interventions")
+ * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\MaintenanceInterventionRepository")
  * @Gedmo\Timestampable
  * @Assert\Callback(methods={"isUnplannedValid"}, groups={"unplanned"})
  * @Assert\Callback(methods={"canBeClosed"}, groups={"close"})
  */
-class ManteinanceIntervention
+class MaintenanceIntervention
 {
 
     const STATUS_TENTATIVE = 0;
@@ -133,11 +133,11 @@ class ManteinanceIntervention
 
     /**
      *
-     * @return \Boilr\BoilrBundle\Entity\ManteinanceIntervention
+     * @return \Boilr\BoilrBundle\Entity\MaintenanceIntervention
      */
     public static function UnplannedInterventionFactory()
     {
-        $int = new ManteinanceIntervention();
+        $int = new MaintenanceIntervention();
         $int->setIsPlanned(false);
         $int->setHasCheckResults(false);
         $int->setStatus(self::STATUS_TENTATIVE);
@@ -147,11 +147,11 @@ class ManteinanceIntervention
 
     public static function PlannedInterventionFactory(\Boilr\BoilrBundle\Entity\Contract $contract)
     {
-        $int = new ManteinanceIntervention();
+        $int = new MaintenanceIntervention();
         $int->setHasCheckResults(false);
         $int->setIsPlanned(true);
         $int->setContract($contract);
-        $int->setStatus(ManteinanceIntervention::STATUS_TENTATIVE);
+        $int->setStatus(MaintenanceIntervention::STATUS_TENTATIVE);
         $int->setCustomer($contract->getCustomer());
 
         return $int;
@@ -225,7 +225,7 @@ class ManteinanceIntervention
 
     public static function interventionForCustomer(MyPerson $customer)
     {
-        $interv = ManteinanceIntervention::UnplannedInterventionFactory();
+        $interv = MaintenanceIntervention::UnplannedInterventionFactory();
         $interv->setCustomer($customer);
         $interv->setScheduledDate(new \DateTime());
 

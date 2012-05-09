@@ -5,7 +5,7 @@ namespace Boilr\BoilrBundle\Form;
 use Symfony\Component\Form\AbstractType,
     Symfony\Component\Form\FormBuilder;
 
-class ManteinanceSchemaForm extends AbstractType
+class MaintenanceSchemaForm extends AbstractType
 {
 
     public function buildForm(FormBuilder $builder, array $options)
@@ -26,13 +26,13 @@ class ManteinanceSchemaForm extends AbstractType
     public function getDefaultOptions(array $options)
     {
         return array(
-            'data_class' => 'Boilr\BoilrBundle\Entity\ManteinanceSchema'
+            'data_class' => 'Boilr\BoilrBundle\Entity\MaintenanceSchema'
         );
     }
 
     public function getName()
     {
-        return 'manteinanceSchemaForm';
+        return 'maintenanceSchemaForm';
     }
 
 }

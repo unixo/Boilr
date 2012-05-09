@@ -2,14 +2,14 @@
 
 namespace Boilr\BoilrBundle\Repository;
 
-use Boilr\BoilrBundle\Entity\ManteinanceSchema;
+use Boilr\BoilrBundle\Entity\MaintenanceSchema;
 use Doctrine\ORM\EntityRepository,
     Doctrine\ORM\Query;
 
-class ManteinanceSchemaRepository extends EntityRepository
+class MaintenanceSchemaRepository extends EntityRepository
 {
 
-    public function persistSchema(ManteinanceSchema $schema)
+    public function persistSchema(MaintenanceSchema $schema)
     {
         $success = true;
         $em = $this->getEntityManager();

@@ -38,9 +38,9 @@ class SystemType
     protected $installers;
 
     /**
-     * @var ManteinanceSchema
+     * @var MaintenanceSchema
      *
-     * @ORM\OneToMany(targetEntity="ManteinanceSchema", mappedBy="systemType")
+     * @ORM\OneToMany(targetEntity="MaintenanceSchema", mappedBy="systemType")
      * @ORM\OrderBy({"listOrder" = "ASC"})
      */
     protected $schemas;
@@ -103,9 +103,9 @@ class SystemType
     /**
      * Add schemas
      *
-     * @param Boilr\BoilrBundle\Entity\ManteinanceSchema $schemas
+     * @param Boilr\BoilrBundle\Entity\MaintenanceSchema $schemas
      */
-    public function addManteinanceSchema(\Boilr\BoilrBundle\Entity\ManteinanceSchema $schemas)
+    public function addMaintenanceSchema(\Boilr\BoilrBundle\Entity\MaintenanceSchema $schemas)
     {
         $this->schemas[] = $schemas;
     }

@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand,
     Symfony\Component\Console\Input\InputOption,
     Symfony\Component\Console\Output\OutputInterface;
 use Boilr\BoilrBundle\Entity\System,
-    Boilr\BoilrBundle\Entity\ManteinanceIntervention;
+    Boilr\BoilrBundle\Entity\MaintenanceIntervention;
 
 /**
  * Description of RandomDataCommand
@@ -66,7 +66,7 @@ class RandomDataCommand extends ContainerAwareCommand
 
         $systems = $this->doctrine->getRepository('BoilrBundle:System')->findAll();
         foreach ($systems as $system) {
-            $int = ManteinanceIntervention::UnplannedInterventionFactory();
+            $int = MaintenanceIntervention::UnplannedInterventionFactory();
             $int->setCustomer($system->getOwner());
             $int->addSystem($system, $opGroups[rand() % $opGroupCount]);
             $int->setScheduledDate($randomDate);
@@ -98,7 +98,7 @@ class RandomDataCommand extends ContainerAwareCommand
             $newSystem->setAddress($addresses[$i]);
             $newSystem->setOwner($addresses[$i]->getPerson());
             $newSystem->setInstallDate($aDate1);
-            $newSystem->setLastManteinance($aDate2);
+            $newSystem->setLastMaintenance($aDate2);
 
             if (rand() % 2) {
                 $installers = $newSystem->getSystemType()->getInstallers();

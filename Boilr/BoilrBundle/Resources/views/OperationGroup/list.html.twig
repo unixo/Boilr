@@ -6,7 +6,7 @@
   <div class="page-header">
     <h1>Gruppi di controlli</h1>
   </div>
-  
+
   <fieldset>
     <legend>Elenco operazioni</legend>
 
@@ -20,7 +20,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for group in records %}
+      {% for group in groups %}
       <tr>
         <td><a href="{{ url('operation_group_operations', {id: group.id} ) }}">{{ group.name }}</a></td>
         <td>{{ group.descr }}</td>
@@ -37,7 +37,10 @@
 
   <div style="margin-top: 10px;">
     <a class="btn btn-small" href="{{ url('operation_group_add') }}">
-        <i class="icon-plus"></i> Aggiungi
+        <i class="icon-plus"></i> Aggiungi gruppo
+    </a>
+    <a class="btn btn-small" href="{{ url('operation_add') }}">
+      <i class="icon-plus"></i> Aggiungi operazione...
     </a>
   </div>
 </div>

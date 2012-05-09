@@ -2,8 +2,8 @@
 
 namespace Boilr\BoilrBundle\Controller;
 
-use Boilr\BoilrBundle\Entity\ManteinanceSchema,
-    Boilr\BoilrBundle\Form\ManteinanceSchemaForm;
+use Boilr\BoilrBundle\Entity\MaintenanceSchema,
+    Boilr\BoilrBundle\Form\MaintenanceSchemaForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
@@ -14,12 +14,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 /**
  * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER")
  */
-class ManteinanceSchemaController extends BaseController
+class MaintenanceSchemaController extends BaseController
 {
 
     function __construct()
     {
-        $this->entityName = 'BoilrBundle:ManteinanceSchema';
+        $this->entityName = 'BoilrBundle:MaintenanceSchema';
     }
 
     /**
@@ -74,18 +74,18 @@ class ManteinanceSchemaController extends BaseController
     public function addOrUpdateAction($id = null)
     {
         $schema = null;
-        /* @var $schema ManteinanceSchema */
+        /* @var $schema MaintenanceSchema */
 
         if (isset($id)) {
             if (!($schema = $this->getEntityRepository()->findOneById($id))) {
                 throw new \InvalidArgumentException("Invalid argument");
             }
         } else {
-            $schema = new ManteinanceSchema();
+            $schema = new MaintenanceSchema();
         }
 
         // Create the form, fill with data and select proper validation group
-        $form = $this->createForm(new ManteinanceSchemaForm(), $schema, array('validation_groups' => array('schema')));
+        $form = $this->createForm(new MaintenanceSchemaForm(), $schema, array('validation_groups' => array('schema')));
 
         if ($this->isPOSTRequest()) {
             $form->bindRequest($this->getRequest());

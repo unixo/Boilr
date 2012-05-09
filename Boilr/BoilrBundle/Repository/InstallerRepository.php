@@ -3,7 +3,7 @@
 namespace Boilr\BoilrBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Boilr\BoilrBundle\Entity\ManteinanceIntervention,
+use Boilr\BoilrBundle\Entity\MaintenanceIntervention,
     Boilr\BoilrBundle\Entity\Installer;
 
 /**
@@ -14,9 +14,9 @@ class InstallerRepository extends EntityRepository
 
     public function getLoadForInstaller(Installer $installer)
     {
-        $status = array(ManteinanceIntervention::STATUS_ABORTED, ManteinanceIntervention::STATUS_CLOSED);
+        $status = array(MaintenanceIntervention::STATUS_ABORTED, MaintenanceIntervention::STATUS_CLOSED);
         $count = $this->getEntityManager()->createQuery(
-                        "SELECT COUNT(mi) FROM BoilrBundle:ManteinanceIntervention mi " .
+                        "SELECT COUNT(mi) FROM BoilrBundle:MaintenanceIntervention mi " .
                         "WHERE mi.installer = :inst AND mi.status NOT IN (:status)"
                 )
                 ->setParameters(array('inst' => $installer, 'status' => $status))

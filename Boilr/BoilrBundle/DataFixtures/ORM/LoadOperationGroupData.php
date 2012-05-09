@@ -5,11 +5,11 @@ namespace Boilr\BoilrBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\AbstractFixture,
     Doctrine\Common\Persistence\ObjectManager,
     Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-
 use Boilr\BoilrBundle\Entity\OperationGroup;
 
 class OperationGroupData extends AbstractFixture implements OrderedFixtureInterface
 {
+
     function load(ObjectManager $manager)
     {
         $og1 = new OperationGroup();
@@ -31,4 +31,5 @@ class OperationGroupData extends AbstractFixture implements OrderedFixtureInterf
     {
         return 200;
     }
+
 }

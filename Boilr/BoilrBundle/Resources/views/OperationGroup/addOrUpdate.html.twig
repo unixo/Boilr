@@ -10,8 +10,9 @@
     <fieldset>
         <legend>Dettaglio gruppo di controlli</legend>
 
-        {{ form_row(form.name) }}
-        {{ form_row(form.descr) }}
+        {{ form_row(form.name, {'label': 'Sigla'}) }}
+        {{ form_row(form.descr, {'label': 'Descrizione', 'attr': {'class': 'span6'}}) }}
+        {{ form_row(form.operations, {'label': 'Operazioni associate'}) }}
     </fieldset>
 
     <div class="form-actions">

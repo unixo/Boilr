@@ -2,19 +2,19 @@
 
 namespace Boilr\BoilrBundle\Controller;
 
-use Boilr\BoilrBundle\Entity\ManteinanceIntervention,
+use Boilr\BoilrBundle\Entity\MaintenanceIntervention,
     Boilr\BoilrBundle\Entity\Person as MyPerson,
     Boilr\BoilrBundle\Form\UnplannedInterventionForm,
     Boilr\BoilrBundle\Entity\InterventionDetail,
     Boilr\BoilrBundle\Entity\Group as MyGroup,
     Boilr\BoilrBundle\Entity\Attachment as MyAttachment,
-    Boilr\BoilrBundle\Form\ManteinanceInterventionSearchForm,
+    Boilr\BoilrBundle\Form\MaintenanceInterventionSearchForm,
     Boilr\BoilrBundle\Form\DetailResultsForm,
     Boilr\BoilrBundle\Form\InterventionLinkInstallerForm,
     Boilr\BoilrBundle\Form\ChooseTemplateForm,
-    Boilr\BoilrBundle\Form\Model\ManteinanceInterventionFilter,
+    Boilr\BoilrBundle\Form\Model\MaintenanceInterventionFilter,
     Boilr\BoilrBundle\Form\Model\InterventionDetailResults,
-    Boilr\BoilrBundle\Form\ManteinanceInterventionForm,
+    Boilr\BoilrBundle\Form\MaintenanceInterventionForm,
     Boilr\BoilrBundle\Extension\MyDateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\Security\Core\SecurityContext,
@@ -26,12 +26,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     JMS\SecurityExtraBundle\Annotation\Secure,
     Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-class ManteinanceInterventionController extends BaseController
+class MaintenanceInterventionController extends BaseController
 {
 
     function __construct()
     {
-        $this->entityName = 'BoilrBundle:ManteinanceIntervention';
+        $this->entityName = 'BoilrBundle:MaintenanceIntervention';
     }
 
     /**
@@ -132,26 +132,26 @@ class ManteinanceInterventionController extends BaseController
      *
      * @return string
      */
-    private function getInterventionTitle(ManteinanceIntervention $int)
+    private function getInterventionTitle(MaintenanceIntervention $int)
     {
         $help = null;
         $icon = null;
         $url = $this->generateUrl('intervention_detail', array('id' => $int->getId()));
 
         switch ($int->getStatus()) {
-            case ManteinanceIntervention::STATUS_TENTATIVE:
+            case MaintenanceIntervention::STATUS_TENTATIVE:
                 $icon = "icon-question-sign";
                 $help = "Da confermare";
                 break;
-            case ManteinanceIntervention::STATUS_ABORTED:
+            case MaintenanceIntervention::STATUS_ABORTED:
                 $icon = "icon-remove";
                 $help = "Annullato";
                 break;
-            case ManteinanceIntervention::STATUS_CLOSED:
+            case MaintenanceIntervention::STATUS_CLOSED:
                 $icon = "icon-check";
                 $help = "Concluso";
                 break;
-            case ManteinanceIntervention::STATUS_CONFIRMED:
+            case MaintenanceIntervention::STATUS_CONFIRMED:
                 $icon = "icon-thumbs-up";
                 $help = "Confermato";
                 break;
@@ -175,8 +175,8 @@ class ManteinanceInterventionController extends BaseController
     public function addUnplannedInterventionAction()
     {
         $customer = $this->paramConverter('id', "BoilrBundle:Person");
-        $interv = ManteinanceIntervention::interventionForCustomer($customer);
-        $form = $this->createForm(new ManteinanceInterventionForm(), $interv, array('validation_groups' => array('unplanned')));
+        $interv = MaintenanceIntervention::interventionForCustomer($customer);
+        $form = $this->createForm(new MaintenanceInterventionForm(), $interv, array('validation_groups' => array('unplanned')));
 
         if ($this->isPOSTRequest()) {
             $form->bindRequest($this->getRequest());
@@ -209,7 +209,7 @@ class ManteinanceInterventionController extends BaseController
         // @todo terminare il metodo
         $interv = $this->paramConverter('id');
         $customer = $this->getDoctrine()->getRepository('BoilrBundle:Person')->findOneById($pid);
-        $mi = new ManteinanceIntervention();
+        $mi = new MaintenanceIntervention();
         $mi->setCustomer($customer);
 
         foreach ($customer->getSystems() as $system) {
@@ -220,7 +220,7 @@ class ManteinanceInterventionController extends BaseController
             $mi->addInterventionDetail($detail);
         }
 
-        $form = $this->createForm(new \Boilr\BoilrBundle\Form\ManteinanceInterventionForm, $mi);
+        $form = $this->createForm(new \Boilr\BoilrBundle\Form\MaintenanceInterventionForm, $mi);
 
         return array('form' => $form->createView(), 'customer' => $customer);
     }
@@ -260,8 +260,8 @@ class ManteinanceInterventionController extends BaseController
      */
     public function searchAction()
     {
-        $filter = new ManteinanceInterventionFilter();
-        $form = $this->createForm(new ManteinanceInterventionSearchForm, $filter);
+        $filter = new MaintenanceInterventionFilter();
+        $form = $this->createForm(new MaintenanceInterventionSearchForm, $filter);
         $results = array();
 
         if ($this->isPOSTRequest()) {
@@ -286,14 +286,14 @@ class ManteinanceInterventionController extends BaseController
     public function abortAction()
     {
         $interv = $this->paramConverter("id");
-        $notAllowed = array(ManteinanceIntervention::STATUS_ABORTED,
-            ManteinanceIntervention::STATUS_CLOSED);
+        $notAllowed = array(MaintenanceIntervention::STATUS_ABORTED,
+            MaintenanceIntervention::STATUS_CLOSED);
         if (in_array($interv->getStatus(), $notAllowed)) {
             throw new \InvalidArgumentException('invalid intervention status');
         }
 
         try {
-            $interv->setStatus(ManteinanceIntervention::STATUS_ABORTED);
+            $interv->setStatus(MaintenanceIntervention::STATUS_ABORTED);
             $this->getEntityManager()->flush();
             $this->setNoticeMessage("L'intervento è stato annullato");
         } catch (Exception $exc) {
@@ -315,12 +315,12 @@ class ManteinanceInterventionController extends BaseController
     {
         $interv = $this->paramConverter('id');
 
-        if ($interv->getStatus() != ManteinanceIntervention::STATUS_TENTATIVE) {
+        if ($interv->getStatus() != MaintenanceIntervention::STATUS_TENTATIVE) {
             throw new \InvalidArgumentException('invalid intervention status');
         }
 
         try {
-            $interv->setStatus(ManteinanceIntervention::STATUS_CONFIRMED);
+            $interv->setStatus(MaintenanceIntervention::STATUS_CONFIRMED);
             $this->getEntityManager()->flush();
             $this->setNoticeMessage("L'intervento è stato confermato");
         } catch (Exception $exc) {
@@ -379,9 +379,9 @@ class ManteinanceInterventionController extends BaseController
                     $now = new \DateTime();
                     foreach ($interv->getDetails() as $detail) {
                         /* @var $detail \Boilr\BoilrBundle\Entity\InterventionDetail */
-                        $detail->getSystem()->setLastManteinance($now);
+                        $detail->getSystem()->setLastMaintenance($now);
                     }
-                    $interv->setStatus(ManteinanceIntervention::STATUS_CLOSED);
+                    $interv->setStatus(MaintenanceIntervention::STATUS_CLOSED);
                     $this->getEntityManager()->flush();
                     $this->setNoticeMessage('Intervento concluso con successo');
 
@@ -500,7 +500,7 @@ class ManteinanceInterventionController extends BaseController
         $fileName = $template->getName() . ".pdf";
         $params = compact('intervention', 'template', 'document');
 
-        $html = $this->renderView('BoilrBundle:ManteinanceIntervention:generateReport.html.twig', $params);
+        $html = $this->renderView('BoilrBundle:MaintenanceIntervention:generateReport.html.twig', $params);
 
         return new Response(
                         $this->get('knp_snappy.pdf')->getOutputFromHtml($html),

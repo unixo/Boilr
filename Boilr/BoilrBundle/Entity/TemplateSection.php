@@ -2,8 +2,8 @@
 
 namespace Boilr\BoilrBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM,
+    Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Boilr\BoilrBundle\Entity\TemplateSection
@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class TemplateSection
 {
+
     /**
      * @var integer $id
      *
@@ -30,13 +31,27 @@ class TemplateSection
     private $name;
 
     /**
-     * @var Operation
+     * @var integer $timeLength
      *
-     * @ORM\ManyToMany(targetEntity="Operation", inversedBy="sections")
-     * @ORM\JoinTable(name="operation_sections",
-     *      joinColumns={@ORM\JoinColumn(name="section_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="operation_id", referencedColumnName="id")}
-     *      )
+     * @ORM\Column(name="time_length", type="integer", nullable=false)
+     * @Assert\NotBlank
+     * @Assert\Type(type="integer")
+     */
+    private $timeLength;
+
+    /**
+     * @var integer $listOrder
+     *
+     * @ORM\Column(name="list_order", type="integer", nullable=false)
+     * @Assert\NotBlank
+     * @Assert\Type(type="integer")
+     */
+    protected $listOrder;
+
+    /**
+     * @var SectionOperation
+     *
+     * @ORM\OneToMany(targetEntity="SectionOperation", mappedBy="parentSection", cascade={"persist"})
      * @ORM\OrderBy({"listOrder" = "ASC"})
      */
     protected $operations;
@@ -49,15 +64,6 @@ class TemplateSection
      * @Assert\NotBlank
      */
     protected $template;
-
-    /**
-     * @var integer $listOrder
-     *
-     * @ORM\Column(name="list_order", type="integer", nullable=false)
-     * @Assert\NotBlank
-     * @Assert\Type(type="integer")
-     */
-    protected $listOrder;
 
     public function __construct()
     {
@@ -135,22 +141,38 @@ class TemplateSection
     }
 
     /**
+     * Set timeLength
+     *
+     * @param integer $timeLength
+     */
+    public function setTimeLength($timeLength)
+    {
+        $this->timeLength = $timeLength;
+    }
+
+    /**
+     * Get timeLength
+     *
+     * @return integer
+     */
+    public function getTimeLength()
+    {
+        return $this->timeLength;
+    }
+
+    /**
      * Add operations
      *
-     * @param Boilr\BoilrBundle\Entity\Operation $operations
+     * @param Boilr\BoilrBundle\Entity\SectionOperation $operations
      */
-    public function addOperation(\Boilr\BoilrBundle\Entity\Operation $operations)
+    public function addSectionOperation(\Boilr\BoilrBundle\Entity\SectionOperation $operations)
     {
         $this->operations[] = $operations;
     }
 
-    /**
-     * Get operations
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
     public function getOperations()
     {
         return $this->operations;
     }
+
 }

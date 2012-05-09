@@ -5,8 +5,8 @@ namespace Boilr\BoilrBundle\Repository;
 use Boilr\BoilrBundle\Entity\System as MySystem,
     Boilr\BoilrBundle\Entity\Contract as MyContract,
     Boilr\BoilrBundle\Entity\SystemType as MySystemType,
-    Boilr\BoilrBundle\Entity\ManteinanceSchema as MyManteinanceSchema,
-    Boilr\BoilrBundle\Entity\ManteinanceIntervention,
+    Boilr\BoilrBundle\Entity\MaintenanceSchema as MyMaintenanceSchema,
+    Boilr\BoilrBundle\Entity\MaintenanceIntervention,
     Doctrine\ORM\EntityRepository;
 
 use Boilr\BoilrBundle\Extension\MyDateTime;
@@ -63,7 +63,7 @@ class ContractRepository extends EntityRepository
             $sysType  = $contract->getSystem()->getSystemType();
             $schemas = $this->getEntityManager()->createQueryBuilder()
                             ->select('ms')
-                            ->from('BoilrBundle:ManteinanceSchema', 'ms')
+                            ->from('BoilrBundle:MaintenanceSchema', 'ms')
                             ->where('ms.systemType = :type')
                             ->orderBy('ms.listOrder')
                             ->setParameter('type', $sysType)
@@ -73,17 +73,17 @@ class ContractRepository extends EntityRepository
             $lastDate = MyDateTime::nextWorkingDay( $contract->getStartDate() );
             $lastDate->setTime(8,0);
 
-            $miRepos = $this->getEntityManager()->getRepository('BoilrBundle:ManteinanceIntervention');
+            $miRepos = $this->getEntityManager()->getRepository('BoilrBundle:MaintenanceIntervention');
 
             // Create as much manteinance date appointment as schema
             foreach ($schemas as $schema) {
-                /* @var $schema MyManteinanceSchema */
+                /* @var $schema MyMaintenanceSchema */
 
                 if ($schema->getIsPeriodic()) {
                     $lastDate = $this->getFutureDate($lastDate, $schema->getFreq());
 
                     while ($lastDate <= $contract->getEndDate()) {
-                        $manInt = ManteinanceIntervention::PlannedInterventionFactory($contract);
+                        $manInt = MaintenanceIntervention::PlannedInterventionFactory($contract);
                         $manInt->setScheduledDate($lastDate);
                         $manInt->addSystem($contract->getSystem(), $schema->getOperationGroup());
                         $miRepos->evalExpectedCloseDate($manInt);
@@ -94,7 +94,7 @@ class ContractRepository extends EntityRepository
                 } else {
                     $lastDate = $this->getFutureDate($lastDate, $schema->getFreq());
 
-                    $manInt = ManteinanceIntervention::PlannedInterventionFactory($contract);
+                    $manInt = MaintenanceIntervention::PlannedInterventionFactory($contract);
                     $manInt->setScheduledDate($lastDate);
                     $manInt->addSystem($contract->getSystem(), $schema->getOperationGroup());
                     $miRepos->evalExpectedCloseDate($manInt);

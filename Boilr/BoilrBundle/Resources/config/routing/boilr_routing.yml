@@ -36,12 +36,12 @@ system:
 
 manteinance_schema:
     prefix:   /manteinance-schema
-    resource: "@BoilrBundle/Controller/ManteinanceSchemaController.php"
+    resource: "@BoilrBundle/Controller/MaintenanceSchemaController.php"
     type:     annotation
 
 manteinance_intervention:
-    prefix:   /manteinance-intervention
-    resource: "@BoilrBundle/Controller/ManteinanceInterventionController.php"
+    prefix:   /maintenance-intervention
+    resource: "@BoilrBundle/Controller/MaintenanceInterventionController.php"
     type:     annotation
 
 operation_group:

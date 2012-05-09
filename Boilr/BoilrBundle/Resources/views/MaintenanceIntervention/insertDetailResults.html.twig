@@ -17,11 +17,10 @@
     <fieldset>
       {% for check in form.checks %}
         {# get current parent Operation #}
-        {% set currOp = check.vars.value.parentOperation %}
         <div class="control-group">
-          <label class="control-label">{{ check.vars.value.parentOperation.name }}</label>
+          <label class="control-label">{{ check.vars.value.name }}</label>
           <div class="controls">
-            {% if currOp.resultType == constant('\\Boilr\\BoilrBundle\\Entity\\Operation::RESULT_CHECKBOX') %}
+            {% if check.vars.value.resultType == constant('\\Boilr\\BoilrBundle\\Entity\\Operation::RESULT_CHECKBOX') %}
               <div style="display: none">{{ form_widget(check.textValue) }}</div>
               {{ form_widget(check.threewayValue) }}
             {% else %}

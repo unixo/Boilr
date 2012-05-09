@@ -7,7 +7,7 @@ use Boilr\BoilrBundle\Entity\InterventionCheck,
     Boilr\BoilrBundle\Entity\InterventionDetail;
 
 /**
- * Description of ManteinanceInterventionResult
+ * Description of MaintenanceInterventionResult
  *
  * @author unixo
  */
@@ -38,16 +38,11 @@ class InterventionDetailResults
 
         foreach ($operations as $oper) {
             /* @var $oper \Boilr\BoilrBundle\Entity\Operation */
-            /*
-              $check = new InspectionCheck($oper->getId(), $this->interventionDetail->getId(), $oper->getResultType());
-              $check->setLabel($oper->getName());
-             */
-
-
+            
             $check = new InterventionCheck();
+            $check->setName($oper->getName());
+            $check->setResultType($oper->getResultType());
             $check->setParentDetail($this->interventionDetail);
-            $check->setParentOperation($oper);
-
 
             $this->checks[] = $check;
         }

@@ -11,7 +11,7 @@ class InterventionLinkInstallerForm extends AbstractType
     public function buildForm(FormBuilder $builder, array $options)
     {
         $interv = $options['data'];
-        /* @var $interv \Boilr\BoilrBundle\Entity\ManteinanceIntervention */
+        /* @var $interv \Boilr\BoilrBundle\Entity\MaintenanceIntervention */
         $systemType = null;
         if ($interv->getDetails()->count() == 1) {
             $details = $interv->getDetails();
@@ -42,7 +42,7 @@ class InterventionLinkInstallerForm extends AbstractType
     public function getDefaultOptions(array $options)
     {
         return array(
-            'data_class' => 'Boilr\BoilrBundle\Entity\ManteinanceIntervention'
+            'data_class' => 'Boilr\BoilrBundle\Entity\MaintenanceIntervention'
         );
     }
 

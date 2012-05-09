@@ -34,6 +34,7 @@ class TemplateController extends BaseController
 
     /**
      * @Route("/{id}/sections", name="template_section_list")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR")
      * @Template()
      */
     public function sectionListAction()

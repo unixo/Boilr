@@ -9,7 +9,7 @@
 
   <form id="form_unplanned_interv" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
 
-    {% include 'BoilrBundle:ManteinanceIntervention:_detail.html.twig' with {'interv': interv} %}
+    {% include 'BoilrBundle:MaintenanceIntervention:_detail.html.twig' with {'interv': interv} %}
 
     {{ form_row(form.installer, {'label': 'Tecnico'}) }}
     {{ form_rest(form) }}

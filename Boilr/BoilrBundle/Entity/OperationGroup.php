@@ -39,10 +39,14 @@ class OperationGroup
     protected $descr;
 
     /**
-     * @var TemplateItem
+     * @var Operation
      *
-     * @ORM\OneToMany(targetEntity="Operation", mappedBy="parentGroup", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"listOrder" = "ASC"})
+     * @ORM\ManyToMany(targetEntity="Operation", inversedBy="parentGroups", cascade={"persist", "remove"})
+     * @ORM\JoinTable(name="opers_per_group",
+     *      joinColumns={@ORM\JoinColumn(name="op_group_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="operation_id", referencedColumnName="id")}
+     *      )
+     * @ORM\OrderBy({"name" = "ASC"})
      */
     protected $operations;
 
@@ -100,11 +104,13 @@ class OperationGroup
     {
         return sprintf("%s (%s)", $this->getDescr(), $this->getName());
     }
+
+
     public function __construct()
     {
         $this->operations = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
+    
     /**
      * Add operations
      *
@@ -118,7 +124,7 @@ class OperationGroup
     /**
      * Get operations
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return Doctrine\Common\Collections\Collection 
      */
     public function getOperations()
     {

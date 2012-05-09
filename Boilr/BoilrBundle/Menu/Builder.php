@@ -58,6 +58,7 @@ class Builder extends ContainerAware
         $menu->setCurrentUri($this->container->get('request')->getRequestUri());
 
         $menu->addChild('Schemi di manutenzione', array('route' => 'manteinance_schema_list'))->setExtra('icon', 'icon-cog');
+        $menu->addChild('Elenco operazioni atomiche', array('route' => 'operation_list'))->setExtra('icon', 'icon-tint');
         $menu->addChild('Gruppi di controlli', array('route' => 'operation_group_list'))->setExtra('icon', 'icon-eye-open');
         $menu->addChild('Allegati', array('route' => 'template_list'))->setExtra('icon', 'icon-file');
         $menu->addChild('Ditte di manutenzione', array('route' => 'company_list'))->setExtra('icon', 'icon-cog');

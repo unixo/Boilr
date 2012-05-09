@@ -27,9 +27,9 @@ class InterventionDetail
     protected $id;
 
     /**
-     * @var ManteinanceIntervention
+     * @var MaintenanceIntervention
      *
-     * @ORM\ManyToOne(targetEntity="ManteinanceIntervention")
+     * @ORM\ManyToOne(targetEntity="MaintenanceIntervention")
      * @ORM\JoinColumn(name="intervention_id", referencedColumnName="id", nullable=false)
      */
     protected $intervention;
@@ -55,7 +55,7 @@ class InterventionDetail
      *
      * @ORM\OneToMany(targetEntity="InterventionCheck", mappedBy="parentDetail", cascade={"persist"})
      */
-    protected $checks = array();
+    protected $checks;
 
     /**
      * WARNING: this field is not bound to any column on DB!!
@@ -73,9 +73,9 @@ class InterventionDetail
     /**
      * Set intervention
      *
-     * @param Boilr\BoilrBundle\Entity\ManteinanceIntervention $intervention
+     * @param Boilr\BoilrBundle\Entity\MaintenanceIntervention $intervention
      */
-    public function setIntervention(\Boilr\BoilrBundle\Entity\ManteinanceIntervention $intervention)
+    public function setIntervention(\Boilr\BoilrBundle\Entity\MaintenanceIntervention $intervention)
     {
         $this->intervention = $intervention;
     }
@@ -83,7 +83,7 @@ class InterventionDetail
     /**
      * Get intervention
      *
-     * @return Boilr\BoilrBundle\Entity\ManteinanceIntervention
+     * @return Boilr\BoilrBundle\Entity\MaintenanceIntervention
      */
     public function getIntervention()
     {

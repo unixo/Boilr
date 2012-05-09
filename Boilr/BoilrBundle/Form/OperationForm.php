@@ -25,13 +25,17 @@ class OperationForm extends AbstractType
                 ->add('name', 'text', array(
                     'label' => 'Descrizione',
                     'required' => true))
-                ->add('timeLength', 'integer', array(
-                    'label' => 'Durata stimata (sec)',
-                    'required' => true))
                 ->add('resultType', 'choice', array(
                     'label' => 'Tipo risultato',
                     'required' => true, 'choices' => $resultChoices,
                     'preferred_choices' => array(Operation::RESULT_CHECKBOX)))
+                ->add('parentGroups', 'entity', array(
+                    'required' => true,
+                    'multiple' => true,
+                    'class' => 'BoilrBundle:OperationGroup',
+                    'property' => 'name',
+                    'expanded' => true
+                ))
         ;
     }
 
