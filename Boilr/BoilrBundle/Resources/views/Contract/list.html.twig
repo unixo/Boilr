@@ -22,8 +22,8 @@
       <tr>
         <td><a href="{{ url('show_person', {id: contract.customer.id}) }}">{{ contract.customer.getFullname() }}</a></td>
         <td>{{ contract.system.descr }}</td>
-        <td>{{ contract.startDate | date('d/m/Y H:i') }}</td>
-        <td>{{ contract.endDate | date('d/m/Y H:i') }}</td>
+        <td>{{ contract.startDate | localizeddate("medium", "short") }}</td>
+        <td>{{ contract.endDate | localizeddate("medium", "short") }}</td>
         <td></td>
       </tr>
       {% endfor %}

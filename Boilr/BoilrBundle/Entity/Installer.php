@@ -325,4 +325,18 @@ class Installer
 
         return implode(", ", $descr);
     }
+
+    public function getPhonesDescr()
+    {
+        $result = array();
+
+        if ($this->cellularPhone) {
+            $result[] = sprintf("cellulare: %s", $this->cellularPhone);
+        }
+        if ($this->officePhone) {
+            $result[] = sprintf("ufficio: %s", $this->officePhone);
+        }
+
+        return implode(", ", $result);
+    }
 }

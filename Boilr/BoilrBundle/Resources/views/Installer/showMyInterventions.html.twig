@@ -7,7 +7,7 @@
   <div class="page-header">
     <h1>Elenco interventi</h1>
   </div>
-    
+
   {% if interventions|length > 0 %}
   <table class="table table-condensed table-striped">
     <thead>
@@ -23,7 +23,7 @@
     <tbody>
       {% for interv in interventions %}
       <tr>
-        <td>{{ interv.scheduledDate | date('d/m/Y H:i') }}</td>
+        <td>{{ interv.scheduledDate | localizeddate("medium", "short") }}</td>
         <td>{{ interv.customer.getFullName() }}</td>
         {% if interv.details|length > 1 %}
         <td colspan="2">{{ interv.details|length }} impianti</td>

@@ -13,8 +13,8 @@
       {{ mymacro.fieldset_row('Tipo', system.systemType.name) }}
       {{ mymacro.fieldset_row('Matricola', system.code) }}
       {{ mymacro.fieldset_row('Impianto', system.descr) }}
-      {{ mymacro.fieldset_row('Data installaz.', system.installDate|date('d/m/Y')) }}
-      {{ mymacro.fieldset_row('Ultima manutenz.', system.lastManteinance|date('d/m/Y')) }}
+      {{ mymacro.fieldset_row('Data installaz.', system.installDate|localizeddate("medium", "short") ) }}
+      {{ mymacro.fieldset_row('Ultima manutenz.', system.lastMaintenance|localizeddate("medium", "short")) }}
       {{ mymacro.fieldset_row('Cliente', system.owner.getFullName()) }}
     </dl>
   </div>
@@ -35,7 +35,7 @@
       {% for doc in attachments %}
       <tr>
         <td>{{ doc.name }}</td>
-        <td>{{ doc.uploadDate | date('d/m/Y H:i') }}</td>
+        <td>{{ doc.uploadDate | localizeddate("medium", "short") }}</td>
         <td>{{ doc.owner.getFullName() }}</td>
         <td>
           <a class="btn btn-mini" href="{{ vich_uploader_asset(doc, 'document') }}" title="Apri"><i class="icon-folder-open"></i></a>

@@ -19,15 +19,15 @@ class InterventionCheckForm extends AbstractType
         $builder
                 ->add('threewayValue', 'choice', array(
                     'label' => 'Risultato',
-                    'required' => true,
+                    'required' => false,
                     'choices' => array(1 => 'Si', 0 => 'No', 2 => 'N.C.'),
                     'expanded' => true,
                     'multiple' => false,
-                    'widget_type'  => "inline",
+                    'widget_type' => "inline",
                 ))
                 ->add('textValue', 'text', array(
                     'label' => 'Risultato',
-                    'required' => true,
+                    'required' => false,
                 ))
         ;
     }

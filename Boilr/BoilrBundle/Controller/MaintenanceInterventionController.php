@@ -512,6 +512,27 @@ class MaintenanceInterventionController extends BaseController
     }
 
     /**
+     * Generate report for an intervention using a specific template
+     *
+     * @Route("/{id}/generate2/{tid}", name="intervention_generate2_report")
+     * @Secure(roles="ROLE_ADMIN, ROLE_SUPERUSER, ROLE_OPERATOR, ROLE_INSTALLER")
+     * @Method("get")
+     * @Template()
+     */
+    public function generateReport2Action()
+    {
+        $intervention = $this->paramConverter('id');
+        $template = $this->paramConverter('tid', 'BoilrBundle:Template');
+        $document = $this->getEntityRepository()->prepareDocument($intervention, $template);
+        $fileName = $template->getName() . ".pdf";
+        $params = compact('intervention', 'template', 'document');
+
+        $html = $this->renderView('BoilrBundle:MaintenanceIntervention:generateReport.html.twig', $params);
+
+        return new Response($html);
+    }
+
+    /**
      * Export given intervention in XML
      *
      * @Route("/{id}/export-xml", name="intervention_xml_export")

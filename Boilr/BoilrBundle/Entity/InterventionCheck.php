@@ -185,7 +185,6 @@ class InterventionCheck
         return $checkXML;
     }
 
-
     /**
      * Set name
      *

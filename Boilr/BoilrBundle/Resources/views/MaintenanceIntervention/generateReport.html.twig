@@ -24,47 +24,112 @@
 
                       <div id="customer">
                         {% set system = detail['system'] %}
-                        <p>Impianto termico sito nel Comune di: {{ system.address.city }} ({{ system.address.province }})</p>
-                        <p>in via/piazza: {{ system.address.street }}, CAP: {{ system.address.postalCode }}</p>
-                        <p>Responsabile dell'impianto: {{ system.owner.getFullName() }}</p>
-                        <p>In qualità di: <span class="checkbox"></span> proprietario
-                                          <span class="checkbox"></span> occupante
-                                          <span class="checkbox"></span> terzo responsabile</p>
+                        <div class="clear">
+                          <span>Impianto sito nel Comune di:</span>
+                          <span class="row"><span>{{ system.address.city }} ({{ system.address.province }})</span></span>
+                        </div>
+
+                        <div class="clear">
+                          <span>In via/piazza:</span>
+                          <span class="row"><span>{{ system.address.address }}</span></span>
+                        </div>
+
+                        <div class="clear">
+                          <span>Responsabile dell'impianto:</span>
+                          <span class="row"><span>{{ system.owner.getFullName() }}</span></span>
+                        </div>
+
+                        <div class="clear">
+                          <span>Indirizzo:</span>
+                          <span class="row"><span>{{ system.owner.addresses[0].address }}</span></span>
+                        </div>
+
+                        <div class="clear">
+                          <p>In qualità di: <span class="checkbox"></span> proprietario
+                                            <span class="checkbox"></span> occupante
+                                            <span class="checkbox"></span> terzo responsabile</p>
+                        </div>
                       </div>
 
                       <table id="sections">
-                      {% for section in detail['sections'] %}
+                        <tbody>
+                          {# Identificazione dell'impianto #}
                           <tr>
-                            <td class="section_name">{{ section['sectionName'] }}</td>
-                            <td colspan="3" class="op_header"></td>
+                              <td class="section_name"><div class="dontsplit">IDENTIFICAZIONE DELL'IMPIANTO</div></td>
+                              <td colspan="3" class="op_header"></td>
                           </tr>
-                          {% for check in section['sectionResults'] %}
                           <tr>
-                            <td>{{ check['checkName'] }}</td>
-                            {% if check['resultType'] == 1 %}
-                                <td class="boxed">{% if check['threewayValue'] == 1 %}X{% endif %}</td>
-                                <td class="boxed">{% if check['threewayValue'] == 0 %}X{% endif %}</td>
-                                <td class="boxed">{% if check['threewayValue'] == 2 %}X{% endif %}</td>
-                            {% else %}
-                                <td colspan="3">{{ check['textValue'] }}</td>
-                            {% endif %}
+                            <td colspan="4">
+                              <div class="clear">
+                                <span>Costruttore/Modello:</span>
+                                <span class="row"><span>{{ system.product.manufacturer.name }} / {{ system.product.name }}</span></span>
+                              </div>
+
+
+                              <div class="clear">
+                                <span>Tipologia impianto:</span>
+                                <span class="row"><span>{{ system.systemType.name }}</span></span>
+                              </div>
+
+                              <div class="clear">
+                                <span>Matricola/Descrizione:</span>
+                                <span class="row">{{ system.code }} / {{ system.descr }}<span></span></span>
+                              </div>
+
+                              <div class="clear">
+                                <span>Data installazione:</span>
+                                <span class="row">{{ system.installDate|localizeddate("long", "none") }}<span></span></span>
+                              </div>
+
+                              <div class="clear">
+                                <span>Locale installazione:</span>
+                                <span class="row">&nbsp;<span></span></span>
+                              </div>
+                            </td>
                           </tr>
+                          {# END OF: Identificazione dell'impianto #}
+
+                          {% for section in detail['sections'] %}
+                              <tr>
+                                <td class="section_name"><div class="dontsplit">{{ section['sectionName']|upper }}</div></td>
+                                <td class="op_header">SI</td><td>NO</td><td>N.C.</td>
+                              </tr>
+                              {% for check in section['sectionResults'] %}
+                              <tr>
+                                <td class="check_name"><div class="dontsplit">{{ check['checkName'] }}</div></td>
+                                {% if check['resultType'] == 1 %}
+                                    <td class="boxed">{% if check['threewayValue'] == 1 %}<div class="dontsplit">X</div>{% endif %}</td>
+                                    <td class="boxed">{% if check['threewayValue'] == 0 %}<div class="dontsplit">X</div>{% endif %}</td>
+                                    <td class="boxed">{% if check['threewayValue'] == 2 %}<div class="dontsplit">X</div>{% endif %}</td>
+                                {% else %}
+                                    <td colspan="3">{{ check['textValue'] }}</td>
+                                {% endif %}
+                              </tr>
+                            {% endfor %}
                           {% endfor %}
-                        {% endfor %}
-                        </table>
+                        </tbody>
+                      </table>
                     {% endfor %}
 
-                    <div id="recommendations">
-                        <p>RACCOMANDAZIONI [6] [8] ___________________________________________________________________________________________
-                           _________________________________________________________________________________________________________________
-                           _________________________________________________________________________________________________________________
-                           _________________________________________________________________________________________________________________
-                           _________________________________________________________________________________________________________________
-                        </p>
-                    </div>
+                  <div id="recommendations">
+                    <p><strong>RACCOMANDAZIONI</strong> ___________________________________________________________________________________________
+                        _________________________________________________________________________________________________________________________
+                        _________________________________________________________________________________________________________________________
+                        _________________________________________________________________________________________________________________________
+                        _________________________________________________________________________________________________________________________
+                    </p>
+                  </div>
+
+                  <div style="border: 1px solid black">
+                    <p>In mancanza di prescrizioni esplicite, il tecnico dichiara che l'apparecchio può essere messo in servizio ed usato
+                       normalmente senza compromettere la sicurezza delle persone, degli animali e dei beni.</p>
+                    <p><strong>Ai fini della sicurezza l'impianto può funzionare:</strong>
+                      <span style="margin-left: 150px;">SI</span><span style="margin-left: 150px;">NO</span>
+                    </p>
+                  </div>
 
                     <div id="precautions">
-                        <p>PRECAUZIONI [7] [8] ________________________________________________________________________________________________
+                      <p><strong>PRECAUZIONI</strong> ________________________________________________________________________________________________
                            _________________________________________________________________________________________________________________
                            _________________________________________________________________________________________________________________
                            _________________________________________________________________________________________________________________
@@ -75,17 +140,84 @@
                     <div id="installer">
                       <h4>TECNICO CHE HA EFFETTUATO IL CONTROLLO:</h4>
 
-                      <div style="display: inline-block; float: left;">
-                        <div>
-                          Nome e Cognome:
-                          {{ intervention.installer.getFullName() }}<span style="width: 100%; border-bottom: 1px solid black;">&nbsp;</span>
+                      <div class="clear">
+                        <span>Nome e Cognome:</span>
+                        <span class="row"><span>{{ intervention.installer.getFullName() }}</span></span>
+                      </div>
+
+                      <div class="clear">
+                        <span>Ragione Sociale:</span>
+                        <span class="row"><span>{{ intervention.installer.company.name }}</span></span>
+                      </div>
+
+                      <div class="clear">
+                        <span>Indirizzo:</span>
+                        <span class="row"><span>{{ intervention.installer.company.address }}</span></span>
+                      </div>
+
+                      <div class="clear">
+                        <span>Telefono</span>
+                        <span class="row"><span>{{ intervention.installer.getPhonesDescr() }}</span></span>
+                      </div>
+
+                      <div class="clear">
+                        <span>Orario arrivo presso l'impianto</span>
+                        <span class="row"><span>{{ intervention.scheduledDate|localizeddate("long", "medium") }}</span></span>
+                      </div>
+
+                      <div class="clear">
+                        <span>Orario partenza dall'impianto</span>
+                        <span class="row"><span>{{ intervention.closeDate|localizeddate("long", "medium") }}</span></span>
+                      </div>
+
+                      <br/>
+                      <div class="clear">
+                        <div style="float: left;">
+                          <p><strong>Timbro e firma dell'operatore</strong></p>
+                          <br>
+                          <p>_____________________________</p>
+                        </div>
+
+                        <div style="float: right;">
+                          <p><strong>Firma del responsabile dell'impianto</strong> (per presa visione)</p>
+                          <br>
+                          <p>_________________________________</p>
                         </div>
                       </div>
-                      <div style="display: inline-block; float: right">
-                        Ragione sociale: {{intervention.installer.company.name}}
-                      </div>
-                    </div>
 
+                      <br/>
+                      <div class="clear" style="padding-top: 20px">
+                        <h3>Avvertenze per il tecnico e per il responsabile di impianto</h3>
+                        <ol class="warning">
+                          <li>Per tipo B e C si intende rispettivamente generatore a focolare aperto o chiuso,
+                              indipendentemente dal tipo di combustibile utilizzato.</li>
+                          <li>Per N.C. si intende «Non Controllabile», nel senso che per il singolo aspetto non
+                              è possibile effettuare tutti i necessari riscontri diretti senza ricorrere ad attrezzature
+                              speciali (ad esempio per verificare l'assenza di ostruzioni in un camino non rettilineo),
+                              tuttavia le parti controllabili sono in regola e non si ha alcuna indicazione di anomalia
+                              nelle parti non controllabili.</li>
+                          <li>Nel caso di installazione all'esterno al punto 2 deve essere barrata solo la scritta ES.</li>
+                          <li>Il dato relativo al tiraggio, espresso in Pa, è necessario solo per generatori di calore di tipo B.</li>
+                          <li>Nello spazio OSSERVAZIONI deve essere indicata dal tecnico la causa di ogni dato negativo
+                              riscontrato e gli interventi manutentivi effettuati per risolvere il problema.</li>
+                          <li>Nello spazio RACCOMANDAZIONI devono essere fornite dal tecnico le raccomandazioni ritenute
+                              opportune in merito ad eventuali carenze riscontrate e non eliminate, tali comunque da non
+                              arrecare un immediato pericolo alle persone, agli animali domestici e ai beni. Il tecnico
+                              indica le operazioni necessarie per il ripristino delle normali condizioni di funzionamento
+                              dell'impianto a cui il responsabile dell'impianto deve provvedere entro breve tempo.</li>
+                          <li>Nello spazio PRESCRIZIONI il tecnico, avendo riscontrato e non eliminato carenze tali
+                              da arrecare un immediato pericolo alle persone, agli animali domestici e ai beni, dopo aver
+                              messo fuori servizio l'apparecchio e diffidato l'occupante dal suo utilizzo, indica le
+                              operazioni necessarie per il ripristino delle condizioni di sicurezza.</li>
+                          <li>Tutte le note riportate negli spazi OSSERVAZIONI, RACCOMANDAZIONI; PRESCRIZIONI devono
+                              essere specificate dettagliatamente (ad esempio: non foro di ventilazione insufficiente, ma
+                              foro di ventilazione esistente di 100 cm2 da portare a 160 cm2).</li>
+                          <li>Si rammenta che il controllo del rendimento di combustione, di cui al punto H, deve essere
+                              effettuato con la periodicità stabilita al comma 3 dell'allegato L al presente decreto legislativo.</li>
+                        </ol>
+                      </div>
+
+                  </div>
                 </div>
             </div>
         </div>

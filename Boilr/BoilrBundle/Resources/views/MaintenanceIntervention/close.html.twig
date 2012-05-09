@@ -16,8 +16,8 @@
 
       <dl class="dl-horizontal">
         {{ mymacro.fieldset_row('Tecnico', interv.installer.getFullName()) }}
-        {{ mymacro.fieldset_row('Data/ora inizio', interv.scheduledDate|date('d/m/Y H:i')) }}
-        {{ mymacro.fieldset_row('Chiusura prevista', interv.expectedCloseDate|date('d/m/Y H:i')) }}
+        {{ mymacro.fieldset_row('Data/ora inizio', interv.scheduledDate|localizeddate("medium", "short")) }}
+        {{ mymacro.fieldset_row('Chiusura prevista', interv.expectedCloseDate|localizeddate("medium", "short")) }}
       </dl>
     </div>
 

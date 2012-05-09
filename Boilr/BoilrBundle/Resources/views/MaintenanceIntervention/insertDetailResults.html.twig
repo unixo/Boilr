@@ -36,7 +36,7 @@
     {{ form_errors(form) }}
 
     <div class="form-actions">
-      <input class="btn btn-primary" type="submit" value="Salva" />
+      <input class="btn btn-primary" type="submit" formnovalidate="formnovalidate" value="Salva" />
       <a class="btn" href="{{ url('intervention_detail_for_installer', {id: detail.intervention.id}) }}">Annulla</a>
     </div>
   </form>

@@ -6,7 +6,7 @@
   <div class="page-header">
     <h1>Elenco impianti associati <small>tecnico predefinito</small></h1>
   </div>
-    
+
   {% if systems|length > 0 %}
   <table class="table table-condensed table-striped">
     <thead>
@@ -24,7 +24,7 @@
         <td>{{ system.owner.getFullName() }}</td>
         <td>{{ system.descr }}</td>
         <td>{{ system.systemType.name }}</td>
-        <td>{{ system.lastManteinance | date('d/m/Y H:i') }}</td>
+        <td>{{ system.lastMaintenance | localizeddate("medium", "short") }}</td>
         <td>
           <a class="btn btn-mini" href="{{ url('system_list_doc', {id: system.id}) }}" title="Apri..."><i class="icon-folder-open"></i></a>
         </td>

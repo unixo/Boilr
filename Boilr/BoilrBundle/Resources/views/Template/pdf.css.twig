@@ -2,6 +2,19 @@ body {
     font-family:"Times New Roman";
     font-size: 10px;
     padding: 20px;
+    width: 650px;
+}
+
+div p {
+  padding: 4px;
+}
+
+.break {
+  page-break-after: always;
+}
+
+.dontsplit {
+  page-break-inside: avoid;
 }
 
 #header {
@@ -34,7 +47,7 @@ span.checkbox {
   display: inline-block;
   width: 15px;
   height: 10px;
-  border: 1px solid black;
+  border: 1px solid gray;
   margin-left: 50px;
 }
 
@@ -45,6 +58,11 @@ span.checkbox {
 
 #sections td.section_name {
     padding-top: 10px;
+    font-weight: bold;
+}
+
+#sections td.check_name {
+  padding-left:15px;
 }
 
 td.operations {
@@ -52,8 +70,9 @@ td.operations {
 }
 
 td.boxed {
-    border: 1px solid black;
+    border: 1px solid gray;
     width: 20px;
+    text-align: center;
 }
 
 td.op_header {
@@ -61,13 +80,24 @@ td.op_header {
     text-align: center;
 }
 
-
-
 #recommendations, #precautions {
     width: 100%;
     line-height: 2em;
 }
 
-.dots {
-   border-bottom: 1px dotted black;
+span.row {
+  border-bottom: 1px solid gray;
+  display: block;
+  float: right;
+  width: 520px;
+}
+
+div.clear {
+  clear: both;
+  padding-bottom: 10px;
+}
+
+ol.warning li {
+  line-height: 2em;
+  text-align: justify;
 }

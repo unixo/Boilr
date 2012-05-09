@@ -22,7 +22,7 @@
       {% for doc in attachments %}
       <tr>
         <td>{{ doc.name }}</td>
-        <td>{{ doc.uploadDate|date('d/m/Y H:i') }}</td>
+        <td>{{ doc.uploadDate|localizeddate("medium", "short") }}</td>
         <td>{{ doc.getTypeDescr() }}</td>
         <td>
           <a class="btn btn-mini" href="{{ vich_uploader_asset(doc, 'document') }}" title="Apri"><i class="icon-folder-open"></i></a>
