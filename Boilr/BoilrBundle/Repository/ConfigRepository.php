@@ -14,8 +14,8 @@ class ConfigRepository extends EntityRepository
 {
     public function getValue($key, $default = null)
     {
-        $record = $this->findOneByParameter($key);
-        /* @var $record Config */
+        $record = $this->findOneBySetting($key);
+        /* @var $record \Boilr\BoilrBundle\Entity\Config */
 
         if (! $record) {
             return $default;
