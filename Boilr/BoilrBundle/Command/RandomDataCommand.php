@@ -8,7 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand,
     Symfony\Component\Console\Input\InputOption,
     Symfony\Component\Console\Output\OutputInterface;
 use Boilr\BoilrBundle\Entity\System,
-    Boilr\BoilrBundle\Entity\MaintenanceIntervention;
+    Boilr\BoilrBundle\Entity\MaintenanceIntervention,
+    Boilr\BoilrBundle\Entity\Config;
 
 /**
  * Description of RandomDataCommand
@@ -45,41 +46,59 @@ class RandomDataCommand extends ContainerAwareCommand
 
     protected function createInterventions(OutputInterface $output)
     {
+        $start = $this->doctrine->getRepository('BoilrBundle:Config')->getValue(Config::KEY_WORKDAY_START);
+        $end = $this->doctrine->getRepository('BoilrBundle:Config')->getValue(Config::KEY_WORKDAY_END);
+
+        $entries = explode(":", $start);
+        $hhStart = (integer) $entries[0];
+        $entries = explode(":", $end);
+        $hhEnd = (integer) $entries[0];
+
+        // Start of period
         $startDate = new \DateTime();
         $startDate->sub(\DateInterval::createFromDateString('1 month'));
         $year = $startDate->format('Y');
         $month = $startDate->format('m');
         $startDate->setDate($year, $month, 1);
 
+        // End of period
         $monthName = $startDate->format('F');
         $lastDay = date("d", strtotime("last day of $monthName $year"));
         $endDate = new \DateTime();
         $endDate->setDate($year, $month, $lastDay);
 
-        $randomDate = new \DateTime();
-        $randomDate->setDate($year, $month, rand()%$lastDay);
-        $lateRandomDate = clone $randomDate;
-        $lateRandomDate->add(\DateInterval::createFromDateString("1 hour"));
-
+        // Operation groups
         $opGroups = $this->doctrine->getRepository('BoilrBundle:OperationGroup')->findAll();
         $opGroupCount = count($opGroups);
 
         $systems = $this->doctrine->getRepository('BoilrBundle:System')->findAll();
         foreach ($systems as $system) {
-            $int = MaintenanceIntervention::UnplannedInterventionFactory();
-            $int->setCustomer($system->getOwner());
-            $int->addSystem($system, $opGroups[rand() % $opGroupCount]);
-            $int->setScheduledDate($randomDate);
-            $int->setExpectedCloseDate($lateRandomDate);
-            $this->doctrine->getEntityManager()->persist($int);
+            for ($i=0; $i<2; $i++) {
+                $hour = mt_rand($hhStart, $hhEnd);
+
+                $randomDate = new \DateTime();
+                $randomDate->setDate($year, $month, rand() % $lastDay);
+                $randomDate->setTime($hour, 0, 0);
+                $lateRandomDate = clone $randomDate;
+                $lateRandomDate->add(\DateInterval::createFromDateString("1 hour"));
+
+                $int = MaintenanceIntervention::UnplannedInterventionFactory();
+                $int->setCustomer($system->getOwner());
+                $int->addSystem($system, $opGroups[rand() % $opGroupCount]);
+                $int->setScheduledDate($randomDate);
+                $int->setExpectedCloseDate($lateRandomDate);
+                $this->doctrine->getEntityManager()->persist($int);
+            }
         }
         $this->doctrine->getEntityManager()->flush();
     }
 
     protected function createSystems(OutputInterface $output)
     {
-        $aDate1 = new \DateTime(); $aDate1->setDate(2000, 01, 01);
-        $aDate2 = new \DateTime(); $aDate2->setDate(2000, 01, 02);
+        $aDate1 = new \DateTime();
+        $aDate1->setDate(2000, 01, 01);
+        $aDate2 = new \DateTime();
+        $aDate2->setDate(2000, 01, 02);
 
         $systemTypes = $this->doctrine->getRepository('BoilrBundle:SystemType')->findAll();
         $systemTypeCount = count($systemTypes);
@@ -89,10 +108,10 @@ class RandomDataCommand extends ContainerAwareCommand
 
         $addresses = $this->doctrine->getRepository('BoilrBundle:Address')->findAll();
 
-        for ($i=0; $i<count($addresses); $i++) {
+        for ($i = 0; $i < count($addresses); $i++) {
             $newSystem = new System();
-            $newSystem->setCode("matricola#".$i);
-            $newSystem->setDescr('impianto#'. $i);
+            $newSystem->setCode("matricola#" . $i);
+            $newSystem->setDescr('impianto#' . $i);
             $newSystem->setSystemType($systemTypes[rand() % $systemTypeCount]);
             $newSystem->setProduct($products[rand() % $productCount]);
             $newSystem->setAddress($addresses[$i]);
