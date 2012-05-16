@@ -49,6 +49,15 @@ class Operation
     private $resultType = self::RESULT_CHECKBOX;
 
     /**
+     * @var integer $timeLength
+     *
+     * @ORM\Column(name="time_length", type="integer", nullable=false)
+     * @Assert\NotBlank
+     * @Assert\Type(type="integer")
+     */
+    private $timeLength;
+
+    /**
      * @var OperationGroup
      *
      * @ORM\ManyToMany(targetEntity="OperationGroup", mappedBy="operations")
@@ -134,5 +143,25 @@ class Operation
     public function getParentGroups()
     {
         return $this->parentGroups;
+    }
+
+    /**
+     * Set timeLength
+     *
+     * @param integer $timeLength
+     */
+    public function setTimeLength($timeLength)
+    {
+        $this->timeLength = $timeLength;
+    }
+
+    /**
+     * Get timeLength
+     *
+     * @return integer 
+     */
+    public function getTimeLength()
+    {
+        return $this->timeLength;
     }
 }

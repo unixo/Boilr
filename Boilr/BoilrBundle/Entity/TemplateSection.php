@@ -65,11 +65,6 @@ class TemplateSection
      */
     protected $template;
 
-    public function __construct()
-    {
-        $this->items = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
     /**
      * Get id
      *
@@ -165,9 +160,16 @@ class TemplateSection
      *
      * @param Boilr\BoilrBundle\Entity\SectionOperation $operations
      */
-    public function addSectionOperation(\Boilr\BoilrBundle\Entity\SectionOperation $operations)
+    public function addSectionOperation(\Boilr\BoilrBundle\Entity\SectionOperation $operation)
     {
-        $this->operations[] = $operations;
+        $this->operations[] = $operation;
+        $this->timeLength += $operation->getParentOperation()->getTimeLength();
+    }
+
+    public function removeSectionOperation(\Boilr\BoilrBundle\Entity\SectionOperation $operation)
+    {
+        $this->timeLength -= $operation->getParentOperation()->getTimeLength();
+        $this->getOperations()->remoteElement($operation);
     }
 
     public function getOperations()

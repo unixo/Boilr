@@ -1,32 +1,32 @@
-ops1+2|Dichiar. di conformità dell'impianto|oper-b1
-ops1+2|Libretto di impianto|oper-b2
-ops1+2|Libretto d'uso e manutenzione|oper-b3
-ops1+2|Idoneità del locale di installazione|oper-c1
-ops1+2|Adeguate dimensioni aperture ventilazione|oper-c2
-ops1+2|Aperture di ventilazione libere da ostruzioni|oper-c3
-ops1+2|Pendenza corretta|oper-d1
-ops1+2|Sezioni corrette|oper-d2
-ops1+2|Curve corrette|oper-d3
-ops1+2|Lunghezza corretta|oper-d4
-ops1+2|Buono stato di conservazione|oper-d5
-ops1+2|Scarico in camino singolo|oper-e1
-ops1+2|Scarico in canna fumaria collettiva ramificata|oper-e2
-ops1+2|Scarico a parete|oper-e3
-ops1+2|Per apparecchio a tiraggio naturale: non esistono riflussi dei fumi nel locale|oper-e4
-ops1+2|Per apparecchio a tiraggio forzato: assenza di perdite dai condotti di scarico|oper-e5
-ops1+2|Ugelli dei bruciatore principale e del bruciatore pilota (se esiste) puliti|oper-f1
-ops1+2|Dispositivo rompitiraggio-antivento privo di evidenti tracce di deterioramento, ossidazione e/o corrosione|oper-f2
-ops1+2|Scambiatore lato fumi pulito|oper-f3
-ops1+2|Accensione e funzionamento regolari|oper-f4
-ops1+2|Dispositivi di comando e regolazione funzionanti correttamente|oper-f5
-ops1+2|Assenza di perdite e ossidazioni dai/sui raccordi|oper-f6
-ops1+2|Valvola di sicurezza contro la sovrapressione a scarico libero|oper-f7
-ops1+2|Vaso di espansione carico|oper-f8
-ops1+2|Dispositivi di sicurezza non manomessi e/o cortocircuitati|oper-f9
-ops1+2|Organi soggetti a sollecitazioni termiche integri e senza segni di usura e/o deformazione|oper-f10
-ops1+2|Circuito aria pulito e libero da qualsiasi impedimento|oper-f11
-ops1+2|Guarnizione di accoppiamento al generatore integra|oper-f12
-ops1+2|Controllo assenza fughe di gas|oper-g1
-ops1+2|Verifica visiva coibentazioni|oper-g2
-ops1+2|Verifica efficienza evacuazione fumi|oper-g3
-ops2|Controllo del rendimento di combustione|oper-ops2-h1
+ops1+2|Dichiar. di conformità dell'impianto|oper-b1|2
+ops1+2|Libretto di impianto|oper-b2|2
+ops1+2|Libretto d'uso e manutenzione|oper-b3|2
+ops1+2|Idoneità del locale di installazione|oper-c1|2
+ops1+2|Adeguate dimensioni aperture ventilazione|oper-c2|2
+ops1+2|Aperture di ventilazione libere da ostruzioni|oper-c3|2
+ops1+2|Pendenza corretta|oper-d1|2
+ops1+2|Sezioni corrette|oper-d2|2
+ops1+2|Curve corrette|oper-d3|2
+ops1+2|Lunghezza corretta|oper-d4|2
+ops1+2|Buono stato di conservazione|oper-d5|2
+ops1+2|Scarico in camino singolo|oper-e1|2
+ops1+2|Scarico in canna fumaria collettiva ramificata|oper-e2|2
+ops1+2|Scarico a parete|oper-e3|2
+ops1+2|Per apparecchio a tiraggio naturale: non esistono riflussi dei fumi nel locale|oper-e4|2
+ops1+2|Per apparecchio a tiraggio forzato: assenza di perdite dai condotti di scarico|oper-e5|2
+ops1+2|Ugelli dei bruciatore principale e del bruciatore pilota (se esiste) puliti|oper-f1|2
+ops1+2|Dispositivo rompitiraggio-antivento privo di evidenti tracce di deterioramento, ossidazione e/o corrosione|oper-f2|2
+ops1+2|Scambiatore lato fumi pulito|oper-f3|2
+ops1+2|Accensione e funzionamento regolari|oper-f4|2
+ops1+2|Dispositivi di comando e regolazione funzionanti correttamente|oper-f5|2
+ops1+2|Assenza di perdite e ossidazioni dai/sui raccordi|oper-f6|2
+ops1+2|Valvola di sicurezza contro la sovrapressione a scarico libero|oper-f7|2
+ops1+2|Vaso di espansione carico|oper-f8|2
+ops1+2|Dispositivi di sicurezza non manomessi e/o cortocircuitati|oper-f9|2
+ops1+2|Organi soggetti a sollecitazioni termiche integri e senza segni di usura e/o deformazione|oper-f10|2
+ops1+2|Circuito aria pulito e libero da qualsiasi impedimento|oper-f11|2
+ops1+2|Guarnizione di accoppiamento al generatore integra|oper-f12|2
+ops1+2|Controllo assenza fughe di gas|oper-g1|2
+ops1+2|Verifica visiva coibentazioni|oper-g2|2
+ops1+2|Verifica efficienza evacuazione fumi|oper-g3|2
+ops2|Controllo del rendimento di combustione|oper-ops2-h1|2

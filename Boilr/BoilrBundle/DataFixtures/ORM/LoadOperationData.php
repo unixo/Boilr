@@ -44,6 +44,7 @@ class LoadOperationData extends AbstractFixture implements OrderedFixtureInterfa
             }
             $op->setName($record[1]);
             $op->setResultType(Operation::RESULT_CHECKBOX);
+            $op->setTimeLength($record[3]);
             $manager->persist($op);
             $this->addReference($record[2], $op);
         }

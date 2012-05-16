@@ -29,6 +29,12 @@ class OperationGroupRepository extends EntityRepository
         return $timeLength;
         */
 
-        return 600;
+        $timeLength = 0;
+        foreach ($opGroup->getOperations() as $op) {
+            /* @var $op \Boilr\BoilrBundle\Entity\Operation */
+            $timeLength += $op->getTimeLength();
+        }
+
+        return $timeLength;
     }
 }

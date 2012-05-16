@@ -47,7 +47,7 @@ class Builder extends ContainerAware
 
         $menu->addChild('Mese corrente', array('route' => 'current_month_interventions'))->setExtra('icon', 'icon-th-list');
         $menu->addChild('Ricerca', array('route' => 'search_intervention'))->setExtra('icon', 'icon-search');
-        $menu->addChild('Interventi non gestiti', array('route' => 'intervention_assignment_wizard'))->setExtra('icon', 'icon-tasks');
+        $menu->addChild('Interventi non gestiti', array('route' => 'policy_assignment_wizard'))->setExtra('icon', 'icon-tasks');
 
         return $menu;
     }

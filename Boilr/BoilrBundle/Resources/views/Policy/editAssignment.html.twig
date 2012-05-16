@@ -1,0 +1,43 @@
+{% extends 'BoilrBundle:Default:template5-base.html.twig' %}
+
+{% block inner_block %}
+<div class="span9">
+  <div class="page-header">
+    <h1>Assegnazione assistita intervanti <small>modifica assegnazione</small></h1>
+  </div>
+
+  <form id="form_association" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Data</th>
+          <th>Ora</th>
+          <th>Cliente</th>
+          <th>Tecnico</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in form.associations %}
+          {% set interv = entry.vars.value.intervention %}
+          <tr>
+            <td>{{ form_widget(entry.checked) }}</td>
+            <td>{{ interv.scheduledDate|localizeddate("medium", "none") }}</td>
+            <td>{{ interv.scheduledDate|localizeddate("none", "short") }}</td>
+            <td>{{ interv.customer.fullName }}</td>
+            <td>{{ form_widget(entry.installer) }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="form-actions">
+        <input class="btn btn-primary" type="submit" value="Salva" />
+        <a class="btn" href="{{ url(app.session.get('last_route').name, app.session.get('last_route').params) }}">Annulla</a>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_errors(form) }}
+  </form>
+</div>
+{% endblock inner_block %}

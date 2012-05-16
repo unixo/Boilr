@@ -78,3 +78,8 @@ attachment:
     prefix:   /attachment
     resource: "@BoilrBundle/Controller/AttachmentController.php"
     type:     annotation
+
+policy:
+    prefix:   /policy
+    resource: "@BoilrBundle/Controller/PolicyController.php"
+    type:     annotation

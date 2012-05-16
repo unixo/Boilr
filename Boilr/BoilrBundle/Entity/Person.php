@@ -187,6 +187,19 @@ class Person
         return sprintf("%s %s", $this->getSurname(), $this->getName());
     }
 
+    public function getShortName()
+    {
+        $result = "";
+
+        if (strlen($this->name) > 0) {
+            $result = sprintf("%s. %s", $this->name[0], $this->surname);
+        } else {
+            $result = $this->surname;
+        }
+
+        return $result;
+    }
+
     public function __construct()
     {
         $this->addresses = new \Doctrine\Common\Collections\ArrayCollection();

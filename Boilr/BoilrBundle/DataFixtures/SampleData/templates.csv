@@ -1,25 +1,25 @@
 T|Allegato G|Rapporto di controllo tecnico per impianto termico
-S|Documentazione tecnica di corredo|1|15
+S|Documentazione tecnica di corredo|1
 O|oper-b1|0
 O|oper-b2|1
 O|oper-b3|2
-S|Esame visivo del locale d'installazione|2|15
+S|Esame visivo del locale d'installazione|2
 O|oper-c1|0
 O|oper-c2|1
 O|oper-c3|2
-S|Esame visivo dei canali da fumo|3|35
+S|Esame visivo dei canali da fumo|3
 O|oper-d1|0
 O|oper-d2|1
 O|oper-d3|2
 O|oper-d4|3
 O|oper-d5|4
-S|Controllo evacuazione dei prodotti della combustione|4|25
+S|Controllo evacuazione dei prodotti della combustione|4
 O|oper-e1|0
 O|oper-e2|1
 O|oper-e3|2
 O|oper-e4|3
 O|oper-e5|4
-S|Controllo dell'apparecchio|5|50
+S|Controllo dell'apparecchio|5
 O|oper-f1|0
 O|oper-f2|1
 O|oper-f3|2
@@ -32,9 +32,9 @@ O|oper-f9|8
 O|oper-f10|9
 O|oper-f11|10
 O|oper-f12|11
-S|Controllo dell'impianto|6|15
+S|Controllo dell'impianto|6
 O|oper-g1|0
 O|oper-g2|1
 O|oper-g3|2
-S|Controllo del rendimento di combustione|7|15
+S|Controllo del rendimento di combustione|7
 O|oper-ops2-h1|0

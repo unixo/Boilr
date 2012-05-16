@@ -330,4 +330,8 @@ class Address
         return $addressXML;
     }
 
+    public function getGeoPosition()
+    {
+        return new \Boilr\BoilrBundle\Service\GeoPosition($this->latitude, $this->longitude);
+    }
 }

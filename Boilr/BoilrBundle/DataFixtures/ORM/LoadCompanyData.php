@@ -77,6 +77,7 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
             $i->setAccount($u);
             $c->addInstaller($i);
 
+            /*
             $index = rand() % 3;
             $abilities = null;
             if ($index == 0) {
@@ -86,12 +87,16 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
             } else {
                 $abilities = array($st2, $st4, $st7);
             }
+             */
+            $abilities = array($st1, $st2, $st3, $st4, $st5, $st6, $st7);
             foreach ($abilities as $ab) {
                 $i->addSystemType($ab);
             }
 
             $manager->persist($i);
             $count++;
+            if ($count == 4)
+                break;
         }
         fclose($fhandle);
 

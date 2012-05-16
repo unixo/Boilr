@@ -177,7 +177,8 @@ class TemplateSectionController extends BaseController
         }
 
         try {
-            $section->getOperations()->removeElement($operation);
+            $section->removeSectionOperation($operation);
+            //$section->getOperations()->removeElement($operation);
             $this->getEntityManager()->flush();
             $this->setNoticeMessage('Operazione eliminata dalla sezione');
         } catch (Exception $exc) {

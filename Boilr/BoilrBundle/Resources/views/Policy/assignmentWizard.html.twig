@@ -13,17 +13,21 @@
           <thead>
             <tr>
               <th>Data</th>
+              <th>Ora</th>
               <th>Cliente</th>
               <th>Stato</th>
             </tr>
           </thead>
           <tbody>
+          {% set lastDate = null %}
           {% for interv in interventions %}
             <tr>
-              <td>{{ interv.scheduledDate | localizeddate("short", "none") }}</td>
+              <td>{% if lastDate != (interv.scheduledDate|date('Y-m-d')) %}{{ interv.scheduledDate | localizeddate("medium", "none") }}{% endif %}</td>
+              <td>{{ interv.scheduledDate | localizeddate("none", "short") }}</td>
               <td>{{ interv.customer.fullName }}</td>
               <td>{{ interv.getStatusDescr() }}</td>
             </tr>
+            {% set lastDate = interv.scheduledDate|date('Y-m-d') %}
           {% endfor %}
           </tbody>
         </table>
@@ -67,7 +71,7 @@
             <div class="caption">
               <h5>Carico bilanciato</h5>
               <p>Assegna gli interventi in pari misura a tutti i tecnici.</p>
-              <p><a href="{{ url('intervention_equalpolicy') }}" class="btn btn-primary">Vai</a></p>
+              <p><a href="{{ url('intervention_preview_policy', {'name': 'policy_equal'}) }}" class="btn btn-primary">Vai</a></p>
             </div>
           </li>
         </ul>

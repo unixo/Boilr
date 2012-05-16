@@ -11,6 +11,7 @@
     <thead>
       <tr>
         <th>Descrizione</th>
+        <th>Tempo</th>
         <th>Tipo risultato</th>
         <th>Operaz.</th>
       </tr>
@@ -19,6 +20,7 @@
       {% for oper in operations %}
       <tr>
         <td>{{ oper.name }}</td>
+        <td>{{ oper.timeLength }}</td>
         <td>{{ oper.getResultTypeDescr() }}</td>
         <td>
           <a class="btn btn-mini" href="{{ url('operation_edit', {id: oper.id}) }}"><i class="icon-pencil"></i></a>

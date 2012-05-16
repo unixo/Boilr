@@ -530,4 +530,11 @@ class MaintenanceIntervention
 
         return $doc;
     }
+
+    public function getFirstSystem()
+    {
+        $details = $this->getDetails();
+
+        return $details[0]->getSystem();
+    }
 }

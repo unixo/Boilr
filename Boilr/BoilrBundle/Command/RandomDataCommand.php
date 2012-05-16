@@ -73,7 +73,7 @@ class RandomDataCommand extends ContainerAwareCommand
 
         $systems = $this->doctrine->getRepository('BoilrBundle:System')->findAll();
         foreach ($systems as $system) {
-            for ($i=0; $i<2; $i++) {
+            for ($i=0; $i<3; $i++) {
                 $hour = mt_rand($hhStart, $hhEnd);
 
                 $randomDate = new \DateTime();

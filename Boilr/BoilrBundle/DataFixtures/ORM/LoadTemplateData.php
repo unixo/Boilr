@@ -35,7 +35,6 @@ class TemplateData extends AbstractFixture implements OrderedFixtureInterface
                 $currentSection->setTemplate($currentTemplate);
                 $currentSection->setName($record[1]);
                 $currentSection->setListOrder($record[2]);
-                $currentSection->setTimeLength($record[3]);
                 $currentTemplate->addTemplateSection($currentSection);
                 $manager->persist($currentSection);
                 break;
