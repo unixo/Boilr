@@ -32,7 +32,7 @@ class EqualBalancedPolicy extends BasePolicy
                 $system = $intervention->getFirstSystem();
                 $destination = $system->getAddress()->getGeoPosition();
 
-                $this->log('[BOILR] Intervento #' . $intervention->getId() .
+                $this->log('Intervento #' . $intervention->getId() .
                         ' Data: ' . $intervention->getScheduledDate()->format('d-m-Y H:i') .
                         ' Tipo impianto:' . $system->getSystemType()->getName()
                 );
@@ -41,16 +41,16 @@ class EqualBalancedPolicy extends BasePolicy
                 $installers = $this->findInstallerForSystem($system);
                 foreach ($installers as $entry) {
                     $installer = $entry['obj'];
-                    $this->log('[BOILR] valuto il tecnico: ' . $installer->getFullName(). " - LOAD: ". $entry['load']);
+                    $this->log('valuto il tecnico: ' . $installer->getFullName(). " - LOAD: ". $entry['load']);
 
                     $position = $this->whereIsInstallerInDate($installer, $intervention->getScheduledDate());
-                    $this->log('[BOILR] il tecnico è '.$position['where'].' e finisce alle: '.$position['when']->format('d-m-Y H:i'));
+                    $this->log('il tecnico è '.$position['where'].' e finisce alle: '.$position['when']->format('d-m-Y H:i'));
                     $x = $this->directionHelper->getDirections($position['where'], $destination);
-                    $this->log('[BOILR] tempo necessario per lo spostamento: '.$x['length']);
+                    $this->log('tempo necessario per lo spostamento: '.$x['length']);
 
                     $newDate = $position['when']->add(\DateInterval::createFromDateString($x['length']));
                     if ($newDate->format('U') > $intervention->getScheduledDate()->format('U')) {
-                        $this->log('[BOILR] tecnico scartato, troppo lontano (arriverebbe alle '.$newDate->format('d-m-Y H:i').')');
+                        $this->log('tecnico scartato, troppo lontano (arriverebbe alle '.$newDate->format('d-m-Y H:i').')');
                         continue;
                     }
 
