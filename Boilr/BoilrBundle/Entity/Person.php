@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM,
  *
  * @ORM\Table(name="people")
  * @ORM\Entity(repositoryClass="Boilr\BoilrBundle\Repository\PersonRepository")
- * @Assert\Callback(methods={"isStep1Valid"}, groups={"registry", "flow_newPerson_step1"})
+ * @Assert\Callback(methods={"isStep1Valid"}, groups={"registry", "newPerson"})
  */
 class Person
 {
@@ -39,7 +39,7 @@ class Person
      * @var string $type
      *
      * @ORM\Column(type="integer", nullable=false)
-     * @Assert\NotBlank(groups={"registry", "flow_newPerson_step1"})
+     * @Assert\NotBlank(groups={"registry", "newPerson"})
      */
     protected $type;
 
@@ -54,7 +54,7 @@ class Person
      * @var string $name
      *
      * @ORM\Column(type="string", length=100, nullable=false)
-     * @Assert\NotBlank(groups={"registry", "flow_newPerson_step1"})
+     * @Assert\NotBlank(groups={"registry", "newPerson"})
      */
     protected $name;
 
@@ -62,7 +62,7 @@ class Person
      * @var string $surname
      *
      * @ORM\Column(type="string", length=100, nullable=false)
-     * @Assert\NotBlank(groups={"registry", "flow_newPerson_step1"})
+     * @Assert\NotBlank(groups={"registry", "newPerson"})
      */
     protected $surname;
 

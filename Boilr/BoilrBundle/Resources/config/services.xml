@@ -18,9 +18,14 @@
     </services>
     -->
 
+    <parameters>
+        <parameter key="google.api.key">AIzaSyBxynXehOTkCM1FpypIlrZzqZQfAwNNvFE</parameter>
+    </parameters>
+
     <services>
         <service id="boilr_twig_directions" class="Boilr\BoilrBundle\Extension\DirectionsTwigExtension" public="false">
             <tag name="twig.extension" />
+            <argument>%google.api.key%</argument>
         </service>
 
         <service id="boilr.type.installer_selector" class="Boilr\BoilrBundle\Form\Type\InstallerSelectorType">

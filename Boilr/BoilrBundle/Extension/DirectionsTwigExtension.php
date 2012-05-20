@@ -10,6 +10,19 @@ namespace Boilr\BoilrBundle\Extension;
 class DirectionsTwigExtension extends \Twig_Extension
 {
 
+    /**
+     * Google API Key for browser apps.
+     *
+     * @var string
+     * @see https://developers.google.com/maps/documentation/directions/
+     */
+    protected $googleApiKey;
+
+    function __construct($googleApiKey)
+    {
+        $this->googleApiKey = $googleApiKey;
+    }
+
     public function getFunctions()
     {
         $names = array(
@@ -29,14 +42,13 @@ class DirectionsTwigExtension extends \Twig_Extension
         return "boilr_twig_directions";
     }
 
-    public function renderDirectionsFor($origin, $destination)
+    public function renderDirectionsFor($mapID, $origin, $destination, $lengthID)
     {
         $origin = $this->getLatLng($origin);
         $destination = $this->getLatLng($destination);
 
-        //$html  = $this->renderContainer();
         $html = $this->renderOpenScriptTag();
-        $html .= $this->renderVars($origin, $destination);
+        $html .= $this->renderVars($mapID, $origin, $destination, $lengthID);
         $html .= $this->renderCloseScriptTag();
 
         return $html;
@@ -66,7 +78,12 @@ class DirectionsTwigExtension extends \Twig_Extension
 
     protected function renderOpenScriptTag()
     {
-        return '<script type="text/javascript">';
+        $html = sprintf('<script type="text/javascript" ' .
+                'src="http://maps.googleapis.com/maps/api/js?' .
+                'key=%s&amp;sensor=false"></script>', $this->googleApiKey);
+        $html .= '<script type="text/javascript">';
+
+        return $html;
     }
 
     protected function renderCloseScriptTag()
@@ -74,38 +91,39 @@ class DirectionsTwigExtension extends \Twig_Extension
         return '</script>';
     }
 
-    protected function renderVars($src, $dst)
+    protected function renderVars($mapID, $src, $dst, $lengthID = null)
     {
         list($oLat, $oLng) = $src;
         list($dLat, $dLng) = $dst;
 
         $vars = sprintf(
-               "    var directionsDisplay = new google.maps.DirectionsRenderer();
-                    var directionsService = new google.maps.DirectionsService();
-                    var src = new google.maps.LatLng(%s, %s);
-                    var dst = new google.maps.LatLng(%s, %s);
-                    var request = {
-                        origin: src, destination: dst,
-                        travelMode: google.maps.DirectionsTravelMode['%s']
-                    };
-                    var myOptions = {
-                    zoom: 14, mapTypeId: google.maps.MapTypeId.ROADMAP, center: src
-                    }
-                    var map;
-                    var duration;
+            "$(function () {
+                var directionDisplay;
+                var directionsService = new google.maps.DirectionsService();
+                var start = '%s, %s';
+                var end = '%s, %s';
+                var request = {
+                    origin:start, destination:end,
+                    travelMode: google.maps.DirectionsTravelMode.DRIVING
+                };
+                var map;
 
-                (function($) {
-                    map = new google.maps.Map(document.getElementById('map'), myOptions);
-                    directionsDisplay.setMap(map);
-                    directionsService.route(request, function(response, status) {
+                directionsDisplay = new google.maps.DirectionsRenderer();
+                var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+                var myOptions = {
+                        zoom:7,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        center: chicago
+                    };
+                map = new google.maps.Map(document.getElementById('%s'), myOptions);
+                directionsDisplay.setMap(map);
+                directionsService.route(request, function(response, status) {
                         if (status == google.maps.DirectionsStatus.OK) {
                             directionsDisplay.setDirections(response);
-                            duration = response.routes[0].legs[0].duration;
-                            document.getElementById('time-length').innerHTML = duration.text;
+                            document.getElementById('%s').innerHTML = response.routes[0].legs[0].distance.text;
                         }
                     });
-                })(jQuery);",
-                $oLat, $oLng, $dLat, $dLng, "DRIVING"
+                });", $oLat, $oLng, $dLat, $dLng, $mapID, $lengthID
         );
 
         return $vars;

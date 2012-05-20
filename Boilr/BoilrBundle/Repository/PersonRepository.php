@@ -37,8 +37,6 @@ class PersonRepository extends EntityRepository
             $em->flush();
             $em->commit();
         } catch (\PDOException $exc) {
-            var_dump($exc->getMessage());
-            var_dump($exc->getTrace());
             $em->rollback();
             $success = false;
         }

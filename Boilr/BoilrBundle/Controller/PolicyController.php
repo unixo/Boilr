@@ -19,6 +19,7 @@ class PolicyController extends BaseController
 
     static protected $policies = array(
         "\Boilr\BoilrBundle\Policy\EqualBalancedPolicy",
+        "\Boilr\BoilrBundle\Policy\FillupPolicy",
     );
 
     /**
@@ -81,7 +82,8 @@ class PolicyController extends BaseController
         $policy->setInstallers($installers);
         $policy->setInterventions($interventions[self::KEY_SORTED]);
 
-        $results = $policy->elaborate();
+        $policy->elaborate();
+        $results = $policy->getResult();
 
         return $results;
     }
@@ -119,13 +121,6 @@ class PolicyController extends BaseController
      */
     public function assignmentWizardAction()
     {
-        /*
-          $dir = new \Boilr\BoilrBundle\Service\GoogleDirection();
-          $result = $dir->getDirections(array(41.6298297, 12.4738096 ), array(41.8167629, 12.4076660));
-          var_dump($result);
-          die();
-         */
-
         $interventions = $this->interventionsWithoutInstaller();
         $installers = array();
 

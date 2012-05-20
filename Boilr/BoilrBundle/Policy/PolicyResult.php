@@ -1,7 +1,8 @@
 <?php
 
-namespace Boilr\BoilrBundle\Form\Model;
+namespace Boilr\BoilrBundle\Policy;
 
+use Boilr\BoilrBundle\Form\Model\InstallerForIntervention;
 
 class PolicyResult
 {

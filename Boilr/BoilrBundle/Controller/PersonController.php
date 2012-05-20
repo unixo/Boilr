@@ -4,6 +4,7 @@ namespace Boilr\BoilrBundle\Controller;
 
 use Boilr\BoilrBundle\Entity\Person,
     Boilr\BoilrBundle\Entity\Address as MyAddress,
+    Boilr\BoilrBundle\Form\PersonForm,
     Boilr\BoilrBundle\Form\PersonRegistryForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
@@ -36,44 +37,26 @@ class PersonController extends BaseController
      */
     public function newAction()
     {
-        // Build the flow/form
-        $newPerson = new Person();
-        $flow = $this->get('boilr.form.flow.newperson');
+        $person = new Person();
+        $form = $this->createForm(new PersonForm(), $person, array('validation_groups' => 'newPerson'));
 
-        // reset data if it's first time I request the page
-        if ($this->getRequest()->getMethod() === 'GET') {
-            $flow->reset();
-        }
+        if ($this->isPOSTRequest()) {
+            $form->bindRequest($this->getRequest());
 
-        $flow->setAllowDynamicStepNavigation(true);
-        $flow->bind($newPerson);
+            if ($form->isValid()) {
+                $success = $this->getEntityRepository()->persistPerson($person);
+                 if ($success) {
+                    $this->setNoticeMessage("Operazione completata con successo");
 
-        $form = $flow->createForm($newPerson);
-        if ($flow->isValid($form)) {
-            $flow->saveCurrentStepData();
-
-            if ($flow->nextStep()) {
-                return array(
-                    'form' => $flow->createForm($newPerson)->createView(),
-                    'flow' => $flow,
-                    'person' => $newPerson
-                );
-            }
-
-            // flow finished
-            $success = $this->getEntityRepository()->persistPerson($newPerson);
-            if ($success) {
-                $flow->reset();
-                $this->setNoticeMessage("Operazione completata con successo");
-
-                return $this->redirect($this->generateUrl(
-                                        'show_person', array('id' => $newPerson->getId())));
-            } else {
-                $this->setErrorMessage("Si è verificato un'errore durante il salvataggio");
+                    return $this->redirect($this->generateUrl(
+                                    'show_person', array('id' => $person->getId())));
+                } else {
+                    $this->setErrorMessage("Si è verificato un'errore durante il salvataggio");
+                }
             }
         }
 
-        return array('form' => $form->createView(), 'flow' => $flow, 'person' => $newPerson);
+        return array('form' => $form->createView());
     }
 
     /**

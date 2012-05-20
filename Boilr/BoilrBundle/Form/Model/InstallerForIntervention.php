@@ -82,4 +82,15 @@ class InstallerForIntervention
         $this->checked = $checked;
     }
 
+    static function sortByScheduledDate(InstallerForIntervention $res1, InstallerForIntervention $res2)
+    {
+        $date1 = $res1->getIntervention()->getScheduledDate();
+        $date2 = $res2->getIntervention()->getScheduledDate();
+
+        if ($date1 == $date2) {
+            return 0;
+        }
+
+        return ($date1 < $date2)?-1:1;
+    }
 }

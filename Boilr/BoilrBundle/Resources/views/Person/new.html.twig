@@ -3,22 +3,43 @@
 {% block inner_block %}
 <div class="span9">
   <div class="page-header">
-    <h1>Creazione nuovo contatto <small>passo {{ flow.getCurrentStep() }} di {{ flow.getMaxSteps() }}</small></h1>
+    <h1>Creazione nuovo contatto <small>scheda anagrafica</small></h1>
   </div>
 
   <form id="form_newpersonn" action="{{ app.request.requestUri }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+    <fieldset>
+      {{ form_row(form.type, {'label': 'Tipo'}) }}
+      {{ form_row(form.title, {'label': 'Titolo'}) }}
+      {{ form_row(form.name, {'label': 'Nome'}) }}
+      {{ form_row(form.surname, {'label': 'Cognome'}) }}
+      {{ form_row(form.fiscalCode, {'label': 'Codice fiscale'}) }}
+      {{ form_row(form.vatCode, {'label': 'Partita IVA'}) }}
+    </fieldset>
 
-    {% include 'BoilrBundle:Person:new_step' ~ flow.getCurrentStep() ~ '.html.twig' with {'form': form } %}
+    <fieldset>
+      <legend>Recapiti</legend>
 
-    <div style="display: none">{{ form_rest(form) }}</div>
+      {{ form_row(form.officePhone, {'label': 'Ufficio'}) }}
+      {{ form_row(form.homePhone, {'label': 'Casa'}) }}
+      {{ form_row(form.cellularPhone, {'label': 'Cellulare'}) }}
+      {{ form_row(form.faxNumber, {'label': 'FAX'}) }}
+      {{ form_row(form.primaryMail, {'label': 'Email #1'}) }}
+      {{ form_row(form.secondaryMail, {'label': 'Email #2'}) }}
+    </fieldset>
+
+    <fieldset>
+      <legend>Indirizzi</legend>
+
+      {{ form_row(form.addresses, {'label': 'Indirizzi'}) }}
+    </fieldset>
+
+    {{ form_rest(form) }}
     {{ form_errors(form) }}
 
-    {% include 'BoilrBundle:Form:buttons.html.twig' %}
+    <div class="form-actions">
+      <input type="submit" class="btn btn-primary" value="Salva"/>
+      <a class="btn" href="{{ url(app.session.get('last_route').name, app.session.get('last_route').params) }}">Annulla</a>
+    </div>
   </form>
 </div>
-{% endblock %}
-
-
-{% block javascripts %}
-{% include 'BoilrBundle:Person:new_step' ~ flow.getCurrentStep() ~ '.js.twig'  %}
 {% endblock %}

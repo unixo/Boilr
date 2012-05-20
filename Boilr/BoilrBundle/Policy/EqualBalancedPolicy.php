@@ -6,39 +6,24 @@ use Boilr\BoilrBundle\Entity\System,
     Boilr\BoilrBundle\Entity\Installer,
     Boilr\BoilrBundle\Entity\MaintenanceIntervention,
     Boilr\BoilrBundle\Form\Model\InstallerForIntervention,
-    Boilr\BoilrBundle\Form\Model\PolicyResult,
-    Boilr\BoilrBundle\Service\GoogleDirection,
-    Boilr\BoilrBundle\Service\GeoPosition;
+    Boilr\BoilrBundle\Service\GoogleDirection;
 
 /**
  * Description of EqualBalancedPolicy
  *
  * @author unixo
  */
-class EqualBalancedPolicy implements AssignmentPolicyInterface
+class EqualBalancedPolicy extends BasePolicy
 {
 
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    protected $entityManager;
-    protected $logger;
-    protected $installers = array();
-    protected $interventions = array();
-
-    /**
-     * @var \Boilr\BoilrBundle\Form\Model\PolicyResult
-     */
-    protected $result;
-
-    function __construct($entityManager, $logger)
+    public static function getName()
     {
-        $this->entityManager = $entityManager;
-        $this->logger = $logger;
+        return "policy_equal";
+    }
 
-        $this->result = new PolicyResult();
-        $this->result->setPolicyName(EqualBalancedPolicy::getName());
-        $this->result->setPolicyDescr(EqualBalancedPolicy::getDescription());
+    public static function getDescription()
+    {
+        return "Assegnazione bilanciata degli interventi";
     }
 
     public function elaborate()
@@ -82,15 +67,15 @@ class EqualBalancedPolicy implements AssignmentPolicyInterface
                     break;
                 }
                 if ($assoc === null) {
-                    $this->logger->info('[BOILR] non ho trovato alcun tecnico');
+                    $this->log('non ho trovato alcun tecnico');
                 } else {
-                    $this->logger->info('[BOILR] tecnico selezionato: '.$assoc->getInstaller()->getFullName());
+                    $this->log('tecnico selezionato: '.$assoc->getInstaller()->getFullName());
                 }
-                $this->logger->info('[BOILR]  --------------------------------------');
+                $this->log('--------------------------------------');
             }
         }
 
-        return $this->result;
+        return $this;
     }
 
     public function setInstallers($installers = array())
@@ -153,77 +138,6 @@ class EqualBalancedPolicy implements AssignmentPolicyInterface
         }
 
         return ($date1 < $date2) ? -1 : 1;
-    }
-
-    protected function whereIsInstallerInDate(Installer $installer, $aDate)
-    {
-        $params = array(
-            'inst' => $installer,
-            'status' => MaintenanceIntervention::STATUS_CONFIRMED,
-            'aDate' => $aDate->format('d-m-Y'),
-        );
-        $interventions = $this->entityManager->createQuery(
-                                "SELECT mi FROM BoilrBundle:MaintenanceIntervention mi " .
-                                "WHERE mi.installer = :inst AND mi.status = :status AND " .
-                                "DATE_FORMAT(mi.scheduledDate, '%d-%m-%Y') = :aDate " .
-                                "ORDER BY mi.expectedCloseDate ASC")
-                        ->setParameters($params)->getResult();
-
-        // get all associations related to given installer
-        $associations = array();
-        foreach ($this->result->getAssociations() as $tmpAssoc) {
-            if ($tmpAssoc->getInstaller() == $installer) {
-                $tmpDate = $tmpAssoc->getIntervention()->getScheduledDate()->format('d-m-Y');
-                if ($tmpDate == $aDate->format('d-m-Y')) {
-                    $associations[] = $tmpAssoc;
-                }
-            }
-        }
-        if (($interv = array_pop($interventions))) {
-            $associations[] = new InstallerForIntervention($interv->getInstaller(), $interv);
-        }
-
-        /*
-        echo '<hr><h3>inizio</h3>';
-        var_dump($aDate);
-        foreach ($associations as $value) {
-            var_dump($value->getIntervention()->getExpectedCloseDate()->format('d-m-Y'));
-        }
-        echo 'fine<br><hr>';
-        */
-
-        // If no interventions were found, installer is at company address
-        $position = null;
-        if (count($associations) == 0) {
-            $where = new GeoPosition($installer->getCompany()->getLatitude(), $installer->getCompany()->getLongitude());
-            $date = new \DateTime();
-            $date->setDate(1970, 1, 1);
-
-            $position = array('where' => $where, 'when' => $date);
-        } else {
-            // sort associations by date
-            usort($associations, array("\Boilr\BoilrBundle\Policy\EqualBalancedPolicy", "sortInterventionsByDate"));
-
-            $lastAssoc = $associations[0];
-            $address = $lastAssoc->getIntervention()->getFirstSystem()->getAddress();
-
-            $where = new GeoPosition($address->getLatitude(), $address->getLongitude());
-            $date = $lastAssoc->getIntervention()->getExpectedCloseDate();
-
-            $position = array('where' => $where, 'when' => $date);
-        }
-
-        return $position;
-    }
-
-    public static function getName()
-    {
-        return "policy_equal";
-    }
-
-    public static function getDescription()
-    {
-        return "Assegnazione bilanciata degli interventi";
     }
 
 }

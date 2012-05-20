@@ -2,8 +2,6 @@
 {% import 'BoilrBundle:Common:macros.html.twig' as mymacro %}
 
 {% block extra_header %}
-{# vichgeo_include_js() #}
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBxynXehOTkCM1FpypIlrZzqZQfAwNNvFE&sensor=false"></script>
 {{ vichgeo_include_css() }}
 {% endblock %}
 
@@ -84,8 +82,7 @@
 
 
 {% block javascripts %}
-
   {% if interv.installer is not null %}
-    {{ google_directions_for(interv.installer.company, interv.details[0].system.address) }}
+    {{ google_directions_for("map", interv.installer.company, interv.details[0].system.address, "time-length") }}
   {% endif %}
 {% endblock %}

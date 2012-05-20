@@ -65,13 +65,21 @@
 
       <div class="row-fluid">
         <h3>Selezione algoritmo di associazione</h3>
-
+        <br>
         <ul class="thumbnails">
           <li class="span3">
             <div class="caption">
               <h5>Carico bilanciato</h5>
               <p>Assegna gli interventi in pari misura a tutti i tecnici.</p>
               <p><a href="{{ url('intervention_preview_policy', {'name': 'policy_equal'}) }}" class="btn btn-primary">Vai</a></p>
+            </div>
+          </li>
+
+          <li class="span3">
+            <div class="caption">
+              <h5>Saturazione tecnico</h5>
+              <p>Priorità a saturare un tecnico</p>
+              <p><a href="{{ url('intervention_preview_policy', {'name': 'policy_fillup'}) }}" class="btn btn-primary">Vai</a></p>
             </div>
           </li>
         </ul>

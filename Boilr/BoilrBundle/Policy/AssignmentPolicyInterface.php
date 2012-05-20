@@ -11,9 +11,11 @@ interface AssignmentPolicyInterface
 
     public function elaborate();
 
+    public function getResult();
+
     /**
      * Returns name of assignment policy
-     * 
+     *
      * @return string
      */
     public static function getName();
