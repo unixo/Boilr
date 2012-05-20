@@ -7,7 +7,7 @@ namespace Boilr\BoilrBundle\Service;
  *
  * @author unixo
  */
-class GoogleDirection
+class GoogleDirection implements GeoDirectionInterface
 {
 
     const BASE_URL = "http://maps.googleapis.com/maps/api/distancematrix";
@@ -17,12 +17,12 @@ class GoogleDirection
     protected $mode;
     protected $key;
 
-    function __construct()
+    function __construct($key)
     {
         $this->format = "json";
         $this->language = "en";
         $this->mode = "driving";
-        $this->key = "AIzaSyBxynXehOTkCM1FpypIlrZzqZQfAwNNvFE";
+        $this->key = $key;
     }
 
     public function getDirections(GeoPosition $origin, GeoPosition $destination)

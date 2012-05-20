@@ -5,8 +5,7 @@ namespace Boilr\BoilrBundle\Policy;
 use Boilr\BoilrBundle\Entity\System,
     Boilr\BoilrBundle\Entity\Installer,
     Boilr\BoilrBundle\Entity\MaintenanceIntervention,
-    Boilr\BoilrBundle\Form\Model\InstallerForIntervention,
-    Boilr\BoilrBundle\Service\GoogleDirection;
+    Boilr\BoilrBundle\Form\Model\InstallerForIntervention;
 
 /**
  * Description of EqualBalancedPolicy
@@ -28,14 +27,12 @@ class EqualBalancedPolicy extends BasePolicy
 
     public function elaborate()
     {
-        $gDirection = new GoogleDirection();
-
         foreach ($this->interventions as $day => $interventions) {
             foreach ($interventions as $intervention) {
                 $system = $intervention->getFirstSystem();
                 $destination = $system->getAddress()->getGeoPosition();
 
-                $this->logger->info('[BOILR] Intervento #' . $intervention->getId() .
+                $this->log('[BOILR] Intervento #' . $intervention->getId() .
                         ' Data: ' . $intervention->getScheduledDate()->format('d-m-Y H:i') .
                         ' Tipo impianto:' . $system->getSystemType()->getName()
                 );
@@ -44,16 +41,16 @@ class EqualBalancedPolicy extends BasePolicy
                 $installers = $this->findInstallerForSystem($system);
                 foreach ($installers as $entry) {
                     $installer = $entry['obj'];
-                    $this->logger->info('[BOILR] valuto il tecnico: ' . $installer->getFullName(). " - LOAD: ". $entry['load']);
+                    $this->log('[BOILR] valuto il tecnico: ' . $installer->getFullName(). " - LOAD: ". $entry['load']);
 
                     $position = $this->whereIsInstallerInDate($installer, $intervention->getScheduledDate());
-                    $this->logger->info('[BOILR] il tecnico è '.$position['where'].' e finisce alle: '.$position['when']->format('d-m-Y H:i'));
-                    $x = $gDirection->getDirections($position['where'], $destination);
-                    $this->logger->info('[BOILR] tempo necessario per lo spostamento: '.$x['length']);
+                    $this->log('[BOILR] il tecnico è '.$position['where'].' e finisce alle: '.$position['when']->format('d-m-Y H:i'));
+                    $x = $this->directionHelper->getDirections($position['where'], $destination);
+                    $this->log('[BOILR] tempo necessario per lo spostamento: '.$x['length']);
 
                     $newDate = $position['when']->add(\DateInterval::createFromDateString($x['length']));
                     if ($newDate->format('U') > $intervention->getScheduledDate()->format('U')) {
-                        $this->logger->info('[BOILR] tecnico scartato, troppo lontano (arriverebbe alle '.$newDate->format('d-m-Y H:i').')');
+                        $this->log('[BOILR] tecnico scartato, troppo lontano (arriverebbe alle '.$newDate->format('d-m-Y H:i').')');
                         continue;
                     }
 
@@ -126,18 +123,6 @@ class EqualBalancedPolicy extends BasePolicy
         }
 
         return ($load1<$load2)?-1:1;
-    }
-
-    static function sortInterventionsByDate(InstallerForIntervention $i1, InstallerForIntervention $i2)
-    {
-        $date1 = $i1->getIntervention()->getExpectedCloseDate();
-        $date2 = $i2->getIntervention()->getExpectedCloseDate();
-
-        if ($date1 == $date2) {
-            return 0;
-        }
-
-        return ($date1 < $date2) ? -1 : 1;
     }
 
 }

@@ -77,8 +77,13 @@ class PolicyController extends BaseController
         $interventions = $this->interventionsWithoutInstaller();
         $installers = $this->getDoctrine()->getRepository('BoilrBundle:Installer')->findAll();
 
+        // parameters to be passed to assignment policy
+        $logger = $this->get('logger');
+        $directionHelper = $this->get('google_direction');
+        $dem = $this->getEntityManager();
+
         $policyClass = $this->policyClassByName($policyClassName);
-        $policy = $policyClass->newInstance($this->getEntityManager(), $this->get('logger'));
+        $policy = $policyClass->newInstance($dem, $directionHelper, $logger);
         $policy->setInstallers($installers);
         $policy->setInterventions($interventions[self::KEY_SORTED]);
 

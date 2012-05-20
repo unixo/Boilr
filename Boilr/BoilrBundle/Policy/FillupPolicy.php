@@ -3,8 +3,7 @@
 namespace Boilr\BoilrBundle\Policy;
 
 use Boilr\BoilrBundle\Entity\MaintenanceIntervention,
-    Boilr\BoilrBundle\Form\Model\InstallerForIntervention,
-    Boilr\BoilrBundle\Service\GoogleDirection;
+    Boilr\BoilrBundle\Form\Model\InstallerForIntervention;
 
 /**
  * Description of WaypointPolicy
@@ -19,8 +18,6 @@ class FillupPolicy extends BasePolicy
 
     public function elaborate()
     {
-        $gDirection = new GoogleDirection();
-
         foreach ($this->installers as $installer) {
             /* @var $installer \Boilr\BoilrBundle\Entity\Installer */
 
@@ -40,7 +37,7 @@ class FillupPolicy extends BasePolicy
 
                 $system = $interv->getFirstSystem();
                 $destination = $system->getAddress()->getGeoPosition();
-                $x = $gDirection->getDirections($position['where'], $destination);
+                $x = $this->directionHelper->getDirections($position['where'], $destination);
 
                 $newDate = $position['when']->add(\DateInterval::createFromDateString($x['length']));
                 if ($newDate->format('U') < $interv->getScheduledDate()->format('U')) {

@@ -20,5 +20,10 @@ interface AssignmentPolicyInterface
      */
     public static function getName();
 
+    /**
+     * Returns policy long description
+     *
+     * @return string
+     */
     public static function getDescription();
 }

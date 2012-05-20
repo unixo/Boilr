@@ -4,14 +4,9 @@ namespace Boilr\BoilrBundle\Policy;
 
 use Boilr\BoilrBundle\Entity\Installer,
     Boilr\BoilrBundle\Entity\MaintenanceIntervention,
-    Boilr\BoilrBundle\Service\GoogleDirection,
+    Boilr\BoilrBundle\Service\GeoDirectionInterface,
     Boilr\BoilrBundle\Service\GeoPosition;
 
-/**
- * Description of BasePolicy
- *
- * @author unixo
- */
 abstract class BasePolicy implements AssignmentPolicyInterface
 {
 
@@ -21,15 +16,28 @@ abstract class BasePolicy implements AssignmentPolicyInterface
     protected $entityManager;
 
     /**
+     *
+     * @var \Boilr\BoilrBundle\Service\GeoDirectionInterface
+     */
+    protected $directionHelper;
+
+    /**
      * @var Boilr\BoilrBundle\Policy\PolicyResult
      */
     protected $result;
+
+    /**
+     * Logger interface
+     *
+     * @var \Monolog\Logger
+     */
+    protected $logger;
     protected $installers = array();
     protected $interventions = array();
-    protected $logger;
 
-    function __construct($entityManager, $logger = null)
+    function __construct($entityManager, $directionHelper, $logger = null)
     {
+        $this->directionHelper = $directionHelper;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
 
@@ -38,6 +46,12 @@ abstract class BasePolicy implements AssignmentPolicyInterface
         $this->result->setPolicyDescr($this->getDescription());
     }
 
+    /**
+     * Returns an instance of PolicyResult as result of installer/intervention
+     * assignment
+     *
+     * @return PolicyResult
+     */
     public function getResult()
     {
         $assocs = $this->result->getAssociations();
@@ -47,9 +61,16 @@ abstract class BasePolicy implements AssignmentPolicyInterface
         return $this->result;
     }
 
+    /**
+     * Log message
+     *
+     * @param string $message
+     */
     public function log($message)
     {
-        $this->logger->info('[BOILR] ' . $message);
+        if ($this->logger) {
+            $this->logger->debug('[BOILR] ' . $message);
+        }
     }
 
     protected function whereIsInstallerInDate(Installer $installer, $aDate)
@@ -83,6 +104,10 @@ abstract class BasePolicy implements AssignmentPolicyInterface
         // If no interventions were found, installer is at company address
         $position = null;
         if (count($associations) == 0) {
+            /**
+             * no interventions were found, consider company address as starting
+             * point and far date (01/01/1970) as last intervention date
+             */
             $where = new GeoPosition($installer->getCompany()->getLatitude(), $installer->getCompany()->getLongitude());
             $date = new \DateTime();
             $date->setDate(1970, 1, 1);
@@ -90,7 +115,7 @@ abstract class BasePolicy implements AssignmentPolicyInterface
             $position = array('where' => $where, 'when' => $date);
         } else {
             // sort associations by date
-            usort($associations, array("\Boilr\BoilrBundle\Policy\EqualBalancedPolicy", "sortInterventionsByDate"));
+            usort($associations, array("\Boilr\BoilrBundle\Policy\BasePolicy", "sortInterventionsByDate"));
 
             $lastAssoc = $associations[0];
             $address = $lastAssoc->getIntervention()->getFirstSystem()->getAddress();
@@ -102,6 +127,26 @@ abstract class BasePolicy implements AssignmentPolicyInterface
         }
 
         return $position;
+    }
+
+    /**
+     * Returns zero if expected close dates are equals, -1/1 if the former is
+     * smaller/greater then first
+     *
+     * @param InstallerForIntervention $i1
+     * @param InstallerForIntervention $i2
+     * @return int
+     */
+    static function sortInterventionsByDate(InstallerForIntervention $i1, InstallerForIntervention $i2)
+    {
+        $date1 = $i1->getIntervention()->getExpectedCloseDate();
+        $date2 = $i2->getIntervention()->getExpectedCloseDate();
+
+        if ($date1 == $date2) {
+            return 0;
+        }
+
+        return ($date1 < $date2) ? -1 : 1;
     }
 
 }
