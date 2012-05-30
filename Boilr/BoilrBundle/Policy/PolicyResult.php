@@ -6,11 +6,44 @@ use Boilr\BoilrBundle\Form\Model\InstallerForIntervention;
 
 class PolicyResult
 {
+    const RESULT_INSTALLER = 1;
+    const RESULT_LOAD = 2;
+    const RESULT_SCHEDULE_TIME = 3;
 
+    /**
+     * Applied policy name
+     *
+     * @var string
+     */
     protected $policyName;
+
+    /**
+     * Applied policy description
+     *
+     * @var string
+     */
     protected $policyDescr;
+
     protected $policyClass;
+
+    /**
+     * Assignment policy result
+     *
+     * @var array
+     */
     protected $associations = array();
+
+    protected $resultType;
+
+    public function getResultType()
+    {
+        return $this->resultType;
+    }
+
+    public function setResultType($resultType)
+    {
+        $this->resultType = $resultType;
+    }
 
     public function getAssociations()
     {

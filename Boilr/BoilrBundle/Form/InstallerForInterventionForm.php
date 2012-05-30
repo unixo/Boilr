@@ -15,7 +15,7 @@ class InstallerForInterventionForm extends AbstractType
                     'class' => 'BoilrBundle:Installer',
                     'property' => 'fullName',
                     ))
-                ->add('checked', 'checkbox')
+                ->add('checked', 'checkbox', array('required' => false))
         ;
     }
 

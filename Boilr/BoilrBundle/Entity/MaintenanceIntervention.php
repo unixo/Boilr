@@ -538,4 +538,12 @@ class MaintenanceIntervention
         return $details[0]->getSystem();
     }
 
+    public function getExpectedTimeLength()
+    {
+        $startDate = clone $this->scheduledDate;
+        $endDate = clone $this->expectedCloseDate;
+
+        return $startDate->diff($endDate);
+    }
+
 }

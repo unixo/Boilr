@@ -3,6 +3,7 @@
 namespace Boilr\BoilrBundle\Policy;
 
 use Boilr\BoilrBundle\Entity\Installer,
+    Boilr\BoilrBundle\Form\Model\InstallerForIntervention,
     Boilr\BoilrBundle\Entity\MaintenanceIntervention,
     Boilr\BoilrBundle\Service\GeoDirectionInterface,
     Boilr\BoilrBundle\Service\GeoPosition;
@@ -32,6 +33,7 @@ abstract class BasePolicy implements AssignmentPolicyInterface
      * @var \Monolog\Logger
      */
     protected $logger;
+    
     protected $installers = array();
     protected $interventions = array();
 
@@ -59,6 +61,16 @@ abstract class BasePolicy implements AssignmentPolicyInterface
         $this->result->setAssociations($assocs);
 
         return $this->result;
+    }
+
+    public function setInterventions($interventions = array())
+    {
+        $this->interventions = $interventions;
+    }
+
+    public function setInstallers($installers = array())
+    {
+        $this->installers = $installers;
     }
 
     /**

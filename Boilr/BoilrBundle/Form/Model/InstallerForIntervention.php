@@ -25,11 +25,29 @@ class InstallerForIntervention
     protected $newLoad;
     protected $checked;
 
-    function __construct($installer, $intervention)
+    /**
+     * New scheduled date for intervention
+     *
+     * @var \DateTime
+     */
+    protected $newScheduledDate;
+
+    function __construct($installer = null, $intervention = null)
     {
         $this->installer = $installer;
         $this->intervention = $intervention;
         $this->checked = true;
+        $this->newScheduledDate = null;
+    }
+
+    public function getNewScheduledDate()
+    {
+        return $this->newScheduledDate;
+    }
+
+    public function setNewScheduledDate($newScheduledDate)
+    {
+        $this->newScheduledDate = $newScheduledDate;
     }
 
     public function getInstaller()
@@ -86,6 +104,18 @@ class InstallerForIntervention
     {
         $date1 = $res1->getIntervention()->getScheduledDate();
         $date2 = $res2->getIntervention()->getScheduledDate();
+
+        if ($date1 == $date2) {
+            return 0;
+        }
+
+        return ($date1 < $date2)?-1:1;
+    }
+
+    static function sortByNewScheduledDate(InstallerForIntervention $res1, InstallerForIntervention $res2)
+    {
+        $date1 = $res1->getNewScheduledDate();
+        $date2 = $res2->getNewScheduledDate();
 
         if ($date1 == $date2) {
             return 0;

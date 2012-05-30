@@ -5,6 +5,7 @@ namespace Boilr\BoilrBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\GeographicalBundle\Annotation as Vich;
+use Boilr\BoilrBundle\Service\GeoPosition;
 
 /**
  * Boilr\BoilrBundle\Entity\Address
@@ -332,6 +333,6 @@ class Address
 
     public function getGeoPosition()
     {
-        return new \Boilr\BoilrBundle\Service\GeoPosition($this->latitude, $this->longitude);
+        return new GeoPosition($this->latitude, $this->longitude);
     }
 }

@@ -5,6 +5,7 @@ namespace Boilr\BoilrBundle\Entity;
 use Doctrine\ORM\Mapping as ORM,
     Symfony\Component\Validator\Constraints as Assert,
     Vich\GeographicalBundle\Annotation as Vich;
+use Boilr\BoilrBundle\Service\GeoPosition;
 
 /**
  * Boilr\BoilrBundle\Entity\Company
@@ -15,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM,
  */
 class Company
 {
+
     /**
      * @var integer $id
      *
@@ -395,4 +397,10 @@ class Company
     {
         return $this->faxNumber;
     }
+
+    public function getGeoPosition()
+    {
+        return new GeoPosition($this->latitude, $this->longitude);
+    }
+
 }

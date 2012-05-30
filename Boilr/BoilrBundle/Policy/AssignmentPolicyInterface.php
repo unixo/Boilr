@@ -5,12 +5,37 @@ namespace Boilr\BoilrBundle\Policy;
 interface AssignmentPolicyInterface
 {
 
+    /**
+     * Set list of available installers
+     *
+     * @param array $installers
+     */
     public function setInstallers($installers = array());
 
+    /**
+     * Set list of available interventions
+     *
+     * @param array $interventions
+     */
     public function setInterventions($interventions = array());
 
+    /**
+     * Elaborate installer/intervention lists
+     */
     public function elaborate();
 
+    /**
+     * Apply modification to policy results
+     *
+     * @param PolicyResult $result
+     */
+    public function apply(PolicyResult $result);
+
+    /**
+     * Get result of policy elaboration
+     *
+     * @return PolicyResult
+     */
     public function getResult();
 
     /**

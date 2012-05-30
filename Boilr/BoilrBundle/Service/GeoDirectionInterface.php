@@ -8,5 +8,8 @@ namespace Boilr\BoilrBundle\Service;
  */
 interface GeoDirectionInterface
 {
-    public function getDirections(GeoPosition $origins, GeoPosition $destinations);
+
+    public function getSingleDirections(GeoPosition $origin, GeoPosition $destination);
+
+    public function getMultipleDirections(array $origins, array $destinations);
 }

@@ -18,6 +18,8 @@ class FillupPolicy extends BasePolicy
 
     public function elaborate()
     {
+        $this->result->setResultType(PolicyResult::RESULT_INSTALLER);
+
         foreach ($this->installers as $installer) {
             /* @var $installer \Boilr\BoilrBundle\Entity\Installer */
 
@@ -37,7 +39,7 @@ class FillupPolicy extends BasePolicy
 
                 $system = $interv->getFirstSystem();
                 $destination = $system->getAddress()->getGeoPosition();
-                $x = $this->directionHelper->getDirections($position['where'], $destination);
+                $x = $this->directionHelper->getSingleDirections($position['where'], $destination);
 
                 $newDate = $position['when']->add(\DateInterval::createFromDateString($x['length']));
                 if ($newDate->format('U') < $interv->getScheduledDate()->format('U')) {
@@ -57,6 +59,11 @@ class FillupPolicy extends BasePolicy
         }
 
         return $this;
+    }
+
+    public function apply(PolicyResult $result)
+    {
+
     }
 
     public function setInstallers($installers = array())

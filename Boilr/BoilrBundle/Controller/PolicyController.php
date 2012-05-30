@@ -20,6 +20,7 @@ class PolicyController extends BaseController
     static protected $policies = array(
         "\Boilr\BoilrBundle\Policy\EqualBalancedPolicy",
         "\Boilr\BoilrBundle\Policy\FillupPolicy",
+        "\Boilr\BoilrBundle\Policy\WaypointPolicy",
     );
 
     /**
@@ -68,6 +69,12 @@ class PolicyController extends BaseController
         return null;
     }
 
+    /**
+     *
+     * @param string $policyClassName
+     * @return array
+     * @throws \InvalidArgumentException
+     */
     protected function resultsForPolicy($policyClassName)
     {
         if (!is_string($policyClassName)) {
@@ -82,13 +89,18 @@ class PolicyController extends BaseController
         $directionHelper = $this->get('google_direction');
         $dem = $this->getEntityManager();
 
+        $results = null;
         $policyClass = $this->policyClassByName($policyClassName);
-        $policy = $policyClass->newInstance($dem, $directionHelper, $logger);
-        $policy->setInstallers($installers);
-        $policy->setInterventions($interventions[self::KEY_SORTED]);
+        if (null === $policyClass) {
+            $this->setErrorMessage('La politica di assegnazione degli interventi non esiste.');
+        } else {
+            $policy = $policyClass->newInstance($dem, $directionHelper, $logger);
+            $policy->setInstallers($installers);
+            $policy->setInterventions($interventions[self::KEY_SORTED]);
 
-        $policy->elaborate();
-        $results = $policy->getResult();
+            $policy->elaborate();
+            $results = $policy->getResult();
+        }
 
         return $results;
     }
@@ -109,7 +121,24 @@ class PolicyController extends BaseController
             $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
+                try {
+                    $dem = $this->getEntityManager();
+                    $dem->beginTransaction();
+                    foreach ($result->getAssociations() as $assoc) {
+                        /* @var $assoc \Boilr\BoilrBundle\Form\Model\InstallerForIntervention */
+                        if ($assoc->getChecked() == true) {
+                            $assoc->getIntervention()->setInstaller($assoc->getInstaller());
+                        }
+                    }
+                    $dem->flush();
+                    $dem->commit();
+                    $this->setNoticeMessage("Associazione effettuata con successo");
 
+                    return $this->redirect($this->generateUrl('policy_assignment_wizard'));
+                } catch (Exception $e) {
+                    $this->setErrorMessage("Si è verificato un errore durante il salvataggio");
+                    $dem->rollback();
+                }
             }
         }
 
@@ -170,10 +199,13 @@ class PolicyController extends BaseController
 
         if ($this->getRequest()->get('doit', false)) {
             try {
+                /*
                 foreach ($result->getAssociations() as $entry) {
-                    /* @var $entry \Boilr\BoilrBundle\Form\Model\InstallerForIntervention */
+                    // @var $entry \Boilr\BoilrBundle\Form\Model\InstallerForIntervention
                     $entry->getIntervention()->setInstaller($entry->getInstaller());
                 }
+                */
+
                 $this->getEntityManager()->flush();
                 $this->setNoticeMessage('Interventi assegnati con successo');
 

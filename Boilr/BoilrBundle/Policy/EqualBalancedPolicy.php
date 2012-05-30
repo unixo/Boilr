@@ -27,6 +27,8 @@ class EqualBalancedPolicy extends BasePolicy
 
     public function elaborate()
     {
+        $this->result->setResultType(PolicyResult::RESULT_LOAD);
+
         foreach ($this->interventions as $day => $interventions) {
             foreach ($interventions as $intervention) {
                 $system = $intervention->getFirstSystem();
@@ -45,7 +47,7 @@ class EqualBalancedPolicy extends BasePolicy
 
                     $position = $this->whereIsInstallerInDate($installer, $intervention->getScheduledDate());
                     $this->log('il tecnico è '.$position['where'].' e finisce alle: '.$position['when']->format('d-m-Y H:i'));
-                    $x = $this->directionHelper->getDirections($position['where'], $destination);
+                    $x = $this->directionHelper->getSingleDirections($position['where'], $destination);
                     $this->log('tempo necessario per lo spostamento: '.$x['length']);
 
                     $newDate = $position['when']->add(\DateInterval::createFromDateString($x['length']));
@@ -75,6 +77,11 @@ class EqualBalancedPolicy extends BasePolicy
         return $this;
     }
 
+    public function apply(PolicyResult $result)
+    {
+
+    }
+
     public function setInstallers($installers = array())
     {
         foreach ($installers as $inst) {
@@ -86,11 +93,6 @@ class EqualBalancedPolicy extends BasePolicy
 
             $this->installers[] = $entry;
         }
-    }
-
-    public function setInterventions($interventions = array())
-    {
-        $this->interventions = $interventions;
     }
 
     private function findInstallerForSystem(System $system)
