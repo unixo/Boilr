@@ -17,7 +17,7 @@ class PolicyController extends BaseController
     const KEY_SORTED = "sorted";
     const KEY_UNSORTED = "unsorted";
 
-    static protected $policies = array(
+    protected static $policies = array(
         "\Boilr\BoilrBundle\Policy\EqualBalancedPolicy",
         "\Boilr\BoilrBundle\Policy\FillupPolicy",
         "\Boilr\BoilrBundle\Policy\WaypointPolicy",
@@ -51,7 +51,7 @@ class PolicyController extends BaseController
     /**
      * Returns an assignment policy reference if found by name
      *
-     * @param string $policyName
+     * @param  string                $policyName
      * @return \ReflectionClass|null
      */
     protected function policyClassByName($policyName)
@@ -70,8 +70,33 @@ class PolicyController extends BaseController
     }
 
     /**
+     * Returns an instance of a policy class identified by parameter.
      *
-     * @param string $policyClassName
+     * @param  string                                              $policyClassName
+     * @return \Boilr\BoilrBundle\Policy\AssignmentPolicyInterface
+     * @throws \InvalidArgumentException
+     */
+    protected function instantiatePolicyClass($policyClassName)
+    {
+        $policyClass = $this->policyClassByName($policyClassName);
+        if (null === $policyClass) {
+            throw new \InvalidArgumentException('invalid policy class name');
+        }
+
+        // parameters to be passed to assignment policy
+        $logger = $this->get('logger');
+        $directionHelper = $this->get('google_direction');
+        $dem = $this->getEntityManager();
+        $user = $this->getCurrentUser();
+
+        $policy = $policyClass->newInstance($dem, $directionHelper, $logger, $user);
+
+        return $policy;
+    }
+
+    /**
+     *
+     * @param  string                    $policyClassName
      * @return array
      * @throws \InvalidArgumentException
      */
@@ -84,23 +109,11 @@ class PolicyController extends BaseController
         $interventions = $this->interventionsWithoutInstaller();
         $installers = $this->getDoctrine()->getRepository('BoilrBundle:Installer')->findAll();
 
-        // parameters to be passed to assignment policy
-        $logger = $this->get('logger');
-        $directionHelper = $this->get('google_direction');
-        $dem = $this->getEntityManager();
-
-        $results = null;
-        $policyClass = $this->policyClassByName($policyClassName);
-        if (null === $policyClass) {
-            $this->setErrorMessage('La politica di assegnazione degli interventi non esiste.');
-        } else {
-            $policy = $policyClass->newInstance($dem, $directionHelper, $logger);
-            $policy->setInstallers($installers);
-            $policy->setInterventions($interventions[self::KEY_SORTED]);
-
-            $policy->elaborate();
-            $results = $policy->getResult();
-        }
+        $policy = $this->instantiatePolicyClass($policyClassName);
+        $policy->setInstallers($installers);
+        $policy->setInterventions($interventions[self::KEY_SORTED]);
+        $policy->elaborate();
+        $results = $policy->getResult();
 
         return $results;
     }
@@ -121,23 +134,15 @@ class PolicyController extends BaseController
             $form->bindRequest($this->getRequest());
 
             if ($form->isValid()) {
-                try {
-                    $dem = $this->getEntityManager();
-                    $dem->beginTransaction();
-                    foreach ($result->getAssociations() as $assoc) {
-                        /* @var $assoc \Boilr\BoilrBundle\Form\Model\InstallerForIntervention */
-                        if ($assoc->getChecked() == true) {
-                            $assoc->getIntervention()->setInstaller($assoc->getInstaller());
-                        }
-                    }
-                    $dem->flush();
-                    $dem->commit();
+                $policy = $this->instantiatePolicyClass($name);
+                $result = $policy->apply($result);
+
+                if ($result === true) {
                     $this->setNoticeMessage("Associazione effettuata con successo");
 
                     return $this->redirect($this->generateUrl('policy_assignment_wizard'));
-                } catch (Exception $e) {
+                } else {
                     $this->setErrorMessage("Si è verificato un errore durante il salvataggio");
-                    $dem->rollback();
                 }
             }
         }
@@ -198,20 +203,15 @@ class PolicyController extends BaseController
         /* @var $result \Boilr\BoilrBundle\Form\Model\PolicyModel */
 
         if ($this->getRequest()->get('doit', false)) {
-            try {
-                /*
-                foreach ($result->getAssociations() as $entry) {
-                    // @var $entry \Boilr\BoilrBundle\Form\Model\InstallerForIntervention
-                    $entry->getIntervention()->setInstaller($entry->getInstaller());
-                }
-                */
+            $policy = $this->instantiatePolicyClass($name);
+            $result = $policy->apply($result);
 
-                $this->getEntityManager()->flush();
-                $this->setNoticeMessage('Interventi assegnati con successo');
+            if ($result === true) {
+                $this->setNoticeMessage("Associazione effettuata con successo");
 
-                return $this->redirect($this->generateUrl('intervention_assignment_wizard'));
-            } catch (Exception $exc) {
-                $this->setErrorMessage('Si è verificato un errore durante il salvataggio');
+                return $this->redirect($this->generateUrl('policy_assignment_wizard'));
+            } else {
+                $this->setErrorMessage("Si è verificato un errore durante il salvataggio");
             }
         }
 

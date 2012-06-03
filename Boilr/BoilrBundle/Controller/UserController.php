@@ -19,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 class UserController extends BaseController
 {
 
-    function __construct()
+    public function __construct()
     {
         $this->entityName = 'BoilrBundle:User';
     }
@@ -31,7 +31,8 @@ class UserController extends BaseController
      */
     public function listAction()
     {
-        $users = $this->getEntityRepository()->findBy(array(), array('surname' => 'ASC', 'name' => 'ASC'));
+        $sort = array('surname' => 'ASC', 'name' => 'ASC');
+        $users = $this->getEntityRepository()->findBy(array(), $sort);
 
         return array('users' => $users);
     }

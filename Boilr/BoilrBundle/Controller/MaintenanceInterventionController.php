@@ -29,7 +29,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 class MaintenanceInterventionController extends BaseController
 {
 
-    function __construct()
+    public function __construct()
     {
         $this->entityName = 'BoilrBundle:MaintenanceIntervention';
     }
@@ -421,6 +421,7 @@ class MaintenanceInterventionController extends BaseController
 
         if ($interv->getDetails()->count() == 1) {
             $details = $interv->getDetails();
+
             return $this->redirect($this->generateUrl('interventiondetail_insert_result', array('id' => $details[0]->getId())));
         }
 

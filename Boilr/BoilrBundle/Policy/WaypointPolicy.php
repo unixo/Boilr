@@ -14,19 +14,31 @@ use Boilr\BoilrBundle\Service\GeoPosition,
 class WaypointPolicy extends BasePolicy
 {
 
+    /**
+     * {@inheritDoc}
+     */
     public static function getName()
     {
         return "policy_waypoint";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function getDescription()
     {
         return "Percorso ottimale degli interventi";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function elaborate()
     {
         $this->result->setResultType(PolicyResult::RESULT_SCHEDULE_TIME);
+
+        // get company which current user belongs to
+        $company = $this->user->getCompany();
 
         foreach ($this->interventions as $day => $interventions) {
             $count = count($interventions);
@@ -34,13 +46,13 @@ class WaypointPolicy extends BasePolicy
                 $assoc = new InstallerForIntervention();
                 $assoc->setIntervention($interventions[0]);
                 $aDate = clone $interventions[0]->getScheduledDate();
-                $aDate->setTime(8,0);
+                $aDate->setTime(8, 0);
                 $assoc->setNewScheduledDate($aDate);
 
                 $this->result->addAssociation($assoc);
             } else {
                 // starting point
-                $src = $this->installers[0]->getCompany()->getGeoPosition();
+                $src = $company->getGeoPosition();
                 // list of interventions of current day, ordered by best route
                 $ordered = $this->orderInterventionsByWaypoints($src, $interventions);
 
@@ -50,7 +62,7 @@ class WaypointPolicy extends BasePolicy
                 $assoc = new InstallerForIntervention();
                 $assoc->setIntervention($firstInterv);
                 $aDate = clone $firstInterv->getScheduledDate();
-                $aDate->setTime(8,0);
+                $aDate->setTime(8, 0);
                 $assoc->setNewScheduledDate($aDate);
                 $this->result->addAssociation($assoc);
 
@@ -60,7 +72,7 @@ class WaypointPolicy extends BasePolicy
                 foreach ($ordered as $interv) {
                     // get scheduled date of last association and add intervention duration
                     $lastDate = clone $lastAssoc->getNewScheduledDate();
-                    $lastDate->add( $lastAssoc->getIntervention()->getExpectedTimeLength() );
+                    $lastDate->add($lastAssoc->getIntervention()->getExpectedTimeLength());
 
                     // eval distance from position of last intervention to next intervention address
                     $lastGeoPos = $lastAssoc->getIntervention()->getFirstSystem()->getAddress()->getGeoPosition();
@@ -84,11 +96,38 @@ class WaypointPolicy extends BasePolicy
         return $this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function apply(PolicyResult $result)
     {
-        
+        $this->entityManager->beginTransaction();
+
+        $success = true;
+
+        try {
+            foreach ($result->getAssociations() as $assoc) {
+                /* @var $assoc \Boilr\BoilrBundle\Form\Model\InstallerForIntervention */
+                if ($assoc->getChecked() == true) {
+                    $interv = $assoc->getIntervention();
+                    $newDate = $assoc->getNewScheduledDate();
+                    $interv->setScheduledDate($newDate);
+                }
+            }
+
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+        } catch (Exception $exc) {
+            $this->entityManager->rollback();
+            $success = false;
+        }
+
+        return $success;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getResult()
     {
         $assocs = $this->result->getAssociations();
@@ -112,7 +151,7 @@ class WaypointPolicy extends BasePolicy
 
         $index = -1;
         $maxDistance = 0;
-        for ($i=0; $i<count($result->rows[0]->elements); $i++) {
+        for ($i = 0; $i < count($result->rows[0]->elements); $i++) {
             $item = $result->rows[0]->elements[$i];
 
             if ($item->distance->value > $maxDistance) {
@@ -164,7 +203,7 @@ class WaypointPolicy extends BasePolicy
 
     private function dumpIntervention($interv)
     {
-        $str = $interv->getId() . ", ". $interv->getScheduledDate()->format('d-m-Y'). ", ";
+        $str = $interv->getId() . ", " . $interv->getScheduledDate()->format('d-m-Y') . ", ";
         $str .= $interv->getFirstSystem()->getAddress()->getAddress();
         var_dump($str);
     }

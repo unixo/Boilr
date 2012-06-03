@@ -33,15 +33,22 @@ abstract class BasePolicy implements AssignmentPolicyInterface
      * @var \Monolog\Logger
      */
     protected $logger;
-    
+
+    /**
+     *
+     * @var \Boilr\BoilrBundle\Entity\User
+     */
+    protected $user;
+
     protected $installers = array();
     protected $interventions = array();
 
-    function __construct($entityManager, $directionHelper, $logger = null)
+    public function __construct($entityManager, $directionHelper, $logger = null, $user = null)
     {
         $this->directionHelper = $directionHelper;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->user = $user;
 
         $this->result = new PolicyResult();
         $this->result->setPolicyName($this->getName());
@@ -49,10 +56,7 @@ abstract class BasePolicy implements AssignmentPolicyInterface
     }
 
     /**
-     * Returns an instance of PolicyResult as result of installer/intervention
-     * assignment
-     *
-     * @return PolicyResult
+     * {@inheritDoc}
      */
     public function getResult()
     {
@@ -83,6 +87,31 @@ abstract class BasePolicy implements AssignmentPolicyInterface
         if ($this->logger) {
             $this->logger->debug('[BOILR] ' . $message);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function apply(PolicyResult $result)
+    {
+        $success = true;
+        $this->entityManager->beginTransaction();
+
+        try {
+            foreach ($result->getAssociations() as $assoc) {
+                /* @var $assoc \Boilr\BoilrBundle\Form\Model\InstallerForIntervention */
+                if ($assoc->getChecked() == true) {
+                    $assoc->getIntervention()->setInstaller($assoc->getInstaller());
+                }
+            }
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+        } catch (Exception $exc) {
+            $this->entityManager->rollback();
+            $success = false;
+        }
+
+        return $success;
     }
 
     protected function whereIsInstallerInDate(Installer $installer, $aDate)
@@ -145,11 +174,11 @@ abstract class BasePolicy implements AssignmentPolicyInterface
      * Returns zero if expected close dates are equals, -1/1 if the former is
      * smaller/greater then first
      *
-     * @param InstallerForIntervention $i1
-     * @param InstallerForIntervention $i2
+     * @param  InstallerForIntervention $i1
+     * @param  InstallerForIntervention $i2
      * @return int
      */
-    static function sortInterventionsByDate(InstallerForIntervention $i1, InstallerForIntervention $i2)
+    public static function sortInterventionsByDate(InstallerForIntervention $i1, InstallerForIntervention $i2)
     {
         $date1 = $i1->getIntervention()->getExpectedCloseDate();
         $date2 = $i2->getIntervention()->getExpectedCloseDate();

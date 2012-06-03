@@ -25,9 +25,11 @@ interface AssignmentPolicyInterface
     public function elaborate();
 
     /**
-     * Apply modification to policy results
+     * Apply modification to policy results. Returns false if exception raised
+     * during operation.
      *
-     * @param PolicyResult $result
+     * @param  PolicyResult $result
+     * @return boolean
      */
     public function apply(PolicyResult $result);
 

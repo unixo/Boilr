@@ -19,7 +19,7 @@ use Boilr\BoilrBundle\Entity\Company,
 class CompanyController extends BaseController
 {
 
-    function __construct()
+    public function __construct()
     {
         $this->entityName = 'BoilrBundle:Company';
     }

@@ -83,3 +83,7 @@ policy:
     prefix:   /policy
     resource: "@BoilrBundle/Controller/PolicyController.php"
     type:     annotation
+
+rest:
+    type:     rest
+    resource: "@BoilrBundle/Resources/config/routing/rest_routing.yml"

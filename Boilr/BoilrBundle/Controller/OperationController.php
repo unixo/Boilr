@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 class OperationController extends BaseController
 {
 
-    function __construct()
+    public function __construct()
     {
         $this->entityName = 'BoilrBundle:Operation';
     }

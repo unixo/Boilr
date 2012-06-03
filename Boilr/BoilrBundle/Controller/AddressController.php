@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 class AddressController extends BaseController
 {
 
-    function __construct()
+    public function __construct()
     {
         $this->entityName = 'BoilrBundle:Address';
     }

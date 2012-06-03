@@ -12,6 +12,8 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
 
     public function load(ObjectManager $manager)
     {
+        $company = $manager->merge($this->getReference('company-main'));
+
         $u = new MyUser();
         $u->setName('Ferruccio');
         $u->setSurname('Vitale');
@@ -19,6 +21,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $u->setPassword('4853eb41f1c4ced4cdcb670c485580c1c510389b');
         $u->setIsActive(true);
         $u->addGroup($manager->merge($this->getReference('group-super')));
+        $u->setCompany($company);
         $manager->persist($u);
         $manager->flush();
 
@@ -29,6 +32,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $u->setPassword('42bb6a44f833e29601aff89757b05f9adaed617c'); // m4ur1z10
         $u->setIsActive(true);
         $u->addGroup($manager->merge($this->getReference('group-admin')));
+        $u->setCompany($company);
         $manager->persist($u);
         $manager->flush();
 
@@ -39,13 +43,14 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $u->setPassword('fe96dd39756ac41b74283a9292652d366d73931f'); // operator
         $u->setIsActive(true);
         $u->addGroup($manager->merge($this->getReference('group-operator')));
+        $u->setCompany($company);
         $manager->persist($u);
         $manager->flush();
     }
 
     public function getOrder()
     {
-        return 31;
+        return 302;
     }
 
 }

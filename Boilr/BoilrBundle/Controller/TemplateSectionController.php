@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 class TemplateSectionController extends BaseController
 {
 
-    function __construct()
+    public function __construct()
     {
         $this->entityName = 'BoilrBundle:TemplateSection';
     }
@@ -153,6 +153,7 @@ class TemplateSectionController extends BaseController
                 try {
                     $this->getEntityManager()->flush();
                     $this->setNoticeMessage('Operazione conclusa con successo');
+
                     return $this->redirect($this->generateUrl('template_section_list', array('id' => $section->getTemplate()->getId())));
                 } catch (Exception $exc) {
                     $this->setErrorMessage('Si è verificato un errore durante il salvataggio');

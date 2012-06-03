@@ -17,7 +17,7 @@ use Boilr\BoilrBundle\Validator\Constraints as MyAssert;
  * @ORM\Entity
  * @UniqueEntity("login")
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
 
     /**
@@ -72,12 +72,21 @@ class User implements UserInterface
     protected $isActive;
 
     /**
+     * @var Company
+     *
+     * @ORM\ManyToOne(targetEntity="Company")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id", nullable=false)
+     * @Assert\NotBlank
+     */
+    protected $company;
+
+    /**
      * @var datetime $created
      *
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var datetime $updated
@@ -85,7 +94,7 @@ class User implements UserInterface
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
      */
-    private $updated;
+    protected $updated;
 
     /**
      * @var Group
@@ -110,6 +119,7 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
+
     }
 
     public function getRoles()
@@ -360,4 +370,47 @@ class User implements UserInterface
       return (!in_array($this->password, $tokens));
       }
      */
+
+    /**
+     * Set company
+     *
+     * @param Boilr\BoilrBundle\Entity\Company $company
+     */
+    public function setCompany(\Boilr\BoilrBundle\Entity\Company $company)
+    {
+        $this->company = $company;
+    }
+
+    /**
+     * Get company
+     *
+     * @return Boilr\BoilrBundle\Entity\Company
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+                    $this->id,
+                    $this->name,
+                    $this->surname,
+                    $this->login,
+                    $this->password,
+                ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list(
+                $this->id,
+                $this->name,
+                $this->surname,
+                $this->login,
+                $this->password,
+                ) = unserialize($serialized);
+    }
+    
 }

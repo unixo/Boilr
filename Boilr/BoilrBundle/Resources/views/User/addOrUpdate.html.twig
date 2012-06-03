@@ -20,9 +20,10 @@
     <fieldset>
         <legend>Nominativo</legend>
 
-        {{ form_row(form.name) }}
-        {{ form_row(form.surname) }}
-        {{ form_row(form.isActive) }}
+        {{ form_row(form.company, {'label': 'Azienda'}) }}
+        {{ form_row(form.name, {'label': 'Nome'}) }}
+        {{ form_row(form.surname, {'label': 'Cognome'}) }}
+        {{ form_row(form.isActive, {'label': 'Attivo?'}) }}
     </fieldset>
 
     <fieldset>
@@ -39,13 +40,13 @@
           </div>
         {% endif %}
         {{ form_row(form.password.first, {'label': "Password"}) }}
-        {{ form_row(form.password.second) }}
+        {{ form_row(form.password.second, {'label': "Ripetere"}) }}
     </fieldset>
 
     <fieldset>
         <legend>Profili autorizzativi</legend>
 
-        {{ form_row(form.groups) }}
+        {{ form_row(form.groups, {'label': 'Gruppi'}) }}
     </fieldset>
 
     <div class="form-actions">

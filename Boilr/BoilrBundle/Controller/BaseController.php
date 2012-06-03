@@ -58,7 +58,7 @@ abstract class BaseController extends Controller
      * Display a flash notice message to the user
      *
      * @param string $message
-     * @param array $placeholders
+     * @param array  $placeholders
      */
     public function setNoticeMessage($message, $placeholders = null)
     {
@@ -73,7 +73,7 @@ abstract class BaseController extends Controller
      * Display a flash error message to the user
      *
      * @param string $message
-     * @param array $placeholders
+     * @param array  $placeholders
      */
     public function setErrorMessage($message, $placeholders = null)
     {
@@ -159,6 +159,6 @@ abstract class BaseController extends Controller
 
     protected function _debug($var)
     {
-         $this->get('ladybug')->log($var);  
+         $this->get('ladybug')->log($var);
     }
 }

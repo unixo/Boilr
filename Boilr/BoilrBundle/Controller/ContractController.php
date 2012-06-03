@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 class ContractController extends BaseController
 {
 
-    function __construct()
+    public function __construct()
     {
         $this->entityName = 'BoilrBundle:Contract';
     }

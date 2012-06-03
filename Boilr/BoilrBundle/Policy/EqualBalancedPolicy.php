@@ -15,16 +15,25 @@ use Boilr\BoilrBundle\Entity\System,
 class EqualBalancedPolicy extends BasePolicy
 {
 
+    /**
+     * {@inheritDoc}
+     */
     public static function getName()
     {
         return "policy_equal";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function getDescription()
     {
         return "Assegnazione bilanciata degli interventi";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function elaborate()
     {
         $this->result->setResultType(PolicyResult::RESULT_LOAD);
@@ -77,11 +86,9 @@ class EqualBalancedPolicy extends BasePolicy
         return $this;
     }
 
-    public function apply(PolicyResult $result)
-    {
-
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     public function setInstallers($installers = array())
     {
         foreach ($installers as $inst) {
@@ -115,7 +122,7 @@ class EqualBalancedPolicy extends BasePolicy
         return $availableInstallers;
     }
 
-    static function sortInstallersByLoad($i1, $i2)
+    public static function sortInstallersByLoad($i1, $i2)
     {
         $load1 = $i1['load'];
         $load2 = $i2['load'];

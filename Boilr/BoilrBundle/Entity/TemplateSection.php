@@ -177,4 +177,9 @@ class TemplateSection
         return $this->operations;
     }
 
+    public function __construct()
+    {
+        $this->operations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
 }

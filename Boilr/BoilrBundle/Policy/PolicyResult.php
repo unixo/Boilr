@@ -24,8 +24,6 @@ class PolicyResult
      */
     protected $policyDescr;
 
-    protected $policyClass;
-
     /**
      * Assignment policy result
      *

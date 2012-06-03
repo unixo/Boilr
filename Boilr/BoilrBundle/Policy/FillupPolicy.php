@@ -16,6 +16,9 @@ class FillupPolicy extends BasePolicy
     protected $installers = array();
     protected $interventions = array();
 
+    /**
+     * {@inheritDoc}
+     */
     public function elaborate()
     {
         $this->result->setResultType(PolicyResult::RESULT_INSTALLER);
@@ -24,17 +27,18 @@ class FillupPolicy extends BasePolicy
             /* @var $installer \Boilr\BoilrBundle\Entity\Installer */
 
             $abilities = $installer->getAbilities();
-            $this->log('Tecnico: ' . $installer->getFullName(). ' (#'.$abilities->count().' abilità)');
+            $this->log('Tecnico: ' . $installer->getFullName() . ' (#' . $abilities->count() . ' abilità)');
 
             $interventions = array_filter($this->interventions, function ($entry) use ($abilities) {
                         $sysType = $entry->getFirstSystem()->getSystemType();
+
                         return $abilities->contains($sysType);
                     }
             );
-            $this->log(count($interventions).'/'.count($this->interventions).' interventi compatibili');
+            $this->log(count($interventions) . '/' . count($this->interventions) . ' interventi compatibili');
 
             foreach ($interventions as $interv) {
-                $this->log('Intervento #'.$interv->getId().', alle '.$interv->getScheduledDate()->format('d-m-Y H:i'));
+                $this->log('Intervento #' . $interv->getId() . ', alle ' . $interv->getScheduledDate()->format('d-m-Y H:i'));
                 $position = $this->whereIsInstallerInDate($installer, $interv->getScheduledDate());
 
                 $system = $interv->getFirstSystem();
@@ -50,10 +54,9 @@ class FillupPolicy extends BasePolicy
                     $index = array_search($interv, $this->interventions);
                     unset($this->interventions[$index]);
 
-                    $this->log('intervento associato - '.count($this->interventions).'/'.$count);
-
+                    $this->log('intervento associato - ' . count($this->interventions) . '/' . $count);
                 } else {
-                    $this->log('troppo lontano, arriverebbe alle '.$newDate->format('d-m-Y H:i'));
+                    $this->log('troppo lontano, arriverebbe alle ' . $newDate->format('d-m-Y H:i'));
                 }
             }
         }
@@ -61,16 +64,17 @@ class FillupPolicy extends BasePolicy
         return $this;
     }
 
-    public function apply(PolicyResult $result)
-    {
-
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     public function setInstallers($installers = array())
     {
         $this->installers = $installers;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setInterventions($interventions = array())
     {
         foreach ($interventions as $day => $events) {
@@ -78,11 +82,17 @@ class FillupPolicy extends BasePolicy
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function getDescription()
     {
         return "Priorità ad saturare un tecnico";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function getName()
     {
         return "policy_fillup";

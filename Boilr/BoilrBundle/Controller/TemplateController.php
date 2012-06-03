@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 class TemplateController extends BaseController
 {
 
-    function __construct()
+    public function __construct()
     {
         $this->entityName = 'BoilrBundle:Template';
     }

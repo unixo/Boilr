@@ -20,12 +20,17 @@ class UserForm extends AbstractType
         $builder->addEventSubscriber($subscriber);
 
         $builder
-            ->add('surname', 'text',      array('required' => true, 'label' => 'Cognome'))
-            ->add('name', 'text',         array('required' => true, 'label' => 'Nome'))
-            ->add('password', 'repeated', array('type' => 'password', 'label' => 'Password', 'required' => false))
-            ->add('isActive', 'checkbox', array('required' => true, 'label' => 'Attivo'))
+            ->add('company', 'entity', array(
+                'class' => 'BoilrBundle:Company',
+                'property' => 'name',
+                'required' => true,
+                'empty_value' => ''
+            ))
+            ->add('surname', 'text',      array('required' => true))
+            ->add('name', 'text',         array('required' => true))
+            ->add('password', 'repeated', array('type' => 'password', 'required' => false))
+            ->add('isActive', 'checkbox', array('required' => true))
             ->add('groups', 'entity',     array(
-                                            'label' => 'Gruppi',
                                             'required' => true,
                                             'multiple' => true,
                                             'class'    => 'BoilrBundle:Group',

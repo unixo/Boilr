@@ -11,5 +11,3 @@ class OperationRepository
 {
     //put your code here
 }
-
-?>

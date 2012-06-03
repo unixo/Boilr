@@ -26,7 +26,7 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
 
         // Company data
         $c = new Company();
-        $c->setName("Assistenza Caldaie Roma");
+        $c->setName("Club 'Amici della caldaia'");
         $c->setOfficePhone('06.9102907');
         $c->setCellularPhone('331.3588218 ');
         $c->setVatCode('01234567890');
@@ -40,7 +40,7 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
 
         // Company data
         $c = new Company();
-        $c->setName("Club 'Amici della caldaia'");
+        $c->setName("Assistenza Caldaie Roma");
         $c->setVatCode('01234567890');
         $c->setStreet("Via delle Botteghe Oscure 15");
         $c->setCity("Roma");
@@ -66,6 +66,7 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
             $u->setLogin("installer$count");
             $u->setPassword('2fc42d37fee2c81d767e09fb298b70c748940f86');
             $u->setIsActive(true);
+            $u->setCompany($c);
             $u->addGroup($manager->merge($this->getReference('group-installer')));
 
             $i = new Installer();
@@ -101,11 +102,12 @@ class LoadCompanyData extends AbstractFixture implements OrderedFixtureInterface
         fclose($fhandle);
 
         $manager->flush();
+        $this->addReference('company-main', $c);
     }
 
     function getOrder()
     {
-        return 300;
+        return 301;
     }
 
 }
