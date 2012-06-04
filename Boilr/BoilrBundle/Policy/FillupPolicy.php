@@ -13,9 +13,6 @@ use Boilr\BoilrBundle\Entity\MaintenanceIntervention,
 class FillupPolicy extends BasePolicy
 {
 
-    protected $installers = array();
-    protected $interventions = array();
-
     /**
      * {@inheritDoc}
      */
@@ -62,14 +59,6 @@ class FillupPolicy extends BasePolicy
         }
 
         return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setInstallers($installers = array())
-    {
-        $this->installers = $installers;
     }
 
     /**
