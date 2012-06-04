@@ -158,10 +158,11 @@ class Operation
     /**
      * Get timeLength
      *
-     * @return integer 
+     * @return integer
      */
     public function getTimeLength()
     {
         return $this->timeLength;
     }
+
 }

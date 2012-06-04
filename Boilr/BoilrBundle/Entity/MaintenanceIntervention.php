@@ -506,8 +506,12 @@ class MaintenanceIntervention
 
     public function asXml()
     {
-        $doc = new \DOMDocument('1.0', 'utf-8');
+        $implementation = new \DOMImplementation();
+        $dtd = $implementation->createDocumentType('intervention', '', 'http://boilr.devzero.it/bundles/boilr/xml/ManteinanceIntervention.dtd');
+        $doc = $implementation->createDocument('1.0', '', $dtd);
+        //$doc = new \DOMDocument('1.0', 'utf-8');
         $doc->formatOutput = true;
+
 
         $rootNode = $doc->createElement('intervention');
         $rootNode->setAttribute('isPlanned', $this->isPlanned?"true":"false");

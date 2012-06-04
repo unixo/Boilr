@@ -163,7 +163,7 @@ class InterventionCheck
         $checkXML = $dom->createElement("check");
         $checkXML->appendChild($dom->createElement("operation", $this->getName()));
         if ($this->getResultType() === Operation::RESULT_CHECKBOX) {
-            $checkXML->appendChild($dom->createElement("type", "checkbox"));
+            $checkXML->appendChild($dom->createElement("restype", "checkbox"));
             $value = "";
             switch ($this->threewayValue) {
                 case 0:
@@ -178,7 +178,7 @@ class InterventionCheck
             }
             $checkXML->appendChild($dom->createElement("value", $value));
         } else {
-            $checkXML->appendChild($dom->createElement("type", "text"));
+            $checkXML->appendChild($dom->createElement("restype", "text"));
             $checkXML->appendChild($dom->createElement("value", $this->textValue));
         }
 

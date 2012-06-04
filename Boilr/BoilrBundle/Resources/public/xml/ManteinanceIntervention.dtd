@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 
-<!--
-    TODO define vocabulary identification data
-    PUBLIC ID  : -//vendor//vocabulary//EN
-    SYSTEM ID  : http://server/path/__NAME__
--->
+<!ELEMENT intervention (customer, installer, details)>
+<!ATTLIST intervention
+  isPlanned (true|false) #REQUIRED
+  scheduledDate CDATA #REQUIRED
+  expectedCloseDate CDATA #REQUIRED
+  closeDate CDATA #REQUIRED>
 
-<!-- TODO define your own vocabulary/syntax. Example follows:  -->
-<!ELEMENT __ROOT__ ANY>
-<!ATTLIST __ROOT__ version CDATA #REQUIRED>
 
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT surname (#PCDATA)>
+<!ELEMENT homePhone (#PCDATA)>
+<!ELEMENT officePhone (#PCDATA)>
+<!ELEMENT cellularPhone (#PCDATA)>
+<!ELEMENT company (#PCDATA)>
+<!ELEMENT customer (name, surname, homePhone, officePhone)>
+<!ELEMENT installer (name, surname, officePhone*, cellularPhone*, company)>
+
+<!ELEMENT details (detail+)>
+<!ELEMENT detail (system, checks)>
+
+<!ELEMENT system (descr, code, type, product, installDate, lastMaintenance)>
+<!ELEMENT descr (#PCDATA)>
+<!ELEMENT code (#PCDATA)>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT product (#PCDATA)>
+<!ELEMENT installDate (#PCDATA)>
+<!ELEMENT lastMaintenance (#PCDATA)>
+
+<!ELEMENT checks (check+)>
+<!ELEMENT check (operation, restype, value)>
+<!ELEMENT operation (#PCDATA)>
+<!ELEMENT restype (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
