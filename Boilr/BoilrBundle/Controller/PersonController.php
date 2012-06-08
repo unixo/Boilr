@@ -124,6 +124,7 @@ class PersonController extends BaseController
                 'fullname' => $p->getSurname() . ' ' . $p->getName(),
                 'homePhone' => $p->getHomePhone(),
                 'officePhone' => $p->getOfficePhone(),
+                'mobilePhone' => $p->getCellularPhone(),
                 'systems' => $p->getSystems()->count(),
             );
         }

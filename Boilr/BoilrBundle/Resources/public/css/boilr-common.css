@@ -47,3 +47,19 @@ div.craue_formflow_buttons {
 li.last {
   padding-bottom: 9px;
 }
+
+.dataTables_filter label {
+    width: auto;
+}
+
+.dataTables_filter input {
+    width: auto;
+}
+
+.dataTables_info {
+    float: right;
+}
+
+.dataTables_length label {
+    width: auto;
+}
