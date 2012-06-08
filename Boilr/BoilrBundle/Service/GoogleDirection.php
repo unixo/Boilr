@@ -40,7 +40,6 @@ class GoogleDirection implements GeoDirectionInterface
         $url .= sprintf("origins=%s&destinations=%s", $origins, $destinations);
         $url .= sprintf("&language=%s", $this->language);
         $url .= sprintf("&mode=%s", $this->mode);
-        //$url .= sprintf("&key=%s", $this->key);
         $url .= "&sensor=false";
 
         return $url;

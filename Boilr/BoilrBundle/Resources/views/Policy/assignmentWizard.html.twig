@@ -67,27 +67,40 @@
         <h3>Selezione algoritmo di associazione</h3>
         <br>
         <ul class="thumbnails">
-          <li class="span3">
-            <div class="caption">
-              <h5>Carico bilanciato</h5>
-              <p>Assegna gli interventi in pari misura a tutti i tecnici.</p>
-              <p><a href="{{ url('intervention_preview_policy', {'name': 'policy_equal'}) }}" class="btn btn-primary">Vai</a></p>
+          <li class="span4">
+            <div class="thumbnail">
+              <img src="{{ asset('bundles/boilr/img/equal.png') }}" />
+              <div class="caption">
+                <h5>Carico bilanciato</h5>
+                <p>Assegna gli interventi in pari misura a tutti i tecnici, compatibilmente
+                   con gli impegni e le distanze.
+                </p>
+                <p><a href="{{ url('intervention_preview_policy', {'name': 'policy_equal'}) }}" class="btn btn-primary">Vai</a></p>
+              </div>
             </div>
           </li>
 
-          <li class="span3">
-            <div class="caption">
-              <h5>Saturazione tecnico</h5>
-              <p>Priorità a saturare un tecnico</p>
-              <p><a href="{{ url('intervention_preview_policy', {'name': 'policy_fillup'}) }}" class="btn btn-primary">Vai</a></p>
+          <li class="span4">
+            <div class="thumbnail">
+              <img src="{{ asset('bundles/boilr/img/saturate.png') }}" />
+              <div class="caption">
+                <h5>Saturazione tecnico</h5>
+                <p>Priorità ad assegnare gli interventi a un tecnico fino a saturarne
+                   la disponibilità.
+                </p>
+                <p><a href="{{ url('intervention_preview_policy', {'name': 'policy_fillup'}) }}" class="btn btn-primary">Vai</a></p>
+              </div>
             </div>
           </li>
 
-          <li class="span3">
-            <div class="caption">
-              <h5>Percorso ottimizzato</h5>
-              <p>Riorganizza gli interventi giornalieri in base alla distanza, durata e percorso minimo</p>
-              <p><a href="{{ url('intervention_preview_policy', {'name': 'policy_waypoint'}) }}" class="btn btn-primary">Vai</a></p>
+          <li class="span4">
+            <div class="thumbnail">
+              <img src="{{ asset('bundles/boilr/img/gmaps.jpg') }}" />
+              <div class="caption">
+                <h5>Percorso ottimizzato</h5>
+                <p>Riorganizza gli interventi giornalieri in base alla distanza, durata e percorso minimo</p>
+                <p><a href="{{ url('intervention_preview_policy', {'name': 'policy_waypoint'}) }}" class="btn btn-primary">Vai</a></p>
+              </div>
             </div>
           </li>
         </ul>
