@@ -163,13 +163,23 @@ class WaypointPolicy extends BasePolicy
         return $interventions[$index];
     }
 
+    /**
+     * The function gets a source address and a list of addresses: it finds the
+     * farthest location and set it as destination; then ask Google to find a
+     * route between source & destination, using all other addresses as
+     * waypoints
+     *
+     * @param GeoPosition $source
+     * @param array $interventions
+     * @return array
+     */
     protected function orderInterventionsByWaypoints(GeoPosition $source, $interventions)
     {
         // ending point (farthest intervetion)
         $farthestInterv = $this->findFarthestIntervention($source, $interventions);
         $dst = $farthestInterv->getFirstSystem()->getAddress()->getGeoPosition();
 
-        // waypoints: all interventions but the farthest
+        // waypoints: all interventions except the farthest
         $waypoints = array();
         $linkedIntervs = array();
         foreach ($interventions as $interv) {

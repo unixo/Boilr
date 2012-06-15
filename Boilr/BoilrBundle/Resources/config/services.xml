@@ -27,10 +27,10 @@
             <tag name="form.type" alias="installer_selector" />
         </service>
 
-        <!-- Request listener -->
+        <!-- Request listeners -->
         <service id="boilr.referer.listener" class="Boilr\BoilrBundle\Listener\RefererListener">
-              <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
-              <argument type="service" id="router" />
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
+            <argument type="service" id="router" />
         </service>
         <!-- End of Request listener -->
 
@@ -60,20 +60,5 @@
             <tag name="form.type" alias="province" />
         </service>
         <!-- End of Form types -->
-
-        <!-- Form flows -->
-            <!-- New person flow -->
-            <service id="boilr.form.newPerson" class="Boilr\BoilrBundle\Form\NewPersonForm">
-                <tag name="form.type" alias="boilr_newperson" />
-            </service>
-
-            <service id="boilr.form.flow.newPerson" class="Boilr\BoilrBundle\Form\Flow\NewPersonFlow"
-                    parent="craue.form.flow" scope="request">
-                <call method="setFormType">
-                    <argument type="service" id="boilr.form.newPerson" />
-                </call>
-            </service>
-            <!-- End of New person flow -->
-        <!-- End of Form flows -->
     </services>
 </container>

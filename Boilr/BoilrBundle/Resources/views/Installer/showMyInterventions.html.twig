@@ -31,7 +31,7 @@
         <td>{{ interv.details[0].system.descr }}</td>
         <td>{{ interv.details[0].system.systemType.name }}</td>
         {% endif %}
-        <td>{{ interv.getStatusDescr() }}</td>
+        <td>{{ interv.getStatusDescr()|truncate(25) }}</td>
         <td>
           <a class="btn btn-mini" href="{{ url('intervention_detail_for_installer', {id: interv.id}) }}" title="Apri...">
             <i class="icon-folder-open"></i>
