@@ -27,6 +27,8 @@ class GeoPosition
     public function setLatitude($latitude)
     {
         $this->latitude = $latitude;
+
+        return $this;
     }
 
     public function getLongitude()
@@ -37,6 +39,8 @@ class GeoPosition
     public function setLongitude($longitude)
     {
         $this->longitude = $longitude;
+
+        return $this;
     }
 
     public function __toString()
