@@ -172,6 +172,8 @@ class GoogleDirection implements GeoDirectionInterface
         }
 
         $this->format = $format;
+
+        return $this;
     }
 
     /**
@@ -192,6 +194,8 @@ class GoogleDirection implements GeoDirectionInterface
     public function setLanguage($language)
     {
         $this->language = $language;
+
+        return $this;
     }
 
     /**
@@ -217,6 +221,8 @@ class GoogleDirection implements GeoDirectionInterface
         }
 
         $this->mode = $mode;
+
+        return $this;
     }
 
 }
