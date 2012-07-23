@@ -18,7 +18,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $u->setName('Ferruccio');
         $u->setSurname('Vitale');
         $u->setLogin('unixo');
-        $u->setPassword('4853eb41f1c4ced4cdcb670c485580c1c510389b');
+        $u->setPassword('');
         $u->setIsActive(true);
         $u->addGroup($manager->merge($this->getReference('group-super')));
         $u->setCompany($company);
@@ -29,7 +29,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $u->setName('Maurizio');
         $u->setSurname('Maffi');
         $u->setLogin('mm');
-        $u->setPassword('42bb6a44f833e29601aff89757b05f9adaed617c'); // m4ur1z10
+        $u->setPassword(''); // m4ur1z10
         $u->setIsActive(true);
         $u->addGroup($manager->merge($this->getReference('group-admin')));
         $u->setCompany($company);
